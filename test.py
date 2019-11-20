@@ -64,6 +64,10 @@ empty = List.empty()
 mod10 = lambda x: x % 10
 
 def testListBasics():
+    assertTrue(List._isList(empty))
+    assertTrue(List._isList(lst3))
+    assertFalse(List._isList(99))
+
     assertList(List.singleton(5), [5])
     assertList(List.repeat(3, 'x'), ['x', 'x', 'x'])
     assertList(List.range_(3, 6), [3, 4, 5, 6])

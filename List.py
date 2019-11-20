@@ -13,6 +13,11 @@ immutable.
     [1, 2] = (1, (2, ...))
 """
 
+def _isList(x):
+    if type(x) != tuple:
+        return False
+    return x[0] == '::' or x[0] == '[]'
+
 def _fromIter(it):
     lst = reversed(list(it))
 
