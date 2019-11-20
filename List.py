@@ -1,4 +1,5 @@
 import functools
+import itertools
 import operator
 import Maybe
 import Order
@@ -165,14 +166,13 @@ def intersperse(sep, xs):
 
 def map2(f, lst1, lst2):
     # optimized
-    if lst1 is None: return None
-    if lst2 is None: return None
+    def combine():
+        for (a, b) in zip(
+                _toIter(lst1),
+                _toIter(lst2)):
+            yield f(a, b)
 
-    (h1, r1) = lst1
-    (h2, r2) = lst2
-    return (
-            f(h1, h2),
-            map2(f, r1, r2))
+    return _fromIter(combine())
 
 def map3(f, lst1, lst2, lst3):
     # optimized

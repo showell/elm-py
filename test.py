@@ -138,7 +138,7 @@ def runTests():
             List.map2(
                 lambda a, b: (a, b),
                 toElm([5, 7]),
-                toElm([6, 99, 3]),
+                toElm([6, 99, 3, 88888, 77777]),
             ),
             [ (5, 6),
               (7, 99),
@@ -225,6 +225,10 @@ def checkPerformance():
             List.length(List.intersperse(0, bigList)),
             199999)
 
+    List.map2(
+            lambda a, b: (a, b),
+            bigList,
+            bigList)
 runTests()
 checkPerformance()
 
