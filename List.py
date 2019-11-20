@@ -45,7 +45,7 @@ def range_(lo, hi):
     # optimized
     out = None
     n = hi
-    for n in reversed(range(lo, hi+1)):
+    for n in range(hi, lo-1, -1):
         out = (n, out)
     return out
 
