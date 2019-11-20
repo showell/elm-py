@@ -1,0 +1,194 @@
+import List
+import Maybe
+import Order
+
+# TESTING
+
+def toPy(xs):
+    return list(List._toIter(xs))
+
+def toElm(lst):
+    return List._fromIter(lst)
+
+
+def printList(xs):
+    print(toPy(xs))
+
+def assertTrue(actual):
+    if actual:
+        print('pass')
+    else:
+        print('\n\nFAIL!\n', actual)
+        print('\n')
+        raise AssertionError
+
+def assertFalse(actual):
+    if not actual:
+        print('pass')
+    else:
+        print('\n\nFAIL!\n', actual)
+        print('\n')
+        raise AssertionError
+
+def assertEqual(actual, expected):
+    if actual == expected:
+        print('pass')
+    else:
+        print('\n\nFAIL!\n', actual, expected)
+        print('\n')
+        raise AssertionError
+
+def assertList(elmList, expected):
+    if toPy(elmList) == expected:
+        print('pass')
+    else:
+        print('\n\nFAIL!\n', elmList, expected)
+        print('\n')
+        raise AssertionError
+
+even = lambda x : x % 2 == 0
+negative = lambda x : x < 0
+positive = lambda x : x > 0
+double = lambda x : x * 2
+
+def toMaybe(n):
+    if n in [2, 4]:
+        return Maybe.Just(10*n)
+    else:
+        return Maybe.Nothing()
+
+lst3 = toElm([0, 1, 2])
+numLst = toElm([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+empty = None
+mod10 = lambda x: x % 10
+
+def runTests():
+    assertList(List.singleton(5), [5])
+    assertList(List.repeat(3, 'x'), ['x', 'x', 'x'])
+    assertList(List.range_(3, 6), [3, 4, 5, 6])
+    assertList(List.cons(42, lst3), [42, 0, 1, 2])
+    assertList(List.map_(double, lst3), [0, 2, 4])
+
+    tup = lambda i, x: (i, 2*x)
+    assertList(
+            List.indexedMap(tup, lst3),
+            [ (0, 0), (1, 2), (2, 4)])
+
+    assertEqual(
+            List.foldl(lambda x, acc: acc + x, "L", toElm("123")),
+            "L123")
+
+    assertEqual(
+            List.foldr(lambda x, acc: acc + x, "R", toElm("123")),
+            "R321")
+
+    assertList(
+            List.filter_(even, numLst),
+            [2, 4, 6, 8, 10])
+
+    assertList(
+            List.filterMap(toMaybe, numLst),
+            [ 20, 40 ])
+
+    assertEqual(List.length(lst3), 3)
+
+    assertTrue(List.any(even, numLst))
+    assertFalse(List.any(negative, numLst))
+
+    assertList(
+            List.reverse(lst3),
+            [2, 1, 0])
+
+    assertTrue(List.member(7, numLst))
+    assertFalse(List.member(987, numLst))
+
+    assertTrue(List.all(positive, numLst))
+    assertFalse(List.all(even, numLst))
+
+    assertTrue(List.any(even, numLst))
+    assertFalse(List.any(negative, numLst))
+
+    assertEqual(List.maximum(empty), None)
+    assertEqual(List.maximum(numLst), Maybe.Just(10))
+
+    assertEqual(List.minimum(empty), None)
+    assertEqual(List.minimum(numLst), Maybe.Just(1))
+
+    assertEqual(List.sum(numLst), 55)
+    assertEqual(List.product(numLst), 3628800)
+
+    assertEqual(List.append(None, lst3), lst3)
+    assertEqual(List.append(lst3, None), lst3)
+    assertList(
+            List.append(lst3, numLst),
+            [0, 1, 2, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+
+    lsts = toElm([None, lst3, None, numLst])
+    assertList(List.concat(lsts),
+            [0, 1, 2, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+
+    mapper = lambda x: (x, (5*x, None))
+    assertList(List.concatMap(mapper, lst3),
+            [0, 0, 1, 5, 2, 10])
+
+    assertList(List.intersperse(999, lst3), [0, 999, 1, 999, 2])
+
+    assertList(
+            List.map2(
+                lambda a, b: (a, b),
+                toElm([5, 7]),
+                toElm([6, 99, 3]),
+            ),
+            [ (5, 6),
+              (7, 99),
+            ]
+            )
+
+    assertList(
+            List.map3(
+                lambda a, b, c: (a, b, c),
+                toElm([5, 7]),
+                toElm([6, 99, 3]),
+                toElm([8, 101]),
+            ),
+            [ (5, 6, 8),
+              (7, 99, 101),
+            ]
+            )
+
+    assertList(
+            List.map5(
+                lambda a, b, c, d, e: (a, b, c, d, e),
+                toElm([1, 2, 3, 4]),
+                toElm([2, 4, 6, 8]),
+                toElm([3, 6, 9, 12]),
+                toElm([10, 20, 30, 40]),
+                toElm([33, 66]),
+            ),
+            [ (1, 2, 3, 10, 33),
+              (2, 4, 6, 20, 66),
+            ]
+            )
+
+    assertList(
+            List.Tsort('int', toElm([4, 5, 1, 3, 2])),
+            [1, 2, 3, 4, 5]
+            )
+
+    assertList(
+            List.TsortBy('int', mod10, toElm([34, 15, 71, 83, 92])),
+            [ 71
+            , 92
+            , 83
+            , 34
+            , 15
+            ]
+            )
+
+    compF = lambda a, b: Order.fromInt(a - b)
+    assertList(
+            List.sortWith(compF, toElm([4, 5, 1, 3, 2])),
+            [1, 2, 3, 4, 5]
+            )
+runTests()
+

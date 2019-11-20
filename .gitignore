@@ -1,0 +1,7 @@
+*.swp
+__pycache__/
+index2.html
+JsArray.js
+List.elm
+List.js
+todo.txt
