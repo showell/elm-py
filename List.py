@@ -30,9 +30,6 @@ def _toIter(xs):
 def empty():
     return ('[]',)
 
-def isEmpty(xs):
-    return xs[0] == '[]'
-
 def uncons(lst):
     return (lst[1], lst[2])
 
@@ -233,8 +230,15 @@ def sortWith(compF, lst):
     c = lambda a, b: Order.toInt(compF(a, b))
     return _sortHelper(c, lst)
 
+def isEmpty(xs):
+    return xs[0] == '[]'
 
-
+def head(xs):
+    if isEmpty(xs):
+        return Maybe.Nothing()
+    else:
+        (h, xs) = uncons(xs)
+        return Maybe.Just(h)
 
 
 

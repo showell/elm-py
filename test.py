@@ -63,7 +63,7 @@ numLst = toElm([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 empty = List.empty()
 mod10 = lambda x: x % 10
 
-def runTests():
+def testListBasics():
     assertList(List.singleton(5), [5])
     assertList(List.repeat(3, 'x'), ['x', 'x', 'x'])
     assertList(List.range_(3, 6), [3, 4, 5, 6])
@@ -192,6 +192,20 @@ def runTests():
             [1, 2, 3, 4, 5]
             )
 
+def testListOfLists():
+    lol = toElm([
+                toElm([5]),
+                toElm([1]),
+                toElm([1, 2]),
+                toElm([2]),
+                toElm([1, 2, -1]),
+                toElm([3]),
+                ])
+
+    h = lambda lst: Maybe.unboxJust(List.head(lst))
+
+    assertEqual(h(h(lol)), 5)
+
 def checkPerformance():
     # Make sure we don't crash on large lists.  (We can't use
     # recursion carelessly in Python.)  These tests only exercise
@@ -251,6 +265,7 @@ def checkPerformance():
             bigList,
             bigList)
 
-runTests()
+testListBasics()
+testListOfLists()
 checkPerformance()
 
