@@ -176,48 +176,39 @@ def map2(f, lst1, lst2):
 
 def map3(f, lst1, lst2, lst3):
     # optimized
-    if lst1 is None: return None
-    if lst2 is None: return None
-    if lst3 is None: return None
+    def combine():
+        for (a, b, c) in zip(
+                _toIter(lst1),
+                _toIter(lst2),
+                _toIter(lst3)):
+            yield f(a, b, c)
 
-    (h1, r1) = lst1
-    (h2, r2) = lst2
-    (h3, r3) = lst3
-    return (
-            f(h1, h2, h3),
-            map3(f, r1, r2, r3))
+    return _fromIter(combine())
 
 def map4(f, lst1, lst2, lst3, lst4):
     # optimized
-    if lst1 is None: return None
-    if lst2 is None: return None
-    if lst3 is None: return None
-    if lst4 is None: return None
+    def combine():
+        for (a, b, c, d) in zip(
+                _toIter(lst1),
+                _toIter(lst2),
+                _toIter(lst3),
+                _toIter(lst4)):
+            yield f(a, b, c, d)
 
-    (h1, r1) = lst1
-    (h2, r2) = lst2
-    (h3, r3) = lst3
-    (h4, r4) = lst4
-    return (
-            f(h1, h2, h3, h4),
-            map4(f, r1, r2, r3, r4))
+    return _fromIter(combine())
 
 def map5(f, lst1, lst2, lst3, lst4, lst5):
     # optimized
-    if lst1 is None: return None
-    if lst2 is None: return None
-    if lst3 is None: return None
-    if lst4 is None: return None
-    if lst5 is None: return None
+    def combine():
+        for (a, b, c, d, e) in zip(
+                _toIter(lst1),
+                _toIter(lst2),
+                _toIter(lst3),
+                _toIter(lst4),
+                _toIter(lst5)):
+            yield f(a, b, c, d, e)
 
-    (h1, r1) = lst1
-    (h2, r2) = lst2
-    (h3, r3) = lst3
-    (h4, r4) = lst4
-    (h5, r5) = lst5
-    return (
-            f(h1, h2, h3, h4, h5),
-            map5(f, r1, r2, r3, r4, r5))
+    return _fromIter(combine())
 
 """
 NOTE:

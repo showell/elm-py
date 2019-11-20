@@ -229,6 +229,28 @@ def checkPerformance():
             lambda a, b: (a, b),
             bigList,
             bigList)
+
+    List.map3(
+            lambda a, b, c: (a, b, c),
+            bigList,
+            bigList,
+            bigList)
+
+    List.map4(
+            lambda a, b, c, d: (a, b, c, d),
+            bigList,
+            bigList,
+            bigList,
+            bigList)
+
+    List.map5(
+            lambda a, b, c, d, e: (a, b, c, d, e),
+            bigList,
+            bigList,
+            bigList,
+            bigList,
+            bigList)
+
 runTests()
 checkPerformance()
 
