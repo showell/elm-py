@@ -1,12 +1,15 @@
+import Kernel
 import List
 import Maybe
 import Order
 
 # TESTING
 
+isList = Kernel.isList
+
 def toPy(xs):
-    if List._isList(xs):
-        return list(toPy(item) for item in List._toIter(xs))
+    if isList(xs):
+        return list(toPy(item) for item in List.toIter(xs))
     else:
         return xs
 
@@ -70,9 +73,9 @@ empty = List.empty()
 mod10 = lambda x: x % 10
 
 def testListBasics():
-    assertTrue(List._isList(empty))
-    assertTrue(List._isList(lst3))
-    assertFalse(List._isList(99))
+    assertTrue(isList(empty))
+    assertTrue(isList(lst3))
+    assertFalse(isList(99))
 
     assertList(List.singleton(5), [5])
     assertList(List.repeat(3, 'x'), ['x', 'x', 'x'])

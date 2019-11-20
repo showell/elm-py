@@ -1,6 +1,6 @@
 import functools
-import itertools
 import operator
+import Kernel
 import Maybe
 import Order
 
@@ -13,11 +13,6 @@ immutable.
     [1, 2] = (1, (2, ...))
 """
 
-def _isList(x):
-    if type(x) != tuple:
-        return False
-    return x[0] == '::' or x[0] == '[]'
-
 def _fromIter(it):
     lst = reversed(list(it))
 
@@ -27,16 +22,13 @@ def _fromIter(it):
 
     return out
 
-def _toIter(xs):
-    while not isEmpty(xs):
-        (h, xs) = uncons(xs)
-        yield h
+toIter = Kernel.listToIter
+uncons = Kernel.listUncons
+isEmpty = Kernel.listIsEmpty
 
 def empty():
     return ('[]',)
 
-def uncons(lst):
-    return (lst[1], lst[2])
 
 def singleton(x):
     # optimized
@@ -62,34 +54,34 @@ def cons(x, xs):
 
 def map_(f, xs):
     # optimized
-    return _fromIter(map(f, _toIter(xs)))
+    return _fromIter(map(f, toIter(xs)))
 
 def indexedMap(f, xs):
     # optimized
     return _fromIter(f(i, a) for i, a
-                     in enumerate(_toIter(xs)))
+                     in enumerate(toIter(xs)))
 
 def foldl(func, acc, xs):
     # optimized
-    for x in _toIter(xs):
+    for x in toIter(xs):
         acc = func(x, acc)
     return acc
 
 def foldr(func, acc, xs):
     # optimized
     # Note that foldr makes a fully copy of our list.
-    for x in reversed(list(_toIter(xs))):
+    for x in reversed(list(toIter(xs))):
         acc = func(x, acc)
     return acc
 
 def filter_(isGood, lst):
     # optimized
-    return _fromIter(filter(isGood, _toIter(lst)))
+    return _fromIter(filter(isGood, toIter(lst)))
 
 def filterMap(f, xs):
     # optimized
     def sieve():
-        for x in _toIter(xs):
+        for x in toIter(xs):
             v = f(x)
             if v != Maybe.Nothing():
                 yield Maybe.unboxJust(v)
@@ -99,7 +91,7 @@ def filterMap(f, xs):
 def length(lst):
     # optimized
     i = 0
-    for _ in _toIter(lst):
+    for _ in toIter(lst):
        i += 1
     return i
 
@@ -111,13 +103,13 @@ def member(x, xs):
 
 def all(isOkay, lst):
     # optimized
-    for x in _toIter(lst):
+    for x in toIter(lst):
         if not isOkay(x):
             return False
     return True
 
 def any(isOkay, lst):
-    for x in _toIter(lst):
+    for x in toIter(lst):
         if isOkay(x):
             return True
     return False
@@ -174,8 +166,8 @@ def map2(f, lst1, lst2):
     # optimized
     def combine():
         for (a, b) in zip(
-                _toIter(lst1),
-                _toIter(lst2)):
+                toIter(lst1),
+                toIter(lst2)):
             yield f(a, b)
 
     return _fromIter(combine())
@@ -184,9 +176,9 @@ def map3(f, lst1, lst2, lst3):
     # optimized
     def combine():
         for (a, b, c) in zip(
-                _toIter(lst1),
-                _toIter(lst2),
-                _toIter(lst3)):
+                toIter(lst1),
+                toIter(lst2),
+                toIter(lst3)):
             yield f(a, b, c)
 
     return _fromIter(combine())
@@ -195,10 +187,10 @@ def map4(f, lst1, lst2, lst3, lst4):
     # optimized
     def combine():
         for (a, b, c, d) in zip(
-                _toIter(lst1),
-                _toIter(lst2),
-                _toIter(lst3),
-                _toIter(lst4)):
+                toIter(lst1),
+                toIter(lst2),
+                toIter(lst3),
+                toIter(lst4)):
             yield f(a, b, c, d)
 
     return _fromIter(combine())
@@ -207,46 +199,30 @@ def map5(f, lst1, lst2, lst3, lst4, lst5):
     # optimized
     def combine():
         for (a, b, c, d, e) in zip(
-                _toIter(lst1),
-                _toIter(lst2),
-                _toIter(lst3),
-                _toIter(lst4),
-                _toIter(lst5)):
+                toIter(lst1),
+                toIter(lst2),
+                toIter(lst3),
+                toIter(lst4),
+                toIter(lst5)):
             yield f(a, b, c, d, e)
 
     return _fromIter(combine())
 
 def _sortHelper(compF, lst):
     f = functools.cmp_to_key(compF)
-    return _fromIter(sorted(_toIter(lst), key=f))
-
-def _compare(a, b):
-    if _isList(a):
-        for (aa, bb) in itertools.zip_longest(_toIter(a), _toIter(b)):
-            if aa is None:
-                return -1
-            if bb is None:
-                return 1
-            diff = _compare(aa, bb)
-            if diff != 0:
-                return diff
-
-    return a - b
+    return _fromIter(sorted(toIter(lst), key=f))
 
 def sort(lst):
-    return _sortHelper(_compare, lst)
+    return _sortHelper(Kernel.compare, lst)
 
 def sortBy(f, lst):
     # optimized
-    c = lambda a, b: _compare(f(a), f(b))
+    c = lambda a, b: Kernel.compare(f(a), f(b))
     return _sortHelper(c, lst)
 
 def sortWith(compF, lst):
     c = lambda a, b: Order.toInt(compF(a, b))
     return _sortHelper(c, lst)
-
-def isEmpty(xs):
-    return xs[0] == '[]'
 
 def head(xs):
     if isEmpty(xs):
