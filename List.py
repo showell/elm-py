@@ -34,7 +34,7 @@ def isEmpty(xs):
     return xs[0] == '[]'
 
 def uncons(lst):
-    return lst
+    return (lst[1], lst[2])
 
 def singleton(x):
     # optimized
@@ -56,7 +56,7 @@ def range_(lo, hi):
     return out
 
 def cons(x, xs):
-    return (x, xs)
+    return ('::', x, xs)
 
 def map_(f, xs):
     # optimized
@@ -163,8 +163,8 @@ def intersperse(sep, xs):
     if isEmpty(xs):
         return empty()
     else:
-        (hd, tl) = xs
-        step = lambda x, rest: (sep, (x, rest))
+        (hd, tl) = uncons(xs)
+        step = lambda x, rest: cons(sep, cons(x, rest))
         spersed = foldr(step, empty(), tl)
         return cons(hd, spersed)
 
