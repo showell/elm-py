@@ -60,7 +60,7 @@ def toMaybe(n):
 
 lst3 = toElm([0, 1, 2])
 numLst = toElm([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
-empty = None
+empty = List.empty()
 mod10 = lambda x: x % 10
 
 def runTests():
@@ -109,26 +109,26 @@ def runTests():
     assertTrue(List.any(even, numLst))
     assertFalse(List.any(negative, numLst))
 
-    assertEqual(List.maximum(empty), None)
+    assertEqual(List.maximum(empty), Maybe.Nothing())
     assertEqual(List.maximum(numLst), Maybe.Just(10))
 
-    assertEqual(List.minimum(empty), None)
+    assertEqual(List.minimum(empty), Maybe.Nothing())
     assertEqual(List.minimum(numLst), Maybe.Just(1))
 
     assertEqual(List.sum(numLst), 55)
     assertEqual(List.product(numLst), 3628800)
 
-    assertEqual(List.append(None, lst3), lst3)
-    assertEqual(List.append(lst3, None), lst3)
+    assertEqual(List.append(empty, lst3), lst3)
+    assertEqual(List.append(lst3, empty), lst3)
     assertList(
             List.append(lst3, numLst),
             [0, 1, 2, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 
-    lsts = toElm([None, lst3, None, numLst])
+    lsts = toElm([empty, lst3, empty, numLst])
     assertList(List.concat(lsts),
             [0, 1, 2, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 
-    mapper = lambda x: (x, (5*x, None))
+    mapper = lambda x: toElm([x, 5*x])
     assertList(List.concatMap(mapper, lst3),
             [0, 0, 1, 5, 2, 10])
 

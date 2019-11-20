@@ -8,46 +8,51 @@ import Order
 Internally we store Python lists as tuples, which are
 immutable.
 
-    [] = None
-    [1] = (1, None)
-    [1, 2] = (1, (2, None))
-    [1, 2, 3] = (1, (2, (3, None))))
-
-    isEmpty(lst) = lst is None
-    (x, xs) = lst
+    [] = ('[]')
+    [1] = (1, ('[]',))
+    [1, 2] = (1, (2, ...))
 """
 
 def _fromIter(it):
     lst = reversed(list(it))
 
-    out = None
+    out = empty()
     for x in lst:
-        out = (x, out)
+        out = cons(x, out)
 
     return out
 
 def _toIter(xs):
-    while xs is not None:
-        (h, xs) = xs
+    while not isEmpty(xs):
+        (h, xs) = uncons(xs)
         yield h
+
+def empty():
+    return ('[]',)
+
+def isEmpty(xs):
+    return xs[0] == '[]'
+
+def uncons(lst):
+    return lst
 
 def singleton(x):
     # optimized
-    return (x, None)
+    return cons(x, empty())
 
 def repeat(n, x):
     # optimized
-    out = None
+    out = empty()
     for i in range(n):
-        out = (x, out)
+        out = cons(x, out)
     return out
 
 def range_(lo, hi):
     # optimized
-    out = None
+    out = empty()
     n = hi
     for n in range(hi, lo-1, -1):
-        out = (n, out)
+        out = cons(n, out)
     return out
 
 def cons(x, xs):
@@ -92,13 +97,12 @@ def filterMap(f, xs):
 def length(lst):
     # optimized
     i = 0
-    while (lst):
+    for _ in _toIter(lst):
        i += 1
-       lst = lst[1]
     return i
 
 def reverse(lst):
-    return foldl(cons, None, lst)
+    return foldl(cons, empty(), lst)
 
 def member(x, xs):
     return any(lambda a: a == x, xs)
@@ -117,17 +121,17 @@ def any(isOkay, lst):
     return False
 
 def maximum(lst):
-    if lst is None:
-        return None
+    if isEmpty(lst):
+        return Maybe.Nothing()
     else:
-        (x, xs) = lst
+        (x, xs) = uncons(lst)
         return Maybe.Just(foldl(max, x, xs))
 
 def minimum(lst):
-    if lst is None:
-        return None
+    if isEmpty(lst):
+        return Maybe.Nothing()
     else:
-        (x, xs) = lst
+        (x, xs) = uncons(lst)
         return Maybe.Just(foldl(min, x, xs))
 
 def sum(lst):
@@ -144,25 +148,25 @@ def product(lst):
             lst)
 
 def append(xs, ys):
-    if ys is None:
+    if isEmpty(ys):
         return xs
     else:
         return foldr(cons, ys, xs)
 
 def concat(lsts):
-    return foldr(append, None, lsts)
+    return foldr(append, empty(), lsts)
 
 def concatMap(f, lst):
     return concat(map_(f, lst))
 
 def intersperse(sep, xs):
-    if xs is None:
-        return None
+    if isEmpty(xs):
+        return empty()
     else:
         (hd, tl) = xs
         step = lambda x, rest: (sep, (x, rest))
-        spersed = foldr(step, None, tl)
-        return (hd, spersed)
+        spersed = foldr(step, empty(), tl)
+        return cons(hd, spersed)
 
 def map2(f, lst1, lst2):
     # optimized
