@@ -61,21 +61,18 @@ def indexedMap(f, xs):
     return _fromIter(f(i, a) for i, a
                      in enumerate(_toIter(xs)))
 
-def foldl(func, acc, lst):
-    # internal
-    if lst is None:
-        return acc
-    else:
-        (x, xs) = lst
-        return foldl(func, func(x, acc), xs)
+def foldl(func, acc, xs):
+    # optimized
+    for x in _toIter(xs):
+        acc = func(x, acc)
+    return acc
 
 def foldr(func, acc, xs):
     # optimized
-    if xs is None:
-        return acc
-    else:
-        (x, xs) = xs
-        return func(x, foldr(func, acc, xs))
+    # Note that foldr makes a fully copy of our list.
+    for x in reversed(list(_toIter(xs))):
+        acc = func(x, acc)
+    return acc
 
 def filter_(isGood, lst):
     # optimized
@@ -105,10 +102,11 @@ def filterMap(f, xs):
 
 def length(lst):
     # optimized
-    if lst is None:
-        return 0
-    else:
-        return 1 + length(lst[1])
+    i = 0
+    while (lst):
+        i += 1
+        lst = lst[1]
+    return i
 
 def reverse(lst):
     return foldl(cons, None, lst)

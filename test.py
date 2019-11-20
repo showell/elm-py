@@ -50,6 +50,7 @@ even = lambda x : x % 2 == 0
 negative = lambda x : x < 0
 positive = lambda x : x > 0
 double = lambda x : x * 2
+add = lambda x, y: x + y
 
 def toMaybe(n):
     if n in [2, 4]:
@@ -190,5 +191,20 @@ def runTests():
             List.sortWith(compF, toElm([4, 5, 1, 3, 2])),
             [1, 2, 3, 4, 5]
             )
+
+    # Make sure we don't crash on large lists.  (We can't use
+    # recursion carelessly in Python.)  These tests only exercise
+    # performance.  Correctness tests are above.
+    bigList = List.range_(1, 100000)
+    assertEqual(
+            List.foldl(add, 0, bigList),
+            5000050000
+            )
+    assertEqual(
+            List.length(List.foldr(List.cons, empty, bigList)),
+            List.length(bigList)
+            )
+
+
 runTests()
 
