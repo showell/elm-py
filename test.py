@@ -5,11 +5,15 @@ import Order
 # TESTING
 
 def toPy(xs):
-    return list(List._toIter(xs))
+    if List._isList(xs):
+        return list(toPy(item) for item in List._toIter(xs))
+    else:
+        return xs
 
-def toElm(lst):
-    return List._fromIter(lst)
-
+def toElm(x):
+    if type(x) == list:
+        return List._fromIter(toElm(item) for item in x)
+    return x
 
 def printList(xs):
     print(toPy(xs))
@@ -59,6 +63,8 @@ def toMaybe(n):
         return Maybe.Nothing()
 
 lst3 = toElm([0, 1, 2])
+s123 = toElm(["1", "2", "3"])
+
 numLst = toElm([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 empty = List.empty()
 mod10 = lambda x: x % 10
@@ -80,11 +86,11 @@ def testListBasics():
             [ (0, 0), (1, 2), (2, 4)])
 
     assertEqual(
-            List.foldl(lambda x, acc: acc + x, "L", toElm("123")),
+            List.foldl(lambda x, acc: acc + x, "L", s123),
             "L123")
 
     assertEqual(
-            List.foldr(lambda x, acc: acc + x, "R", toElm("123")),
+            List.foldr(lambda x, acc: acc + x, "R", s123),
             "R321")
 
     assertList(
@@ -198,17 +204,30 @@ def testListBasics():
 
 def testListOfLists():
     lol = toElm([
-                toElm([5]),
-                toElm([1]),
-                toElm([1, 2]),
-                toElm([2]),
-                toElm([1, 2, -1]),
-                toElm([3]),
+                [5],
+                [1],
+                [1, 2],
+                [2],
+                [1, 2, 3],
+                [1, 2, 4],
+                [1, 2, -1],
+                [3],
                 ])
 
     h = lambda lst: Maybe.unboxJust(List.head(lst))
 
     assertEqual(h(h(lol)), 5)
+
+    assertList(List.sort(lol), [
+        [ 1 ],
+        [ 1, 2],
+        [ 1, 2, -1],
+        [ 1, 2, 3],
+        [ 1, 2, 4],
+        [ 2 ],
+        [ 3 ],
+        [ 5 ],
+    ])
 
 def checkPerformance():
     # Make sure we don't crash on large lists.  (We can't use

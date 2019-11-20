@@ -221,6 +221,16 @@ def _sortHelper(compF, lst):
     return _fromIter(sorted(_toIter(lst), key=f))
 
 def _compare(a, b):
+    if _isList(a):
+        for (aa, bb) in itertools.zip_longest(_toIter(a), _toIter(b)):
+            if aa is None:
+                return -1
+            if bb is None:
+                return 1
+            diff = _compare(aa, bb)
+            if diff != 0:
+                return diff
+
     return a - b
 
 def sort(lst):
