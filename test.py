@@ -6,12 +6,7 @@ import Order
 # TESTING
 
 isList = Kernel.isList
-
-def toPy(xs):
-    if isList(xs):
-        return list(toPy(item) for item in List.toIter(xs))
-    else:
-        return xs
+toPy = Kernel.toPy
 
 def toElm(x):
     if type(x) == list:

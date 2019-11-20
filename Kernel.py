@@ -7,6 +7,12 @@ things like _compare.  It's also a bit helpful to make sure
 all of our data types play nice with each other.
 """
 
+def toPy(xs):
+    if isList(xs):
+        return list(toPy(item) for item in listToIter(xs))
+    else:
+        return xs
+
 def listUncons(lst):
     return (lst[1], lst[2])
 
