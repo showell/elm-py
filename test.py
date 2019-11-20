@@ -200,6 +200,56 @@ def testListBasics():
             [1, 2, 3, 4, 5]
             )
 
+    assertEqual(
+            List.tail(empty),
+            Maybe.Nothing())
+
+    assertEqual(
+            List.tail(toElm([1, 2, 3])),
+            Maybe.Just(toElm([2, 3]))
+            )
+
+    assertList(
+            List.take(0, lst3),
+            []
+            )
+
+    assertList(
+            List.take(2, lst3),
+            [ 0, 1]
+            )
+
+    assertList(
+            List.take(3, lst3),
+            [ 0, 1, 2 ]
+            )
+
+    assertList(
+            List.take(4, lst3),
+            [ 0, 1, 2 ]
+            )
+
+    assertList(
+            List.take(0, lst3),
+            []
+            )
+
+    assertList(
+            List.take(2, lst3),
+            [ 0, 1]
+            )
+
+    assertList(
+            List.take(3, lst3),
+            [ 0, 1, 2 ]
+            )
+
+    assertList(
+            List.take(4, lst3),
+            [ 0, 1, 2 ]
+            )
+
+
 def testListOfLists():
     lol = toElm([
                 [5],
@@ -285,6 +335,10 @@ def checkPerformance():
             bigList,
             bigList,
             bigList)
+
+    List.tail(bigList)
+    List.take(999999, bigList)
+    List.drop(999999, bigList)
 
 testListBasics()
 testListOfLists()

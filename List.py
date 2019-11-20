@@ -1,4 +1,5 @@
 import functools
+import itertools
 import operator
 import Kernel
 import Maybe
@@ -227,9 +228,32 @@ def sortWith(compF, lst):
 def head(xs):
     if isEmpty(xs):
         return Maybe.Nothing()
-    else:
-        (h, xs) = uncons(xs)
-        return Maybe.Just(h)
 
+    (h, xs) = uncons(xs)
+    return Maybe.Just(h)
 
+def tail(xs):
+    if isEmpty(xs):
+        return Maybe.Nothing()
+
+    (h, xs) = uncons(xs)
+    return Maybe.Just(xs)
+
+def take(n, xs):
+    if n <= 0:
+        return empty()
+
+    return _fromIter(itertools.islice(toIter(xs), n))
+
+def drop(n, xs):
+    if n <= 0:
+        return xs
+
+    i = 0
+    for x in toIter(xs):
+        if i >= n:
+            return x
+        i += 1
+
+    return empty()
 
