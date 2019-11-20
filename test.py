@@ -172,12 +172,12 @@ def runTests():
             )
 
     assertList(
-            List.Tsort('int', toElm([4, 5, 1, 3, 2])),
+            List.sort(toElm([4, 5, 1, 3, 2])),
             [1, 2, 3, 4, 5]
             )
 
     assertList(
-            List.TsortBy('int', mod10, toElm([34, 15, 71, 83, 92])),
+            List.sortBy(mod10, toElm([34, 15, 71, 83, 92])),
             [ 71
             , 92
             , 83

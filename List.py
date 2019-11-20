@@ -214,31 +214,19 @@ def map5(f, lst1, lst2, lst3, lst4, lst5):
 
     return _fromIter(combine())
 
-"""
-NOTE:
-
-For Tsort/TsortBy...
-
-We need the compiler to pass in the type, so we know
-how to compare elements.
-"""
-
 def _sortHelper(compF, lst):
     f = functools.cmp_to_key(compF)
     return _fromIter(sorted(_toIter(lst), key=f))
 
-def _compare(T):
-    if T == 'int':
-        return lambda a, b: a - b
+def _compare(a, b):
+    return a - b
 
-def Tsort(T, lst):
-    # optimized
-    c = _compare(T)
-    return _sortHelper(c, lst)
+def sort(lst):
+    return _sortHelper(_compare, lst)
 
-def TsortBy(T, f, lst):
+def sortBy(f, lst):
     # optimized
-    c = lambda a, b: _compare(T)(f(a), f(b))
+    c = lambda a, b: _compare(f(a), f(b))
     return _sortHelper(c, lst)
 
 def sortWith(compF, lst):
