@@ -76,29 +76,17 @@ def foldr(func, acc, xs):
 
 def filter_(isGood, lst):
     # optimized
-    if lst is None:
-        return None
-
-    else:
-        (x, xs) = lst
-        rest = filter_(isGood, xs)
-        if isGood(x):
-            return (x, rest)
-        else:
-            return rest
+    return _fromIter(filter(isGood, _toIter(lst)))
 
 def filterMap(f, xs):
     # optimized
-    if xs is None:
-        return None
+    def sieve():
+        for x in _toIter(xs):
+            v = f(x)
+            if v != Maybe.Nothing():
+                yield Maybe.unboxJust(v)
 
-    else:
-        (x, xs) = xs
-        v = f(x)
-        if v is None:
-            return filterMap(f, xs)
-        else:
-            return (v[1], filterMap(f, xs))
+    return _fromIter(sieve())
 
 def length(lst):
     # optimized

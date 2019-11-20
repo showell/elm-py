@@ -192,6 +192,7 @@ def runTests():
             [1, 2, 3, 4, 5]
             )
 
+def checkPerformance():
     # Make sure we don't crash on large lists.  (We can't use
     # recursion carelessly in Python.)  These tests only exercise
     # performance.  Correctness tests are above.
@@ -206,7 +207,24 @@ def runTests():
             )
     List.all(lambda x: True, bigList)
     List.any(lambda x: False, bigList)
+    List.filter_(lambda x: True, bigList)
+    List.filterMap(toMaybe, bigList)
+    List.reverse(bigList)
+    assertEqual(List.maximum(bigList), Maybe.Just(100000))
+    assertEqual(List.minimum(bigList), Maybe.Just(1))
+    List.sum(bigList)
 
+    # product is expensive with big numbers!
+    List.product(List.repeat(100000, 0))
+
+    assertEqual(
+            List.length(List.append(bigList, bigList)),
+            200000)
+
+    assertEqual(
+            List.length(List.intersperse(0, bigList)),
+            199999)
 
 runTests()
+checkPerformance()
 
