@@ -104,8 +104,8 @@ def length(lst):
     # optimized
     i = 0
     while (lst):
-        i += 1
-        lst = lst[1]
+       i += 1
+       lst = lst[1]
     return i
 
 def reverse(lst):
@@ -116,18 +116,16 @@ def member(x, xs):
 
 def all(isOkay, lst):
     # optimized
-    if lst is None:
-        return True
-    else:
-        (x, xs) = lst
-        return isOkay(x) and all(isOkay, xs)
+    for x in _toIter(lst):
+        if not isOkay(x):
+            return False
+    return True
 
 def any(isOkay, lst):
-    if lst is None:
-        return False
-    else:
-        (x, xs) = lst
-        return isOkay(x) or any(isOkay, xs)
+    for x in _toIter(lst):
+        if isOkay(x):
+            return True
+    return False
 
 def maximum(lst):
     if lst is None:

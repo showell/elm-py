@@ -204,6 +204,8 @@ def runTests():
             List.length(List.foldr(List.cons, empty, bigList)),
             List.length(bigList)
             )
+    List.all(lambda x: True, bigList)
+    List.any(lambda x: False, bigList)
 
 
 runTests()
