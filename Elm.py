@@ -15,6 +15,34 @@ def F(f):
 
     return wrapper
 
+def wrap(*converters):
+    argFuncs = converters[:-1]
+    returnFunc = converters[-1]
+
+    def convert(i, a):
+        if argFuncs[i] is None:
+            return a
+        else:
+            return argFuncs[i](a)
+
+    def wrap(f):
+        def wrapper(*args):
+            newArgs = [
+                    convert(i, a)
+                    for i, a
+                    in enumerate(args)
+                    ]
+            result = f(*newArgs)
+            if returnFunc is None:
+                return result
+            else:
+                return returnFunc(result)
+
+        return wrapper
+
+    return wrap
+
+
 def pipe(val, fns):
     for fn in fns:
         val = fn(val)

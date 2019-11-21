@@ -7,11 +7,20 @@ things like _compare.  It's also a bit helpful to make sure
 all of our data types play nice with each other.
 """
 
-def toPy(xs):
-    if isList(xs):
-        return list(toPy(item) for item in listToIter(xs))
+def toPy(x):
+    if isList(x):
+        return list(toPy(item) for item in listToIter(x))
+    elif isTup(x):
+        return tuple(map(toPy, toPyTup(x)))
     else:
-        return xs
+        return x
+
+def toElmTup(t):
+    return ('#', t)
+
+def toPyTup(x):
+    # don't recurse
+    return x[1]
 
 def listUncons(lst):
     return (lst[1], lst[2])
@@ -23,6 +32,11 @@ def listToIter(xs):
     while not listIsEmpty(xs):
         (h, xs) = listUncons(xs)
         yield h
+
+def isTup(x):
+    if type(x) != tuple:
+        return False
+    return x[0] == '#'
 
 def isList(x):
     if type(x) != tuple:

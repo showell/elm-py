@@ -2,6 +2,7 @@ import Kernel
 import List
 import Maybe
 import Order
+import Tuple
 import Elm
 
 # TESTING
@@ -54,6 +55,7 @@ even = lambda x : x % 2 == 0
 negative = lambda x : x < 0
 positive = lambda x : x > 0
 double = lambda x : x * 2
+triple = lambda x : x * 3
 add = lambda x, y: x + y
 
 def toMaybe(n):
@@ -359,6 +361,23 @@ def checkPerformance():
     List.take(999999, bigList)
     List.drop(999999, bigList)
 
+def testTuples():
+    t = Tuple.pair(5, 6)
+    assertEqual(Tuple.first(t), 5)
+    assertEqual(Tuple.second(t), 6)
+
+    assertEqual(
+            toPy(Tuple.mapFirst(double, t)),
+            (10, 6))
+
+    assertEqual(
+            toPy(Tuple.mapSecond(double, t)),
+            (5, 12))
+
+    assertEqual(
+            toPy(Tuple.mapBoth(triple, double, t)),
+            (15, 12))
+
 def testPipes():
     val = Elm.pipe(5, [
             double,
@@ -371,8 +390,9 @@ def testPipes():
 testListBasics()
 testPartialApply()
 testListOfLists()
+testTuples()
 testPipes()
 
 print("\n\nchecking performance...")
-checkPerformance()
+# checkPerformance()
 
