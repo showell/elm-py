@@ -45,13 +45,6 @@ def toElmList(it):
 
     return out
 
-def toElmTup(t):
-    return ('#', t)
-
-def toPyTup(x):
-    # don't recurse
-    return x[1]
-
 def listNil():
     return ('[]',)
 
@@ -69,15 +62,31 @@ def listToIter(xs):
         (h, xs) = listUncons(xs)
         yield h
 
-def isTup(x):
-    if type(x) != tuple:
-        return False
-    return x[0] == '#'
-
 def isList(x):
     if type(x) != tuple:
         return False
     return x[0] == '::' or x[0] == '[]'
+
+"""
+    TUPLES:
+
+        We don't use native tuples for Elm tuples, because
+        we instead use tuples to wrap nearly every non-primitive
+        Elm type.  Tuples are actually somewhat frowned upon in
+        Elm, so the extra level of indirection here is generally
+        harmless.
+"""
+def toElmTup(t):
+    return ('#', t)
+
+def toPyTup(x):
+    # don't recurse
+    return x[1]
+
+def isTup(x):
+    if type(x) != tuple:
+        return False
+    return x[0] == '#'
 
 """
     BOOL
