@@ -8,6 +8,7 @@ import Elm
 
 isList = Kernel.isList
 toPy = Kernel.toPy
+F = Elm.F
 
 def toElm(x):
     if type(x) == list:
@@ -280,19 +281,19 @@ def testListOfLists():
 
 def testPartialApply():
     assertList(
-            Elm.F(List.map_)(double)(lst3),
+            F(List.map_)(double)(lst3),
             [0, 2, 4])
 
     accum = lambda x, acc: acc + x
     assertEqual(
-            Elm.F(List.foldr)(accum)("R")(s123),
+            F(List.foldr)(accum)("R")(s123),
             "R321")
 
     assertEqual(
-            Elm.F(List.foldr)(accum, "R")(s123),
+            F(List.foldr)(accum, "R")(s123),
             "R321")
     assertEqual(
-            Elm.F(List.foldr)(accum)("R", s123),
+            F(List.foldr)(accum)("R", s123),
             "R321")
 
 def checkPerformance():
@@ -358,8 +359,18 @@ def checkPerformance():
     List.take(999999, bigList)
     List.drop(999999, bigList)
 
+def testPipes():
+    val = Elm.pipe(5, [
+            double,
+            F(add)(7),
+            double,
+            F(add)(3),
+            ])
+    assertEqual(val, 37)
+
 testListBasics()
 testPartialApply()
 testListOfLists()
+testPipes()
 checkPerformance()
 

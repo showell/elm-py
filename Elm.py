@@ -14,3 +14,8 @@ def F(f):
         return F(functools.partial(f, *args))
 
     return wrapper
+
+def pipe(val, fns):
+    for fn in fns:
+        val = fn(val)
+    return val
