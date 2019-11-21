@@ -15,24 +15,14 @@ immutable.
     [1, 2] = (1, (2, ...))
 """
 
-def _fromIter(it):
-    lst = reversed(list(it))
-
-    out = empty()
-    for x in lst:
-        out = cons(x, out)
-
-    return out
-
 toIter = Kernel.listToIter
 uncons = Kernel.listUncons
 isEmpty = Kernel.listIsEmpty
+toElmList = Kernel.toElmList
 toElmTup = Kernel.toElmTup
 toPyTup = Kernel.toPyTup
-
-def empty():
-    return ('[]',)
-
+empty = Kernel.listNil
+cons = Kernel.listCons
 
 def singleton(x):
     # optimized
@@ -53,17 +43,15 @@ def range_(lo, hi):
         out = cons(n, out)
     return out
 
-def cons(x, xs):
-    return ('::', x, xs)
-
+@Elm.wrap(None, toIter, toElmList)
 def map_(f, xs):
     # optimized
-    return _fromIter(map(f, toIter(xs)))
+    return map(f, xs)
 
+@Elm.wrap(None, toIter, toElmList)
 def indexedMap(f, xs):
     # optimized
-    return _fromIter(f(i, a) for i, a
-                     in enumerate(toIter(xs)))
+    return (f(i, a) for i, a in enumerate(xs))
 
 def foldl(func, acc, xs):
     # optimized
@@ -78,24 +66,24 @@ def foldr(func, acc, xs):
         acc = func(x, acc)
     return acc
 
+@Elm.wrap(None, toIter, toElmList)
 def filter_(isGood, lst):
     # optimized
-    return _fromIter(filter(isGood, toIter(lst)))
+    return filter(isGood, lst)
 
-def filterMap(f, xs):
+@Elm.wrap(None, toIter, toElmList)
+def filterMap(f, lst):
     # optimized
-    def sieve():
-        for x in toIter(xs):
-            v = f(x)
-            if v != Maybe.Nothing():
-                yield Maybe.unboxJust(v)
+    for x in lst:
+        v = f(x)
+        if v != Maybe.Nothing():
+            yield Maybe.unboxJust(v)
 
-    return _fromIter(sieve())
-
+@Elm.wrap(toIter, None)
 def length(lst):
     # optimized
     i = 0
-    for _ in toIter(lst):
+    for _ in lst:
        i += 1
     return i
 
@@ -105,15 +93,17 @@ def reverse(lst):
 def member(x, xs):
     return any(lambda a: a == x, xs)
 
+@Elm.wrap(None, toIter, None)
 def all(isOkay, lst):
     # optimized
-    for x in toIter(lst):
+    for x in lst:
         if not isOkay(x):
             return False
     return True
 
+@Elm.wrap(None, toIter, None)
 def any(isOkay, lst):
-    for x in toIter(lst):
+    for x in lst:
         if isOkay(x):
             return True
     return False
@@ -166,55 +156,34 @@ def intersperse(sep, xs):
         spersed = foldr(step, empty(), tl)
         return cons(hd, spersed)
 
+@Elm.wrap(None, toIter, toIter, toElmList)
 def map2(f, lst1, lst2):
     # optimized
-    def combine():
-        for (a, b) in zip(
-                toIter(lst1),
-                toIter(lst2)):
-            yield f(a, b)
+    for (a, b) in zip(lst1, lst2):
+        yield f(a, b)
 
-    return _fromIter(combine())
-
+@Elm.wrap(None, toIter, toIter, toIter, toElmList)
 def map3(f, lst1, lst2, lst3):
     # optimized
-    def combine():
-        for (a, b, c) in zip(
-                toIter(lst1),
-                toIter(lst2),
-                toIter(lst3)):
-            yield f(a, b, c)
+    for (a, b, c) in zip(lst1, lst2, lst3):
+        yield f(a, b, c)
 
-    return _fromIter(combine())
-
+@Elm.wrap(None, toIter, toIter, toIter, toIter, toElmList)
 def map4(f, lst1, lst2, lst3, lst4):
     # optimized
-    def combine():
-        for (a, b, c, d) in zip(
-                toIter(lst1),
-                toIter(lst2),
-                toIter(lst3),
-                toIter(lst4)):
-            yield f(a, b, c, d)
+    for (a, b, c, d) in zip(lst1, lst2, lst3, lst4):
+        yield f(a, b, c, d)
 
-    return _fromIter(combine())
-
+@Elm.wrap(None, toIter, toIter, toIter, toIter, toIter, toElmList)
 def map5(f, lst1, lst2, lst3, lst4, lst5):
     # optimized
-    def combine():
-        for (a, b, c, d, e) in zip(
-                toIter(lst1),
-                toIter(lst2),
-                toIter(lst3),
-                toIter(lst4),
-                toIter(lst5)):
-            yield f(a, b, c, d, e)
+    for (a, b, c, d, e) in zip(lst1, lst2, lst3, lst4, lst5):
+        yield f(a, b, c, d, e)
 
-    return _fromIter(combine())
-
+@Elm.wrap(None, toIter, toElmList)
 def _sortHelper(compF, lst):
     f = functools.cmp_to_key(compF)
-    return _fromIter(sorted(toIter(lst), key=f))
+    return sorted(list(lst), key=f)
 
 def sort(lst):
     return _sortHelper(Kernel.compare, lst)
@@ -242,11 +211,12 @@ def tail(xs):
     (h, xs) = uncons(xs)
     return Maybe.Just(xs)
 
+@Elm.wrap(None, toIter, toElmList)
 def take(n, xs):
     if n <= 0:
-        return empty()
+        return []
 
-    return _fromIter(itertools.islice(toIter(xs), n))
+    return itertools.islice(xs, n)
 
 def drop(n, xs):
     if n <= 0:

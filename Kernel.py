@@ -15,12 +15,36 @@ def toPy(x):
     else:
         return x
 
+def toElm(x):
+    if type(x) == list:
+        return toElmList(toElm(item) for item in x)
+    elif type(x) == tuple:
+        return toElmTup(tuple(map(toElm, list(x))))
+    return x
+
+def toElmList(it):
+    """
+    This is a flat conversion (assumes items are already Elm-ish).
+    """
+
+    out = listNil()
+    for x in reversed(list(it)):
+        out = listCons(x, out)
+
+    return out
+
 def toElmTup(t):
     return ('#', t)
 
 def toPyTup(x):
     # don't recurse
     return x[1]
+
+def listNil():
+    return ('[]',)
+
+def listCons(x, xs):
+    return ('::', x, xs)
 
 def listUncons(lst):
     return (lst[1], lst[2])

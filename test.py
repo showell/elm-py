@@ -2,7 +2,9 @@ from Kernel import (
         isList,
         toPy,
         toPyTup,
+        toElmList,
         toElmTup,
+        toElm,
         )
 import List
 import Maybe
@@ -13,13 +15,6 @@ import Elm
 # TESTING
 
 F = Elm.F
-
-def toElm(x):
-    if type(x) == list:
-        return List._fromIter(toElm(item) for item in x)
-    elif type(x) == tuple:
-        return toElmTup(tuple(map(toElm, list(x))))
-    return x
 
 def printList(xs):
     print(toPy(xs))
@@ -141,7 +136,7 @@ def testListBasics():
             List.append(lst3, numLst),
             [0, 1, 2, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 
-    lsts = List._fromIter([empty, lst3, empty, numLst])
+    lsts = toElmList([empty, lst3, empty, numLst])
     assertList(List.concat(lsts),
             [0, 1, 2, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 

@@ -26,6 +26,7 @@ def wrap(*converters):
             return argFuncs[i](a)
 
     def wrap(f):
+        @functools.wraps(f)
         def wrapper(*args):
             newArgs = [
                     convert(i, a)
