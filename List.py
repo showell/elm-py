@@ -25,18 +25,15 @@ empty = Kernel.listNil
 cons = Kernel.listCons
 
 def singleton(x):
-    # optimized
     return cons(x, empty())
 
 def repeat(n, x):
-    # optimized
     out = empty()
     for i in range(n):
         out = cons(x, out)
     return out
 
 def range_(lo, hi):
-    # optimized
     out = empty()
     n = hi
     for n in range(hi, lo-1, -1):
@@ -45,22 +42,18 @@ def range_(lo, hi):
 
 @Elm.wrap(None, toIter, toElmList)
 def map_(f, xs):
-    # optimized
     return map(f, xs)
 
 @Elm.wrap(None, toIter, toElmList)
 def indexedMap(f, xs):
-    # optimized
     return (f(i, a) for i, a in enumerate(xs))
 
 def foldl(func, acc, xs):
-    # optimized
     for x in toIter(xs):
         acc = func(x, acc)
     return acc
 
 def foldr(func, acc, xs):
-    # optimized
     # Note that foldr makes a fully copy of our list.
     for x in reversed(list(toIter(xs))):
         acc = func(x, acc)
@@ -68,12 +61,10 @@ def foldr(func, acc, xs):
 
 @Elm.wrap(None, toIter, toElmList)
 def filter_(isGood, lst):
-    # optimized
     return filter(isGood, lst)
 
 @Elm.wrap(None, toIter, toElmList)
 def filterMap(f, lst):
-    # optimized
     for x in lst:
         v = f(x)
         if v != Maybe.Nothing():
@@ -81,7 +72,6 @@ def filterMap(f, lst):
 
 @Elm.wrap(toIter, None)
 def length(lst):
-    # optimized
     i = 0
     for _ in lst:
        i += 1
@@ -95,7 +85,6 @@ def member(x, xs):
 
 @Elm.wrap(None, toIter, None)
 def all(isOkay, lst):
-    # optimized
     for x in lst:
         if not isOkay(x):
             return False
@@ -158,25 +147,21 @@ def intersperse(sep, xs):
 
 @Elm.wrap(None, toIter, toIter, toElmList)
 def map2(f, lst1, lst2):
-    # optimized
     for (a, b) in zip(lst1, lst2):
         yield f(a, b)
 
 @Elm.wrap(None, toIter, toIter, toIter, toElmList)
 def map3(f, lst1, lst2, lst3):
-    # optimized
     for (a, b, c) in zip(lst1, lst2, lst3):
         yield f(a, b, c)
 
 @Elm.wrap(None, toIter, toIter, toIter, toIter, toElmList)
 def map4(f, lst1, lst2, lst3, lst4):
-    # optimized
     for (a, b, c, d) in zip(lst1, lst2, lst3, lst4):
         yield f(a, b, c, d)
 
 @Elm.wrap(None, toIter, toIter, toIter, toIter, toIter, toElmList)
 def map5(f, lst1, lst2, lst3, lst4, lst5):
-    # optimized
     for (a, b, c, d, e) in zip(lst1, lst2, lst3, lst4, lst5):
         yield f(a, b, c, d, e)
 
@@ -189,7 +174,6 @@ def sort(lst):
     return _sortHelper(Kernel.compare, lst)
 
 def sortBy(f, lst):
-    # optimized
     c = lambda a, b: Kernel.compare(f(a), f(b))
     return _sortHelper(c, lst)
 
