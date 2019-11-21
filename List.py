@@ -4,6 +4,7 @@ import operator
 import Kernel
 import Maybe
 import Order
+import Elm
 
 """
 Internally we store Python lists as tuples, which are
@@ -256,4 +257,16 @@ def drop(n, xs):
         i += 1
 
     return empty()
+
+@Elm.wrap(None, None, Kernel.toElmTup)
+def partition(pred, lst):
+    def step(x, tup):
+        (trues, falses) = tup
+
+        if pred(x):
+            return (cons(x, trues), falses)
+        else:
+            return (trues, cons(x, falses))
+
+    return foldr(step, (empty(), empty()), lst)
 

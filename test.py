@@ -1,4 +1,8 @@
-import Kernel
+from Kernel import (
+        isList,
+        toPy,
+        toPyTup,
+        )
 import List
 import Maybe
 import Order
@@ -7,8 +11,6 @@ import Elm
 
 # TESTING
 
-isList = Kernel.isList
-toPy = Kernel.toPy
 F = Elm.F
 
 def toElm(x):
@@ -253,6 +255,10 @@ def testListBasics():
             [ 0, 1, 2 ]
             )
 
+    assertEqual(
+            toPy(List.partition(even, numLst)),
+            ([2, 4, 6, 8, 10], [1, 3, 5, 7, 9])
+            )
 
 def testListOfLists():
     lol = toElm([
@@ -358,8 +364,12 @@ def checkPerformance():
             bigList)
 
     List.tail(bigList)
-    List.take(999999, bigList)
-    List.drop(999999, bigList)
+    List.take(99999, bigList)
+    List.drop(99999, bigList)
+
+    (evens, odds) = toPyTup(List.partition(even, bigList))
+    assertEqual(List.length(evens), 50000)
+    assertEqual(List.length(odds), 50000)
 
 def testTuples():
     t = Tuple.pair(5, 6)
@@ -394,5 +404,5 @@ testTuples()
 testPipes()
 
 print("\n\nchecking performance...")
-# checkPerformance()
+checkPerformance()
 
