@@ -2,6 +2,7 @@ import Kernel
 import List
 import Maybe
 import Order
+import Elm
 
 # TESTING
 
@@ -277,6 +278,23 @@ def testListOfLists():
         [ 5 ],
     ])
 
+def testPartialApply():
+    assertList(
+            Elm.F(List.map_)(double)(lst3),
+            [0, 2, 4])
+
+    accum = lambda x, acc: acc + x
+    assertEqual(
+            Elm.F(List.foldr)(accum)("R")(s123),
+            "R321")
+
+    assertEqual(
+            Elm.F(List.foldr)(accum, "R")(s123),
+            "R321")
+    assertEqual(
+            Elm.F(List.foldr)(accum)("R", s123),
+            "R321")
+
 def checkPerformance():
     # Make sure we don't crash on large lists.  (We can't use
     # recursion carelessly in Python.)  These tests only exercise
@@ -341,6 +359,7 @@ def checkPerformance():
     List.drop(999999, bigList)
 
 testListBasics()
+testPartialApply()
 testListOfLists()
 checkPerformance()
 
