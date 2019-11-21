@@ -372,5 +372,7 @@ testListBasics()
 testPartialApply()
 testListOfLists()
 testPipes()
+
+print("\n\nchecking performance...")
 checkPerformance()
 
