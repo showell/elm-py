@@ -27,6 +27,8 @@ def _fromIter(it):
 toIter = Kernel.listToIter
 uncons = Kernel.listUncons
 isEmpty = Kernel.listIsEmpty
+toElmTup = Kernel.toElmTup
+toPyTup = Kernel.toPyTup
 
 def empty():
     return ('[]',)
@@ -258,7 +260,7 @@ def drop(n, xs):
 
     return empty()
 
-@Elm.wrap(None, None, Kernel.toElmTup)
+@Elm.wrap(None, None, toElmTup)
 def partition(pred, lst):
     def step(x, tup):
         (trues, falses) = tup
@@ -270,3 +272,13 @@ def partition(pred, lst):
 
     return foldr(step, (empty(), empty()), lst)
 
+@Elm.wrap(None, toElmTup)
+def unzip(pairs):
+
+    @Elm.wrap(toPyTup, None, None)
+    def step(pair, lsts):
+        (x, y) = pair
+        (xs, ys) = lsts
+        return (cons(x, xs), cons(y, ys))
+
+    return foldr(step, (empty(), empty()), pairs)

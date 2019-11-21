@@ -2,6 +2,7 @@ from Kernel import (
         isList,
         toPy,
         toPyTup,
+        toElmTup,
         )
 import List
 import Maybe
@@ -16,6 +17,8 @@ F = Elm.F
 def toElm(x):
     if type(x) == list:
         return List._fromIter(toElm(item) for item in x)
+    elif type(x) == tuple:
+        return toElmTup(tuple(map(toElm, list(x))))
     return x
 
 def printList(xs):
@@ -138,7 +141,7 @@ def testListBasics():
             List.append(lst3, numLst),
             [0, 1, 2, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 
-    lsts = toElm([empty, lst3, empty, numLst])
+    lsts = List._fromIter([empty, lst3, empty, numLst])
     assertList(List.concat(lsts),
             [0, 1, 2, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 
@@ -222,17 +225,17 @@ def testListBasics():
 
     assertList(
             List.take(2, lst3),
-            [ 0, 1]
+            [0, 1]
             )
 
     assertList(
             List.take(3, lst3),
-            [ 0, 1, 2 ]
+            [0, 1, 2]
             )
 
     assertList(
             List.take(4, lst3),
-            [ 0, 1, 2 ]
+            [0, 1, 2]
             )
 
     assertList(
@@ -242,23 +245,29 @@ def testListBasics():
 
     assertList(
             List.take(2, lst3),
-            [ 0, 1]
+            [0, 1]
             )
 
     assertList(
             List.take(3, lst3),
-            [ 0, 1, 2 ]
+            [0, 1, 2 ]
             )
 
     assertList(
             List.take(4, lst3),
-            [ 0, 1, 2 ]
+            [0, 1, 2 ]
             )
 
     assertEqual(
             toPy(List.partition(even, numLst)),
             ([2, 4, 6, 8, 10], [1, 3, 5, 7, 9])
             )
+
+    assertEqual(
+            toPy(List.unzip(toElm([(1, 11), (2, 22), (3, 33)]))),
+            ([1, 2, 3], [11, 22, 33])
+            )
+
 
 def testListOfLists():
     lol = toElm([
@@ -370,6 +379,15 @@ def checkPerformance():
     (evens, odds) = toPyTup(List.partition(even, bigList))
     assertEqual(List.length(evens), 50000)
     assertEqual(List.length(odds), 50000)
+
+    bigListOfTups = List.indexedMap(
+            lambda i, n: Tuple.pair(i, n * 42),
+            bigList)
+
+    tupOfBigLists = List.unzip(bigListOfTups)
+
+    assertEqual(List.head(Tuple.first(tupOfBigLists)), Maybe.Just(0))
+    assertEqual(List.head(Tuple.second(tupOfBigLists)), Maybe.Just(42))
 
 def testTuples():
     t = Tuple.pair(5, 6)
