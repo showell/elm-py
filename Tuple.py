@@ -4,6 +4,14 @@ from Kernel import (
         toPyTup,
         )
 
+"""
+The Elm Tuple type is just (a, b).  In Python we
+box it up as ('#', (a, b)).
+
+The wrappers just use toPyTup and toElmTup to
+unbox and box the instances.
+"""
+
 @Elm.wrap(None, None, toElmTup)
 def pair(a, b):
     return (a, b)
