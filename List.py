@@ -1,3 +1,11 @@
+from Kernel import (
+        listIsEmpty,
+        toElmBool,
+        toElmList,
+        toElmTup,
+        toPyPred,
+        toPyTup
+        )
 import functools
 import itertools
 import operator
@@ -15,14 +23,10 @@ immutable.
     [1, 2] = (1, (2, ...))
 """
 
+cons = Kernel.listCons
+empty = Kernel.listNil
 toIter = Kernel.listToIter
 uncons = Kernel.listUncons
-isEmpty = Kernel.listIsEmpty
-toElmList = Kernel.toElmList
-toElmTup = Kernel.toElmTup
-toPyTup = Kernel.toPyTup
-empty = Kernel.listNil
-cons = Kernel.listCons
 
 def singleton(x):
     return cons(x, empty())
@@ -59,7 +63,7 @@ def foldr(func, acc, xs):
         acc = func(x, acc)
     return acc
 
-@Elm.wrap(None, toIter, toElmList)
+@Elm.wrap(toPyPred, toIter, toElmList)
 def filter_(isGood, lst):
     return filter(isGood, lst)
 
@@ -81,16 +85,16 @@ def reverse(lst):
     return foldl(cons, empty(), lst)
 
 def member(x, xs):
-    return any(lambda a: a == x, xs)
+    return any(lambda b: Kernel.eq(x, b), xs)
 
-@Elm.wrap(None, toIter, None)
+@Elm.wrap(toPyPred, toIter, toElmBool)
 def all(isOkay, lst):
     for x in lst:
         if not isOkay(x):
             return False
     return True
 
-@Elm.wrap(None, toIter, None)
+@Elm.wrap(toPyPred, toIter, toElmBool)
 def any(isOkay, lst):
     for x in lst:
         if isOkay(x):
@@ -98,14 +102,14 @@ def any(isOkay, lst):
     return False
 
 def maximum(lst):
-    if isEmpty(lst):
+    if listIsEmpty(lst):
         return Maybe.Nothing()
     else:
         (x, xs) = uncons(lst)
         return Maybe.Just(foldl(max, x, xs))
 
 def minimum(lst):
-    if isEmpty(lst):
+    if listIsEmpty(lst):
         return Maybe.Nothing()
     else:
         (x, xs) = uncons(lst)
@@ -125,7 +129,7 @@ def product(lst):
             lst)
 
 def append(xs, ys):
-    if isEmpty(ys):
+    if listIsEmpty(ys):
         return xs
     else:
         return foldr(cons, ys, xs)
@@ -137,7 +141,7 @@ def concatMap(f, lst):
     return concat(map_(f, lst))
 
 def intersperse(sep, xs):
-    if isEmpty(xs):
+    if listIsEmpty(xs):
         return empty()
     else:
         (hd, tl) = uncons(xs)
@@ -181,15 +185,19 @@ def sortWith(compF, lst):
     c = lambda a, b: Order.toInt(compF(a, b))
     return _sortHelper(c, lst)
 
+@Elm.wrap(None, toElmBool)
+def isEmpty(lst):
+    return listIsEmpty(lst)
+
 def head(xs):
-    if isEmpty(xs):
+    if listIsEmpty(xs):
         return Maybe.Nothing()
 
     (h, xs) = uncons(xs)
     return Maybe.Just(h)
 
 def tail(xs):
-    if isEmpty(xs):
+    if listIsEmpty(xs):
         return Maybe.Nothing()
 
     (h, xs) = uncons(xs)
@@ -214,7 +222,7 @@ def drop(n, xs):
 
     return empty()
 
-@Elm.wrap(None, None, toElmTup)
+@Elm.wrap(toPyPred, None, toElmTup)
 def partition(pred, lst):
     def step(x, tup):
         (trues, falses) = tup

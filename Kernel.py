@@ -7,11 +7,21 @@ things like _compare.  It's also a bit helpful to make sure
 all of our data types play nice with each other.
 """
 
+def eq(a, b):
+    if type(a) == int:
+        return toElmBool(a == b)
+    elif isList(a):
+        return toElmBool(a == b)
+
+    raise Exception('eq not implemented fully yet')
+
 def toPy(x):
     if isList(x):
         return list(toPy(item) for item in listToIter(x))
     elif isTup(x):
         return tuple(map(toPy, toPyTup(x)))
+    elif isBool(x):
+        return toPyBool(x)
     else:
         return x
 
@@ -20,6 +30,8 @@ def toElm(x):
         return toElmList(toElm(item) for item in x)
     elif type(x) == tuple:
         return toElmTup(tuple(map(toElm, list(x))))
+    elif type(x) == bool:
+        return toElmBool(x)
     return x
 
 def toElmList(it):
@@ -66,6 +78,36 @@ def isList(x):
     if type(x) != tuple:
         return False
     return x[0] == '::' or x[0] == '[]'
+
+"""
+    BOOL
+
+        It would probably be fine to just use Python bools
+        natively, but I am doing it the hard way to make
+        sure that List.elm explicitly calls out bools (or
+        will otherwise fail tests).
+"""
+def isBool(x):
+    if type(x) != tuple:
+        return False
+    return x[0] == 'Bool'
+
+def toElmBool(b):
+    return ('Bool', b)
+
+def toPyBool(x):
+    if x[0] != 'Bool':
+        raise Exception('expected Bool')
+    return x[1]
+
+def toElmPred(f):
+    return lambda *args: toElmBool(f(*args))
+
+def toPyPred(f):
+    return lambda *args: toPyBool(f(*args))
+
+true = ('Bool', True)
+false = ('Bool', False)
 
 def compare(a, b):
     if isList(a):

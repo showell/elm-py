@@ -1,16 +1,18 @@
 from Kernel import (
         isList,
+        toElm,
+        toElmList,
+        toElmPred,
+        toElmTup,
         toPy,
         toPyTup,
-        toElmList,
-        toElmTup,
-        toElm,
         )
+import Elm
+import Kernel
 import List
 import Maybe
 import Order
 import Tuple
-import Elm
 
 # TESTING
 
@@ -20,7 +22,7 @@ def printList(xs):
     print(toPy(xs))
 
 def assertTrue(actual):
-    if actual:
+    if actual == Kernel.true:
         print('pass')
     else:
         print('\n\nFAIL!\n', actual)
@@ -28,7 +30,7 @@ def assertTrue(actual):
         raise AssertionError
 
 def assertFalse(actual):
-    if not actual:
+    if actual == Kernel.false:
         print('pass')
     else:
         print('\n\nFAIL!\n', actual)
@@ -51,9 +53,9 @@ def assertList(elmList, expected):
         print('\n')
         raise AssertionError
 
-even = lambda x : x % 2 == 0
-negative = lambda x : x < 0
-positive = lambda x : x > 0
+even = toElmPred(lambda x : x % 2 == 0)
+negative = toElmPred(lambda x : x < 0)
+positive = toElmPred(lambda x : x > 0)
 double = lambda x : x * 2
 triple = lambda x : x * 3
 add = lambda x, y: x + y
@@ -65,6 +67,7 @@ def toMaybe(n):
         return Maybe.Nothing()
 
 lst3 = toElm([0, 1, 2])
+lst3Clone = toElm([0, 1, 2])
 s123 = toElm(["1", "2", "3"])
 
 numLst = toElm([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
@@ -72,9 +75,22 @@ empty = List.empty()
 mod10 = lambda x: x % 10
 
 def testListBasics():
-    assertTrue(isList(empty))
-    assertTrue(isList(lst3))
-    assertFalse(isList(99))
+    assertEqual(
+            Kernel.eq(lst3, lst3Clone),
+            Kernel.true
+            )
+
+    assertEqual(
+            Kernel.eq(List.empty(), empty),
+            Kernel.true
+            )
+
+    assertTrue(List.isEmpty(empty))
+    assertFalse(List.isEmpty(numLst))
+
+    assertEqual(isList(empty), True)
+    assertEqual(isList(lst3), True)
+    assertEqual(isList(99), False)
 
     assertList(List.singleton(5), [5])
     assertList(List.repeat(3, 'x'), ['x', 'x', 'x'])
@@ -291,6 +307,14 @@ def testListOfLists():
         [ 5 ],
     ])
 
+    assertEqual(
+            List.member(List.singleton(2), lol),
+            Kernel.true)
+
+    assertEqual(
+            List.member(List.singleton(9), lol),
+            Kernel.false)
+
 def testPartialApply():
     assertList(
             F(List.map_)(double)(lst3),
@@ -321,9 +345,9 @@ def checkPerformance():
             List.length(List.foldr(List.cons, empty, bigList)),
             List.length(bigList)
             )
-    List.all(lambda x: True, bigList)
-    List.any(lambda x: False, bigList)
-    List.filter_(lambda x: True, bigList)
+    List.all(lambda x: Kernel.true, bigList)
+    List.any(lambda x: Kernel.false, bigList)
+    List.filter_(lambda x: Kernel.true, bigList)
     List.filterMap(toMaybe, bigList)
     List.reverse(bigList)
     assertEqual(List.maximum(bigList), Maybe.Just(100000))
