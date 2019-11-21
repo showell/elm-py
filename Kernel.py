@@ -46,26 +46,30 @@ def toElmList(it):
     return out
 
 def listNil():
-    return ('[]',)
+    return ('::', None)
 
 def listCons(x, xs):
-    return ('::', x, xs)
+    return ('::', (x, xs))
 
-def listUncons(lst):
-    return (lst[1], lst[2])
+def listUncons(tup):
+    if tup[0] != '::':
+        print(tup)
+        raise Exception('not a list!')
+    (x, xs) = tup[1]
+    return (x, xs)
 
-def listIsEmpty(xs):
-    return xs[0] == '[]'
+def listIsEmpty(tup):
+    return tup[1] is None
 
 def listToIter(xs):
     while not listIsEmpty(xs):
         (h, xs) = listUncons(xs)
         yield h
 
-def isList(x):
-    if type(x) != tuple:
+def isList(tup):
+    if type(tup) != tuple:
         return False
-    return x[0] == '::' or x[0] == '[]'
+    return tup[0] == '::'
 
 """
     TUPLES:
