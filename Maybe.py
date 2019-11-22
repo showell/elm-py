@@ -1,17 +1,23 @@
 import Elm
 
+class Maybe:
+    def __init__(self, v):
+        self.v = v
+
+    def __eq__(self, other):
+        return self.v == other.v
+
 _nada = ('Nothing',)
 _just = lambda v: ('Just', v)
-_maybe = lambda v: ('Maybe', v)
-_Nothing = _maybe(_nada)
+_Nothing = Maybe(_nada)
 
-def fromMaybe(v):
-    if v[0] != 'Maybe':
+def fromMaybe(x):
+    if type(x) != Maybe:
         raise Exception('not a Maybe')
-    return v[1]
+    return x.v
 
 def Just(val):
-    return _maybe(_just(val))
+    return Maybe(_just(val))
 
 def Nothing():
     return _Nothing
