@@ -190,7 +190,7 @@ def testListBasics():
 
     assertList(
             List.map2(
-                lambda a, b: (a, b),
+                f2,
                 toElm([5, 7]),
                 toElm([6, 99, 3, 88888, 77777]),
             ),
@@ -201,7 +201,7 @@ def testListBasics():
 
     assertList(
             List.map3(
-                lambda a, b, c: (a, b, c),
+                f3,
                 toElm([5, 7]),
                 toElm([6, 99, 3]),
                 toElm([8, 101]),
@@ -212,8 +212,21 @@ def testListBasics():
             )
 
     assertList(
+            List.map4(
+                f4,
+                toElm([5, 7]),
+                toElm([6, 99, 3]),
+                toElm([8, 101]),
+                toElm([1, 2]),
+            ),
+            [ (5, 6, 8, 1),
+              (7, 99, 101, 2),
+            ]
+            )
+
+    assertList(
             List.map5(
-                lambda a, b, c, d, e: (a, b, c, d, e),
+                f5,
                 toElm([1, 2, 3, 4]),
                 toElm([2, 4, 6, 8]),
                 toElm([3, 6, 9, 12]),
