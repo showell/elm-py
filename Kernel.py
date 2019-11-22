@@ -1,4 +1,5 @@
 import itertools
+import Elm
 
 """
 We try to keep this module small, but it helps us to have the
@@ -6,14 +7,6 @@ most "core" stuff together to avoid circular dependencies for
 things like _compare.  It's also a bit helpful to make sure
 all of our data types play nice with each other.
 """
-
-def eq(a, b):
-    if type(a) == int:
-        return toElmBool(a == b)
-    elif isList(a):
-        return toElmBool(a == b)
-
-    raise Exception('eq not implemented fully yet')
 
 def toPy(x):
     if isList(x):
@@ -80,17 +73,19 @@ def isList(tup):
         Elm, so the extra level of indirection here is generally
         harmless.
 """
+class Tuple:
+    def __init__(self, v):
+        self.v = v
+
 def toElmTup(t):
-    return ('#', t)
+    return Tuple(t)
 
 def toPyTup(x):
     # don't recurse
-    return x[1]
+    return x.v
 
 def isTup(x):
-    if type(x) != tuple:
-        return False
-    return x[0] == '#'
+    return type(x) == Tuple
 
 """
     BOOL
@@ -134,4 +129,19 @@ def compare(a, b):
                 return diff
 
     return a - b
+
+"""
+Comparisons
+"""
+
+@Elm.wrap(None, None, toElmBool)
+def eq(a, b):
+    if type(a) == int:
+        return a == b
+    elif isList(a):
+        return a == b
+    elif isTup(a):
+        return a == b
+
+    raise Exception('eq not implemented fully yet')
 
