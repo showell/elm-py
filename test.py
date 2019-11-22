@@ -431,6 +431,9 @@ def testMaybe():
     assertEqual(Maybe.withDefault(Nothing, 5), 5)
     assertEqual(Maybe.withDefault(Just(42), 99), 42)
 
+    assertEqual(Maybe.map(double, Nothing), Nothing)
+    assertEqual(Maybe.withDefault(Just(42), 99), 42)
+
 def testPipes():
     val = Elm.pipe(5, [
             double,

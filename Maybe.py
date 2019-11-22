@@ -1,14 +1,17 @@
 import Elm
 
-_Nothing = ('Maybe', ('Nothing', ))
+_nada = ('Nothing',)
+_just = lambda v: ('Just', v)
+_maybe = lambda v: ('Maybe', v)
+_Nothing = _maybe(_nada)
 
-def unboxMaybe(v):
+def fromMaybe(v):
     if v[0] != 'Maybe':
         raise Exception('not a Maybe')
     return v[1]
 
 def Just(val):
-    return ('Maybe', (('Just', val)))
+    return _maybe(_just(val))
 
 def Nothing():
     return _Nothing
@@ -16,10 +19,11 @@ def Nothing():
 def isNothing(v):
     return v == _Nothing
 
+@Elm.wrap(fromMaybe, None)
 def isJust(v):
-    return unboxMaybe(v)[0] == 'Just'
+    return v[0] == 'Just'
 
-@Elm.wrap(unboxMaybe, None)
+@Elm.wrap(fromMaybe, None)
 def unboxJust(m):
     if m[0] != 'Just':
         raise Exception('illegal unboxing')
@@ -33,3 +37,11 @@ def withDefault(m, default):
         return default
 
     return unboxJust(m)
+
+@Elm.wrap(None, fromMaybe, None)
+def map(f, m):
+    if m == _nada:
+        return _Nothing
+
+    return Just(f(unboxJust(m)))
+
