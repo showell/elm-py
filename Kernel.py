@@ -16,6 +16,8 @@ def toPy(x):
         return tuple(map(toPy, toPyTup(x)))
     elif isBool(x):
         return toPyBool(x)
+    elif isMaybe(x):
+        raise Exception('not serializable to Python yet')
     else:
         return x
 
@@ -27,6 +29,23 @@ def toElm(x):
     elif type(x) == bool:
         return toElmBool(x)
     return x
+
+
+"""
+    Maybe
+"""
+
+_nada = ('Nothing',)
+
+class Maybe:
+    def __init__(self, v):
+        self.v = v
+
+    def __eq__(self, other):
+        return self.v == other.v
+
+def isMaybe(x):
+    return type(x) == Maybe
 
 """
 Lists -
@@ -113,6 +132,9 @@ def isList(x):
 class Tuple:
     def __init__(self, v):
         self.v = v
+
+    def __eq__(self, other):
+        return self.v == other.v
 
 def toElmTup(t):
     return Tuple(t)

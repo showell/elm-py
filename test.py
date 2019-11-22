@@ -61,10 +61,10 @@ double = lambda x : x * 2
 triple = lambda x : x * 3
 add = lambda x, y: x + y
 
-f2 = lambda a, b: (a, b)
-f3 = lambda a, b, c: (a, b, c)
-f4 = lambda a, b, c, d: (a, b, c, d)
-f5 = lambda a, b, c, d, e: (a, b, c, d, e)
+f2 = lambda a, b: toElmTup((a, b))
+f3 = lambda a, b, c: toElmTup((a, b, c))
+f4 = lambda a, b, c, d: toElmTup((a, b, c, d))
+f5 = lambda a, b, c, d, e: toElmTup((a, b, c, d, e))
 
 def toMaybe(n):
     if n in [2, 4]:
@@ -189,10 +189,12 @@ def testListBasics():
     assertList(List.intersperse(999, lst3), [0, 999, 1, 999, 2])
 
     assertList(
-            List.map2(
-                f2,
-                toElm([5, 7]),
-                toElm([6, 99, 3, 88888, 77777]),
+            toPy(
+                List.map2(
+                    f2,
+                    toElm([5, 7]),
+                    toElm([6, 99, 3, 88888, 77777]),
+                )
             ),
             [ (5, 6),
               (7, 99),
@@ -447,6 +449,10 @@ def checkPerformance():
     assertEqual(List.head(Tuple.second(tupOfBigLists)), Just(42))
 
 def testTuples():
+    assertEqual(Tuple.pair(1,2), Tuple.pair(1,2))
+    assertTrue(Kernel.eq(Tuple.pair(1,2), Tuple.pair(1,2)))
+    assertFalse(Kernel.eq(Tuple.pair(1,2), Tuple.pair(3,4)))
+
     t = Tuple.pair(5, 6)
     assertEqual(Tuple.first(t), 5)
     assertEqual(Tuple.second(t), 6)
@@ -478,7 +484,7 @@ def testMaybe():
             Nothing)
     assertEqual(
             Maybe.map2(f2, Just(1), Just(2)),
-            Just((1, 2)))
+            Just(toElmTup((1, 2))))
 
     assertEqual(
             Maybe.map3(f3, Just(1), Nothing, Nothing),
@@ -491,7 +497,7 @@ def testMaybe():
             Nothing)
     assertEqual(
             Maybe.map3(f3, Just(1), Just(2), Just(3)),
-            Just((1, 2, 3)))
+            Just(toElmTup((1, 2, 3))))
 
     # cheat for map4/map5
     assertEqual(Maybe.map4, Maybe.mapN)

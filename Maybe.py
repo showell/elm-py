@@ -1,13 +1,6 @@
 import Elm
+from Kernel import Maybe, _nada
 
-class Maybe:
-    def __init__(self, v):
-        self.v = v
-
-    def __eq__(self, other):
-        return self.v == other.v
-
-_nada = ('Nothing',)
 _just = lambda v: ('Just', v)
 _Nothing = Maybe(_nada)
 
