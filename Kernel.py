@@ -95,18 +95,24 @@ def isTup(x):
         sure that List.elm explicitly calls out bools (or
         will otherwise fail tests).
 """
+
+class Bool:
+    def __init__(self, v):
+        self.v = v
+
+    def __eq__(self, other):
+        return self.v == other.v
+
 def isBool(x):
-    if type(x) != tuple:
-        return False
-    return x[0] == 'Bool'
+    return type(x) == Bool
 
 def toElmBool(b):
-    return ('Bool', b)
+    return Bool(b)
 
 def toPyBool(x):
-    if x[0] != 'Bool':
+    if not isBool(x):
         raise Exception('expected Bool')
-    return x[1]
+    return x.v
 
 def toElmPred(f):
     return lambda *args: toElmBool(f(*args))
@@ -114,8 +120,12 @@ def toElmPred(f):
 def toPyPred(f):
     return lambda *args: toPyBool(f(*args))
 
-true = ('Bool', True)
-false = ('Bool', False)
+true = Bool(True)
+false = Bool(False)
+
+"""
+Comparisons
+"""
 
 def compare(a, b):
     if isList(a):
@@ -129,10 +139,6 @@ def compare(a, b):
                 return diff
 
     return a - b
-
-"""
-Comparisons
-"""
 
 @Elm.wrap(None, None, toElmBool)
 def eq(a, b):
