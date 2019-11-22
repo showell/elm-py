@@ -1,3 +1,4 @@
+import functools
 import itertools
 import Elm
 
@@ -33,12 +34,10 @@ Lists -
     Each list is actually a series of List instances.
 """
 
+@functools.total_ordering
 class List:
     def __init__(self, v):
         self.v = v
-
-    def __eq__(self, other):
-        return self.v == other.v
 
     def __iter__(self):
         xs = self.v
@@ -46,6 +45,33 @@ class List:
             (h, lst) = xs
             xs = lst.v
             yield h
+
+    def __lt__(self, other):
+        for (aa, bb) in itertools.zip_longest(self, other):
+            if aa is None:
+                return True
+            if bb is None:
+                return False
+
+            if aa < bb:
+                return True
+
+            if aa > bb:
+                return False
+
+        return False
+
+    def __eq__(self, other):
+        for (aa, bb) in itertools.zip_longest(self, other):
+            if aa is None:
+                return True
+            if bb is None:
+                return False
+
+            if aa != bb:
+                return False
+
+        return True
 
 def toElmList(it):
     """
@@ -139,17 +165,13 @@ Comparisons
 """
 
 def compare(a, b):
-    if isList(a):
-        for (aa, bb) in itertools.zip_longest(a, b):
-            if aa is None:
-                return -1
-            if bb is None:
-                return 1
-            diff = compare(aa, bb)
-            if diff != 0:
-                return diff
+    if a < b:
+        return -1
 
-    return a - b
+    if a > b:
+        return 1
+
+    return 0
 
 @Elm.wrap(None, None, toElmBool)
 def eq(a, b):
