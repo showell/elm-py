@@ -10,7 +10,7 @@ all of our data types play nice with each other.
 
 def toPy(x):
     if isList(x):
-        return list(toPy(item) for item in listToIter(x))
+        return list(map(toPy, x))
     elif isTup(x):
         return tuple(map(toPy, toPyTup(x)))
     elif isBool(x):
@@ -40,6 +40,12 @@ class List:
     def __eq__(self, other):
         return self.v == other.v
 
+    def __iter__(self):
+        xs = self.v
+        while xs is not None:
+            (h, lst) = xs
+            xs = lst.v
+            yield h
 
 def toElmList(it):
     """
@@ -65,11 +71,6 @@ def listUncons(x):
 
 def listIsEmpty(x):
     return x.v is None
-
-def listToIter(xs):
-    while not listIsEmpty(xs):
-        (h, xs) = listUncons(xs)
-        yield h
 
 def isList(x):
     return type(x) == List
@@ -139,7 +140,7 @@ Comparisons
 
 def compare(a, b):
     if isList(a):
-        for (aa, bb) in itertools.zip_longest(listToIter(a), listToIter(b)):
+        for (aa, bb) in itertools.zip_longest(a, b):
             if aa is None:
                 return -1
             if bb is None:
