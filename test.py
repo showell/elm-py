@@ -449,6 +449,23 @@ def testMaybe():
             Maybe.map2(f2, Just(1), Just(2)),
             Just((1, 2)))
 
+    assertEqual(
+            Maybe.map3(f3, Just(1), Nothing, Nothing),
+            Nothing)
+    assertEqual(
+            Maybe.map3(f3, Nothing, Just(2), Nothing),
+            Nothing)
+    assertEqual(
+            Maybe.map3(f3, Nothing, Nothing, Just(2)),
+            Nothing)
+    assertEqual(
+            Maybe.map3(f3, Just(1), Just(2), Just(3)),
+            Just((1, 2, 3)))
+
+    # cheat for map4/map5
+    assertEqual(Maybe.map4, Maybe.mapN)
+    assertEqual(Maybe.map5, Maybe.mapN)
+
 def testPipes():
     val = Elm.pipe(5, [
             double,

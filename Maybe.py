@@ -41,16 +41,6 @@ def withDefault(m, default):
 
     return unboxJust(m)
 
-@Elm.wrap(None, fromMaybe, None)
-def map(f, m):
-    if m == _nada:
-        return _Nothing
-
-    return Just(
-                f(
-                    _unboxJust(m)
-                ))
-
 def mapN(f, *args):
     maybes = [fromMaybe(a) for a in args]
 
@@ -61,5 +51,10 @@ def mapN(f, *args):
     vals = [_unboxJust(m) for m in maybes]
     return Just(f(*vals))
 
-def map2(f, m1, m2):
-    return mapN(f, m1, m2)
+map = mapN
+map2 = mapN
+map3 = mapN
+map4 = mapN
+map5 = mapN
+
+
