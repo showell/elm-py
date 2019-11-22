@@ -1,12 +1,11 @@
 from Kernel import (
-        isList,
         toElm,
-        toElmList,
         toElmPred,
         toElmTup,
         toPy,
         toPyTup,
         )
+from ListKernel import isList
 import Elm
 import Kernel
 import List
@@ -178,7 +177,7 @@ def testListBasics():
             List.append(lst3, numLst),
             [0, 1, 2, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 
-    lsts = toElmList([empty, lst3, empty, numLst])
+    lsts = List.toElm([empty, lst3, empty, numLst])
     assertList(List.concat(lsts),
             [0, 1, 2, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 

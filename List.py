@@ -1,11 +1,10 @@
 from Kernel import (
-        listIsEmpty,
         toElmBool,
-        toElmList,
         toElmTup,
         toPyPred,
         toPyTup
         )
+import ListKernel as lk
 import functools
 import itertools
 import operator
@@ -22,9 +21,10 @@ immutable.
     [1, 2] = (1, (2, ...))
 """
 
-cons = Kernel.listCons
-empty = Kernel.listNil
-uncons = Kernel.listUncons
+toElm = lk.toElm
+empty = lk.empty
+cons = lk.cons
+uncons = lk.uncons
 
 # hide builtins
 range_ = range
@@ -47,11 +47,11 @@ def range(lo, hi):
         out = cons(n, out)
     return out
 
-@Elm.wrap(None, None, toElmList)
+@Elm.wrap(None, None, toElm)
 def map(f, xs):
     return map_(f, xs)
 
-@Elm.wrap(None, None, toElmList)
+@Elm.wrap(None, None, toElm)
 def indexedMap(f, xs):
     return (f(i, a) for i, a in enumerate(xs))
 
@@ -66,11 +66,11 @@ def foldr(func, acc, xs):
         acc = func(x, acc)
     return acc
 
-@Elm.wrap(toPyPred, None, toElmList)
+@Elm.wrap(toPyPred, None, toElm)
 def filter(isGood, lst):
     return filter_(isGood, lst)
 
-@Elm.wrap(None, None, toElmList)
+@Elm.wrap(None, None, toElm)
 def filterMap(f, lst):
     for x in lst:
         v = f(x)
@@ -104,14 +104,14 @@ def any(isOkay, lst):
     return False
 
 def maximum(lst):
-    if listIsEmpty(lst):
+    if lk.isEmpty(lst):
         return Maybe.Nothing()
     else:
         (x, xs) = uncons(lst)
         return Maybe.Just(foldl(max, x, xs))
 
 def minimum(lst):
-    if listIsEmpty(lst):
+    if lk.isEmpty(lst):
         return Maybe.Nothing()
     else:
         (x, xs) = uncons(lst)
@@ -131,7 +131,7 @@ def product(lst):
             lst)
 
 def append(xs, ys):
-    if listIsEmpty(ys):
+    if lk.isEmpty(ys):
         return xs
     else:
         return foldr(cons, ys, xs)
@@ -143,7 +143,7 @@ def concatMap(f, lst):
     return concat(map(f, lst))
 
 def intersperse(sep, xs):
-    if listIsEmpty(xs):
+    if lk.isEmpty(xs):
         return empty()
     else:
         (hd, tl) = uncons(xs)
@@ -151,27 +151,27 @@ def intersperse(sep, xs):
         spersed = foldr(step, empty(), tl)
         return cons(hd, spersed)
 
-@Elm.wrap(None, None, None, toElmList)
+@Elm.wrap(None, None, None, toElm)
 def map2(f, lst1, lst2):
     for (a, b) in zip(lst1, lst2):
         yield f(a, b)
 
-@Elm.wrap(None, None, None, None, toElmList)
+@Elm.wrap(None, None, None, None, toElm)
 def map3(f, lst1, lst2, lst3):
     for (a, b, c) in zip(lst1, lst2, lst3):
         yield f(a, b, c)
 
-@Elm.wrap(None, None, None, None, None, toElmList)
+@Elm.wrap(None, None, None, None, None, toElm)
 def map4(f, lst1, lst2, lst3, lst4):
     for (a, b, c, d) in zip(lst1, lst2, lst3, lst4):
         yield f(a, b, c, d)
 
-@Elm.wrap(None, None, None, None, None, None, toElmList)
+@Elm.wrap(None, None, None, None, None, None, toElm)
 def map5(f, lst1, lst2, lst3, lst4, lst5):
     for (a, b, c, d, e) in zip(lst1, lst2, lst3, lst4, lst5):
         yield f(a, b, c, d, e)
 
-@Elm.wrap(None, None, toElmList)
+@Elm.wrap(None, None, toElm)
 def _sortHelper(compF, lst):
     f = functools.cmp_to_key(compF)
     return sorted(list(lst), key=f)
@@ -192,23 +192,23 @@ def sortWith(compF, lst):
 
 @Elm.wrap(None, toElmBool)
 def isEmpty(lst):
-    return listIsEmpty(lst)
+    return lk.isEmpty(lst)
 
 def head(xs):
-    if listIsEmpty(xs):
+    if lk.isEmpty(xs):
         return Maybe.Nothing()
 
     (h, xs) = uncons(xs)
     return Maybe.Just(h)
 
 def tail(xs):
-    if listIsEmpty(xs):
+    if lk.isEmpty(xs):
         return Maybe.Nothing()
 
     (h, xs) = uncons(xs)
     return Maybe.Just(xs)
 
-@Elm.wrap(None, None, toElmList)
+@Elm.wrap(None, None, toElm)
 def take(n, xs):
     if n <= 0:
         return []

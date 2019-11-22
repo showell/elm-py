@@ -1,6 +1,7 @@
 import functools
 import itertools
 import Elm
+import ListKernel
 
 """
 We try to keep this module small, but it helps us to have the
@@ -10,7 +11,7 @@ all of our data types play nice with each other.
 """
 
 def toPy(x):
-    if isList(x):
+    if ListKernel.isList(x):
         return list(map(toPy, x))
     elif isTup(x):
         return tuple(map(toPy, toPyTup(x)))
@@ -23,7 +24,7 @@ def toPy(x):
 
 def toElm(x):
     if type(x) == list:
-        return toElmList(toElm(item) for item in x)
+        return ListKernel.toElm(toElm(item) for item in x)
     elif type(x) == tuple:
         return toElmTup(tuple(map(toElm, list(x))))
     elif type(x) == bool:
@@ -46,79 +47,6 @@ class Maybe:
 
 def isMaybe(x):
     return type(x) == Maybe
-
-"""
-Lists -
-
-    Each list is actually a series of List instances.
-"""
-
-@functools.total_ordering
-class List:
-    def __init__(self, v):
-        self.v = v
-
-    def __iter__(self):
-        xs = self.v
-        while xs is not None:
-            (h, lst) = xs
-            xs = lst.v
-            yield h
-
-    def __lt__(self, other):
-        for (aa, bb) in itertools.zip_longest(self, other):
-            if aa is None:
-                return True
-            if bb is None:
-                return False
-
-            if aa < bb:
-                return True
-
-            if aa > bb:
-                return False
-
-        return False
-
-    def __eq__(self, other):
-        for (aa, bb) in itertools.zip_longest(self, other):
-            if aa is None:
-                return True
-            if bb is None:
-                return False
-
-            if aa != bb:
-                return False
-
-        return True
-
-def toElmList(it):
-    """
-    This is a flat conversion (assumes items are already Elm-ish).
-    """
-
-    out = listNil()
-    for x in reversed(list(it)):
-        out = listCons(x, out)
-
-    return out
-
-def listNil():
-    return List(None)
-
-def listCons(x, xs):
-    return List((x, xs))
-
-def listUncons(x):
-    if not isList(x):
-        raise Exception('not a list!')
-    return x.v
-
-def listIsEmpty(x):
-    return x.v is None
-
-def isList(x):
-    return type(x) == List
 
 """
     TUPLES:
@@ -241,7 +169,7 @@ def compare(a, b):
 def eq(a, b):
     if type(a) == int:
         return a == b
-    elif isList(a):
+    elif ListKernel.isList(a):
         return a == b
     elif isTup(a):
         return a == b
