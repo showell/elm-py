@@ -2,6 +2,7 @@ import functools
 import itertools
 import Elm
 import ListKernel
+import TupleKernel
 
 """
 We try to keep this module small, but it helps us to have the
@@ -13,8 +14,8 @@ all of our data types play nice with each other.
 def toPy(x):
     if ListKernel.isList(x):
         return list(map(toPy, x))
-    elif isTup(x):
-        return tuple(map(toPy, toPyTup(x)))
+    elif TupleKernel.isTup(x):
+        return tuple(map(toPy, TupleKernel.toPy(x)))
     elif isBool(x):
         return toPyBool(x)
     elif isMaybe(x):
@@ -26,7 +27,7 @@ def toElm(x):
     if type(x) == list:
         return ListKernel.toElm(toElm(item) for item in x)
     elif type(x) == tuple:
-        return toElmTup(tuple(map(toElm, list(x))))
+        return TupleKernel.toElm(tuple(map(toElm, list(x))))
     elif type(x) == bool:
         return toElmBool(x)
     return x
@@ -47,32 +48,6 @@ class Maybe:
 
 def isMaybe(x):
     return type(x) == Maybe
-
-"""
-    TUPLES:
-
-        We don't use native tuples for Elm tuples, because
-        we instead use tuples to wrap nearly every non-primitive
-        Elm type.  Tuples are actually somewhat frowned upon in
-        Elm, so the extra level of indirection here is generally
-        harmless.
-"""
-class Tuple:
-    def __init__(self, v):
-        self.v = v
-
-    def __eq__(self, other):
-        return self.v == other.v
-
-def toElmTup(t):
-    return Tuple(t)
-
-def toPyTup(x):
-    # don't recurse
-    return x.v
-
-def isTup(x):
-    return type(x) == Tuple
 
 """
     BOOL
@@ -171,7 +146,7 @@ def eq(a, b):
         return a == b
     elif ListKernel.isList(a):
         return a == b
-    elif isTup(a):
+    elif TupleKernel.isTup(a):
         return a == b
 
     raise Exception('eq not implemented fully yet')

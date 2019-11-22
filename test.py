@@ -1,18 +1,19 @@
 from Kernel import (
         toElm,
         toElmPred,
-        toElmTup,
         toPy,
-        toPyTup,
         )
-from ListKernel import isList
 import Elm
 import Kernel
 import List
+import ListKernel
 import Maybe
 import Tuple
+import TupleKernel
 
-# TESTING
+isList = ListKernel.isList
+toElmTup = TupleKernel.toElm
+toPyTup = TupleKernel.toPy
 
 F = Elm.F
 Nothing = Maybe.Nothing()

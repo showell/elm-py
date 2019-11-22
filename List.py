@@ -1,12 +1,12 @@
-from Kernel import (
-        toElmBool,
-        toElmTup,
-        toPyPred,
-        toPyTup
-        )
-import ListKernel as lk
 import functools
 import itertools
+
+from Kernel import (
+        toElmBool,
+        toPyPred,
+        )
+import TupleKernel
+import ListKernel as lk
 import operator
 import Kernel
 import Maybe
@@ -21,6 +21,8 @@ immutable.
     [1, 2] = (1, (2, ...))
 """
 
+toElmTup = TupleKernel.toElm
+toPyTup = TupleKernel.toPy
 toElm = lk.toElm
 empty = lk.empty
 cons = lk.cons
