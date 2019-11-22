@@ -1,53 +1,29 @@
 import Elm
-from Kernel import Maybe, _nada
+import MaybeKernel as mk
 
-_just = lambda v: ('Just', v)
-_Nothing = Maybe(_nada)
+# helper methods for other classes
 
-def fromMaybe(x):
-    if type(x) != Maybe:
-        raise Exception('not a Maybe')
-    return x.v
+Just = mk.Just
+Nothing = mk.Nothing
+isJust = mk.isJust
+unboxJust = mk.unboxJust
 
-def Just(val):
-    return Maybe(_just(val))
-
-def Nothing():
-    return _Nothing
-
-def isNothing(v):
-    return v == _Nothing
-
-@Elm.wrap(fromMaybe, None)
-def isJust(v):
-    return v[0] == 'Just'
-
-@Elm.wrap(fromMaybe, None)
-def unboxJust(m):
-    return _unboxJust(m)
-
-def _unboxJust(m):
-    if m[0] != 'Just':
-        raise Exception('illegal unboxing')
-
-    return m[1]
-
-# Normal methods
+# normal methods
 
 def withDefault(m, default):
-    if isNothing(m):
+    if mk.isNothing(m):
         return default
 
-    return unboxJust(m)
+    return mk.unboxJust(m)
 
 def mapN(f, *args):
-    maybes = [fromMaybe(a) for a in args]
+    maybes = [mk.raw(a) for a in args]
 
     for m in maybes:
-        if m == _nada:
-            return _Nothing
+        if mk.isRawNothing(m):
+            return Nothing()
 
-    vals = [_unboxJust(m) for m in maybes]
+    vals = [mk.unboxRawJust(m) for m in maybes]
     return Just(f(*vals))
 
 map = mapN
@@ -56,11 +32,11 @@ map3 = mapN
 map4 = mapN
 map5 = mapN
 
-@Elm.wrap(None, fromMaybe, None)
+@Elm.wrap(None, mk.raw, None)
 def andThen(f, m):
-    if m == _nada:
-        return _Nothing
+    if mk.isRawNothing(m):
+        return Nothing()
 
-    return f(_unboxJust(m))
+    return f(mk.unboxRawJust(m))
 
 

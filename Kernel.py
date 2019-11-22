@@ -2,6 +2,7 @@ import functools
 import itertools
 import Elm
 import ListKernel
+import MaybeKernel
 import TupleKernel
 
 """
@@ -18,7 +19,7 @@ def toPy(x):
         return tuple(map(toPy, TupleKernel.toPy(x)))
     elif isBool(x):
         return toPyBool(x)
-    elif isMaybe(x):
+    elif MaybeKernel.isMaybe(x):
         raise Exception('not serializable to Python yet')
     else:
         return x
@@ -32,22 +33,6 @@ def toElm(x):
         return toElmBool(x)
     return x
 
-
-"""
-    Maybe
-"""
-
-_nada = ('Nothing',)
-
-class Maybe:
-    def __init__(self, v):
-        self.v = v
-
-    def __eq__(self, other):
-        return self.v == other.v
-
-def isMaybe(x):
-    return type(x) == Maybe
 
 """
     BOOL
