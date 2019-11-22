@@ -57,4 +57,11 @@ map3 = mapN
 map4 = mapN
 map5 = mapN
 
+@Elm.wrap(None, fromMaybe, None)
+def andThen(f, m):
+    if m == _nada:
+        return _Nothing
+
+    return f(_unboxJust(m))
+
 

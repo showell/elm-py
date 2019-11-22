@@ -466,6 +466,11 @@ def testMaybe():
     assertEqual(Maybe.map4, Maybe.mapN)
     assertEqual(Maybe.map5, Maybe.mapN)
 
+    assertEqual(Maybe.andThen(toMaybe, Just(2)), Just(20))
+    assertEqual(Maybe.andThen(toMaybe, Just(99)), Nothing)
+    assertEqual(Maybe.andThen(toMaybe, Nothing), Nothing)
+
+
 def testPipes():
     val = Elm.pipe(5, [
             double,
