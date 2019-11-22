@@ -27,6 +27,20 @@ def toElm(x):
         return toElmBool(x)
     return x
 
+"""
+Lists -
+
+    Each list is actually a series of List instances.
+"""
+
+class List:
+    def __init__(self, v):
+        self.v = v
+
+    def __eq__(self, other):
+        return self.v == other.v
+
+
 def toElmList(it):
     """
     This is a flat conversion (assumes items are already Elm-ish).
@@ -39,30 +53,26 @@ def toElmList(it):
     return out
 
 def listNil():
-    return ('::', None)
+    return List(None)
 
 def listCons(x, xs):
-    return ('::', (x, xs))
+    return List((x, xs))
 
-def listUncons(tup):
-    if tup[0] != '::':
-        print(tup)
+def listUncons(x):
+    if not isList(x):
         raise Exception('not a list!')
-    (x, xs) = tup[1]
-    return (x, xs)
+    return x.v
 
-def listIsEmpty(tup):
-    return tup[1] is None
+def listIsEmpty(x):
+    return x.v is None
 
 def listToIter(xs):
     while not listIsEmpty(xs):
         (h, xs) = listUncons(xs)
         yield h
 
-def isList(tup):
-    if type(tup) != tuple:
-        return False
-    return tup[0] == '::'
+def isList(x):
+    return type(x) == List
 
 """
     TUPLES:
