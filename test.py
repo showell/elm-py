@@ -101,9 +101,9 @@ def testListBasics():
 
     assertList(List.singleton(5), [5])
     assertList(List.repeat(3, 'x'), ['x', 'x', 'x'])
-    assertList(List.range_(3, 6), [3, 4, 5, 6])
+    assertList(List.range(3, 6), [3, 4, 5, 6])
     assertList(List.cons(42, lst3), [42, 0, 1, 2])
-    assertList(List.map_(double, lst3), [0, 2, 4])
+    assertList(List.map(double, lst3), [0, 2, 4])
 
     tup = lambda i, x: (i, 2*x)
     assertList(
@@ -119,7 +119,7 @@ def testListBasics():
             "R321")
 
     assertList(
-            List.filter_(even, numLst),
+            List.filter(even, numLst),
             [2, 4, 6, 8, 10])
 
     assertList(
@@ -324,7 +324,7 @@ def testListOfLists():
 
 def testPartialApply():
     assertList(
-            F(List.map_)(double)(lst3),
+            F(List.map)(double)(lst3),
             [0, 2, 4])
 
     accum = lambda x, acc: acc + x
@@ -343,7 +343,7 @@ def checkPerformance():
     # Make sure we don't crash on large lists.  (We can't use
     # recursion carelessly in Python.)  These tests only exercise
     # performance.  Correctness tests are above.
-    bigList = List.range_(1, 100000)
+    bigList = List.range(1, 100000)
     assertEqual(
             List.foldl(add, 0, bigList),
             5000050000
@@ -354,7 +354,7 @@ def checkPerformance():
             )
     List.all(lambda x: Kernel.true, bigList)
     List.any(lambda x: Kernel.false, bigList)
-    List.filter_(lambda x: Kernel.true, bigList)
+    List.filter(lambda x: Kernel.true, bigList)
     List.filterMap(toMaybe, bigList)
     List.reverse(bigList)
     assertEqual(List.maximum(bigList), Just(100000))

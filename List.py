@@ -28,25 +28,30 @@ empty = Kernel.listNil
 toIter = Kernel.listToIter
 uncons = Kernel.listUncons
 
+# hide builtins
+range_ = range
+map_ = map
+filter_ = filter
+
 def singleton(x):
     return cons(x, empty())
 
 def repeat(n, x):
     out = empty()
-    for i in range(n):
+    for i in range_(n):
         out = cons(x, out)
     return out
 
-def range_(lo, hi):
+def range(lo, hi):
     out = empty()
     n = hi
-    for n in range(hi, lo-1, -1):
+    for n in range_(hi, lo-1, -1):
         out = cons(n, out)
     return out
 
 @Elm.wrap(None, toIter, toElmList)
-def map_(f, xs):
-    return map(f, xs)
+def map(f, xs):
+    return map_(f, xs)
 
 @Elm.wrap(None, toIter, toElmList)
 def indexedMap(f, xs):
@@ -64,8 +69,8 @@ def foldr(func, acc, xs):
     return acc
 
 @Elm.wrap(toPyPred, toIter, toElmList)
-def filter_(isGood, lst):
-    return filter(isGood, lst)
+def filter(isGood, lst):
+    return filter_(isGood, lst)
 
 @Elm.wrap(None, toIter, toElmList)
 def filterMap(f, lst):
@@ -138,7 +143,7 @@ def concat(lsts):
     return foldr(append, empty(), lsts)
 
 def concatMap(f, lst):
-    return concat(map_(f, lst))
+    return concat(map(f, lst))
 
 def intersperse(sep, xs):
     if listIsEmpty(xs):
