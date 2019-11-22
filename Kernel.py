@@ -161,6 +161,48 @@ true = Bool(True)
 false = Bool(False)
 
 """
+    Order
+"""
+
+class Order:
+    def __init__(self, v):
+        self.v = v
+
+    def __lt__(self, other):
+        raise Exception("comparing Ord types is usually an error")
+
+    def __eq__(self, other):
+        raise Exception("comparing Ord types is usually an error")
+
+
+EQ = 'EQ'
+LT = 'LT'
+GT = 'GT'
+
+def orderToInt(ord):
+    if type(ord) != Order:
+        raise Exception("expected Order")
+
+    if ord.v == LT:
+        return -1
+
+    if ord.v == EQ:
+        return 0
+
+    return 1
+
+@Elm.wrap(None, None, Order)
+def toOrder(a, b):
+    if a < b:
+        return LT
+
+    if a == b:
+        return EQ
+
+    return GT
+
+
+"""
 Comparisons
 """
 

@@ -11,7 +11,6 @@ import Elm
 import Kernel
 import List
 import Maybe
-import Order
 import Tuple
 
 # TESTING
@@ -241,9 +240,8 @@ def testListBasics():
             ]
             )
 
-    compF = lambda a, b: Order.fromInt(a - b)
     assertList(
-            List.sortWith(compF, toElm([4, 5, 1, 3, 2])),
+            List.sortWith(Kernel.toOrder, toElm([4, 5, 1, 3, 2])),
             [1, 2, 3, 4, 5]
             )
 

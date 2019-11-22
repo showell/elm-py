@@ -11,7 +11,6 @@ import itertools
 import operator
 import Kernel
 import Maybe
-import Order
 import Elm
 
 """
@@ -185,7 +184,10 @@ def sortBy(f, lst):
     return _sortHelper(c, lst)
 
 def sortWith(compF, lst):
-    c = lambda a, b: Order.toInt(compF(a, b))
+    def c(a, b):
+        order = compF(a, b)
+        return Kernel.orderToInt(order)
+
     return _sortHelper(c, lst)
 
 @Elm.wrap(None, toElmBool)
