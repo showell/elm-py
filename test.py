@@ -83,6 +83,21 @@ mod10 = lambda x: x % 10
 
 def testListBasics():
     assertEqual(
+            lst3 == lst3Clone,
+            True
+            )
+
+    assertEqual(
+            List.empty() == empty,
+            True
+            )
+
+    assertEqual(
+            lst3 == numLst,
+            False
+            )
+
+    assertEqual(
             Kernel.eq(lst3, lst3Clone),
             Kernel.true
             )
@@ -90,6 +105,11 @@ def testListBasics():
     assertEqual(
             Kernel.eq(List.empty(), empty),
             Kernel.true
+            )
+
+    assertEqual(
+            Kernel.eq(lst3, numLst),
+            Kernel.false
             )
 
     assertTrue(List.isEmpty(empty))
