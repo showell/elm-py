@@ -62,6 +62,11 @@ double = lambda x : x * 2
 triple = lambda x : x * 3
 add = lambda x, y: x + y
 
+f2 = lambda a, b: (a, b)
+f3 = lambda a, b, c: (a, b, c)
+f4 = lambda a, b, c, d: (a, b, c, d)
+f5 = lambda a, b, c, d, e: (a, b, c, d, e)
+
 def toMaybe(n):
     if n in [2, 4]:
         return Just(10*n)
@@ -368,25 +373,25 @@ def checkPerformance():
             199999)
 
     List.map2(
-            lambda a, b: (a, b),
+            f2,
             bigList,
             bigList)
 
     List.map3(
-            lambda a, b, c: (a, b, c),
+            f3,
             bigList,
             bigList,
             bigList)
 
     List.map4(
-            lambda a, b, c, d: (a, b, c, d),
+            f4,
             bigList,
             bigList,
             bigList,
             bigList)
 
     List.map5(
-            lambda a, b, c, d, e: (a, b, c, d, e),
+            f5,
             bigList,
             bigList,
             bigList,
@@ -432,7 +437,17 @@ def testMaybe():
     assertEqual(Maybe.withDefault(Just(42), 99), 42)
 
     assertEqual(Maybe.map(double, Nothing), Nothing)
-    assertEqual(Maybe.withDefault(Just(42), 99), 42)
+    assertEqual(Maybe.map(double, Just(42)), Just(84))
+
+    assertEqual(
+            Maybe.map2(f2, Just(1), Nothing),
+            Nothing)
+    assertEqual(
+            Maybe.map2(f2, Nothing, Just(2)),
+            Nothing)
+    assertEqual(
+            Maybe.map2(f2, Just(1), Just(2)),
+            Just((1, 2)))
 
 def testPipes():
     val = Elm.pipe(5, [

@@ -25,6 +25,9 @@ def isJust(v):
 
 @Elm.wrap(fromMaybe, None)
 def unboxJust(m):
+    return _unboxJust(m)
+
+def _unboxJust(m):
     if m[0] != 'Just':
         raise Exception('illegal unboxing')
 
@@ -43,5 +46,20 @@ def map(f, m):
     if m == _nada:
         return _Nothing
 
-    return Just(f(unboxJust(m)))
+    return Just(
+                f(
+                    _unboxJust(m)
+                ))
 
+def mapN(f, *args):
+    maybes = [fromMaybe(a) for a in args]
+
+    for m in maybes:
+        if m == _nada:
+            return _Nothing
+
+    vals = [_unboxJust(m) for m in maybes]
+    return Just(f(*vals))
+
+def map2(f, m1, m2):
+    return mapN(f, m1, m2)
