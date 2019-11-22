@@ -1,11 +1,24 @@
+import Elm
+
+_Nothing = ('Maybe', ('Nothing', ))
+
+def unboxMaybe(v):
+    if v[0] != 'Maybe':
+        raise Exception('not a Maybe')
+    return v[1]
+
 def Just(val):
-    return ('Just', val)
+    return ('Maybe', (('Just', val)))
 
 def Nothing():
-    return None
+    return _Nothing
 
-def unboxJust(val):
-    if val[0] != 'Just':
+def isNothing(v):
+    return v == Nothing
+
+@Elm.wrap(unboxMaybe, None)
+def unboxJust(m):
+    if m[0] != 'Just':
         raise Exception('illegal unboxing')
 
-    return val[1]
+    return m[1]
