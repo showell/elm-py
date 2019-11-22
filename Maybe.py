@@ -14,7 +14,10 @@ def Nothing():
     return _Nothing
 
 def isNothing(v):
-    return v == Nothing
+    return v == _Nothing
+
+def isJust(v):
+    return unboxMaybe(v)[0] == 'Just'
 
 @Elm.wrap(unboxMaybe, None)
 def unboxJust(m):
@@ -22,3 +25,11 @@ def unboxJust(m):
         raise Exception('illegal unboxing')
 
     return m[1]
+
+# Normal methods
+
+def withDefault(m, default):
+    if isNothing(m):
+        return default
+
+    return unboxJust(m)

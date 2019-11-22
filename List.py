@@ -71,7 +71,7 @@ def filter_(isGood, lst):
 def filterMap(f, lst):
     for x in lst:
         v = f(x)
-        if v != Maybe.Nothing():
+        if Maybe.isJust(v):
             yield Maybe.unboxJust(v)
 
 @Elm.wrap(toIter, None)

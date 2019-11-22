@@ -17,6 +17,8 @@ import Tuple
 # TESTING
 
 F = Elm.F
+Nothing = Maybe.Nothing()
+Just = Maybe.Just
 
 def printList(xs):
     print(toPy(xs))
@@ -62,9 +64,9 @@ add = lambda x, y: x + y
 
 def toMaybe(n):
     if n in [2, 4]:
-        return Maybe.Just(10*n)
+        return Just(10*n)
     else:
-        return Maybe.Nothing()
+        return Nothing
 
 lst3 = toElm([0, 1, 2])
 lst3Clone = toElm([0, 1, 2])
@@ -137,11 +139,11 @@ def testListBasics():
     assertTrue(List.any(even, numLst))
     assertFalse(List.any(negative, numLst))
 
-    assertEqual(List.maximum(empty), Maybe.Nothing())
-    assertEqual(List.maximum(numLst), Maybe.Just(10))
+    assertEqual(List.maximum(empty), Nothing)
+    assertEqual(List.maximum(numLst), Just(10))
 
-    assertEqual(List.minimum(empty), Maybe.Nothing())
-    assertEqual(List.minimum(numLst), Maybe.Just(1))
+    assertEqual(List.minimum(empty), Nothing)
+    assertEqual(List.minimum(numLst), Just(1))
 
     assertEqual(List.sum(numLst), 55)
     assertEqual(List.product(numLst), 3628800)
@@ -222,11 +224,11 @@ def testListBasics():
 
     assertEqual(
             List.tail(empty),
-            Maybe.Nothing())
+            Nothing)
 
     assertEqual(
             List.tail(toElm([1, 2, 3])),
-            Maybe.Just(toElm([2, 3]))
+            Just(toElm([2, 3]))
             )
 
     assertList(
@@ -350,8 +352,8 @@ def checkPerformance():
     List.filter_(lambda x: Kernel.true, bigList)
     List.filterMap(toMaybe, bigList)
     List.reverse(bigList)
-    assertEqual(List.maximum(bigList), Maybe.Just(100000))
-    assertEqual(List.minimum(bigList), Maybe.Just(1))
+    assertEqual(List.maximum(bigList), Just(100000))
+    assertEqual(List.minimum(bigList), Just(1))
     List.sum(bigList)
 
     # product is expensive with big numbers!
@@ -405,8 +407,8 @@ def checkPerformance():
 
     tupOfBigLists = List.unzip(bigListOfTups)
 
-    assertEqual(List.head(Tuple.first(tupOfBigLists)), Maybe.Just(0))
-    assertEqual(List.head(Tuple.second(tupOfBigLists)), Maybe.Just(42))
+    assertEqual(List.head(Tuple.first(tupOfBigLists)), Just(0))
+    assertEqual(List.head(Tuple.second(tupOfBigLists)), Just(42))
 
 def testTuples():
     t = Tuple.pair(5, 6)
@@ -425,6 +427,10 @@ def testTuples():
             toPy(Tuple.mapBoth(triple, double, t)),
             (15, 12))
 
+def testMaybe():
+    assertEqual(Maybe.withDefault(Nothing, 5), 5)
+    assertEqual(Maybe.withDefault(Just(42), 99), 42)
+
 def testPipes():
     val = Elm.pipe(5, [
             double,
@@ -439,6 +445,7 @@ testPartialApply()
 testListOfLists()
 testTuples()
 testPipes()
+testMaybe()
 
 print("\n\nchecking performance...")
 checkPerformance()
