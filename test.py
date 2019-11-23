@@ -1,7 +1,11 @@
 from Kernel import (
         toElm,
-        toElmPred,
         toPy,
+        )
+from Bool import (
+        toElmPred,
+        true,
+        false,
         )
 import Elm
 import Kernel
@@ -23,7 +27,7 @@ def printList(xs):
     print(toPy(xs))
 
 def assertTrue(actual):
-    if actual == Kernel.true:
+    if actual == true:
         print('pass')
     else:
         print('\n\nFAIL!\n', actual)
@@ -31,7 +35,7 @@ def assertTrue(actual):
         raise AssertionError
 
 def assertFalse(actual):
-    if actual == Kernel.false:
+    if actual == false:
         print('pass')
     else:
         print('\n\nFAIL!\n', actual)
@@ -98,17 +102,17 @@ def testListBasics():
 
     assertEqual(
             Kernel.eq(lst3, lst3Clone),
-            Kernel.true
+            true
             )
 
     assertEqual(
             Kernel.eq(List.empty(), empty),
-            Kernel.true
+            true
             )
 
     assertEqual(
             Kernel.eq(lst3, numLst),
-            Kernel.false
+            false
             )
 
     assertTrue(List.isEmpty(empty))
@@ -349,11 +353,11 @@ def testListOfLists():
 
     assertEqual(
             List.member(List.singleton(2), lol),
-            Kernel.true)
+            true)
 
     assertEqual(
             List.member(List.singleton(9), lol),
-            Kernel.false)
+            false)
 
 def testPartialApply():
     assertList(
@@ -385,9 +389,9 @@ def checkPerformance():
             List.length(List.foldr(List.cons, empty, bigList)),
             List.length(bigList)
             )
-    List.all(lambda x: Kernel.true, bigList)
-    List.any(lambda x: Kernel.false, bigList)
-    List.filter(lambda x: Kernel.true, bigList)
+    List.all(lambda x: true, bigList)
+    List.any(lambda x: false, bigList)
+    List.filter(lambda x: true, bigList)
     List.filterMap(toMaybe, bigList)
     List.reverse(bigList)
     assertEqual(List.maximum(bigList), Just(100000))

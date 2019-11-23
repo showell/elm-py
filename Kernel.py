@@ -1,6 +1,7 @@
 import functools
 import itertools
 import Elm
+import Bool
 import ListKernel
 import MaybeKernel
 import TupleKernel
@@ -18,8 +19,8 @@ def toPy(x):
         return list(map(toPy, x))
     elif TupleKernel.isTup(x):
         return tuple(map(toPy, TupleKernel.toPy(x)))
-    elif isBool(x):
-        return toPyBool(x)
+    elif isCustomType(x, 'Bool'):
+        return Bool.toPy(x)
     elif MaybeKernel.isMaybe(x):
         raise Exception('not serializable to Python yet')
     else:
@@ -31,57 +32,12 @@ def toElm(x):
     elif type(x) == tuple:
         return TupleKernel.toElm(tuple(map(toElm, list(x))))
     elif type(x) == bool:
-        return toElmBool(x)
+        return Bool.toElm(x)
     return x
 
 
 def isCustomType(x, name):
     return (type(x) == Custom) and x.isType(name)
-
-"""
-    BOOL
-
-        It would probably be fine to just use Python bools
-        natively, but doing it this way does give us
-        some nice runtime checking.
-"""
-
-Bool = CustomType('Bool', 'True', 'False')
-
-# Because True/False are keywords, we can't use
-# __getattr__ sugar, so we make these constants for
-# convenience.
-true = Bool.get('True')
-false = Bool.get('False')
-
-def isBool(x):
-    return isCustomType(x, 'Bool')
-
-def toElmBool(b):
-    if type(b) != bool:
-        raise Exception('need bool')
-    if b:
-        return true
-    else:
-        return false
-
-def toPyBool(x):
-    if not isBool(x):
-        raise Exception('expected Bool')
-
-    if x == true:
-        return True
-
-    if x == false:
-        return False
-
-    raise Exception('unexpected value in Elm type')
-
-def toElmPred(f):
-    return lambda *args: toElmBool(f(*args))
-
-def toPyPred(f):
-    return lambda *args: toPyBool(f(*args))
 
 """
     Order
@@ -127,7 +83,7 @@ def compare(a, b):
 
     return 0
 
-@Elm.wrap(None, None, toElmBool)
+@Elm.wrap(None, None, Bool.toElm)
 def eq(a, b):
     if type(a) == int:
         return a == b

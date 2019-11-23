@@ -1,10 +1,7 @@
 import functools
 import itertools
 
-from Kernel import (
-        toElmBool,
-        toPyPred,
-        )
+import Bool
 import TupleKernel
 import ListKernel as lk
 import operator
@@ -21,8 +18,10 @@ immutable.
     [1, 2] = (1, (2, ...))
 """
 
+toElmBool = Bool.toElm
 toElmTup = TupleKernel.toElm
 toPyTup = TupleKernel.toPy
+toPyPred = Bool.toPyPred
 toElm = lk.toElm
 empty = lk.empty
 cons = lk.cons
