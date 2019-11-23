@@ -11,10 +11,10 @@ from Custom import CustomType
 Bool = CustomType('Bool', 'True', 'False')
 
 # Because True/False are keywords, we can't use
-# __getattr__ sugar, so we make these constants for
+# attribute sugar, so we make these constants for
 # convenience.
-true = Bool.get('True')
-false = Bool.get('False')
+true = getattr(Bool, 'True')
+false = getattr(Bool, 'False')
 
 def toElm(b):
     if type(b) != bool:

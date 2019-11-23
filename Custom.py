@@ -21,19 +21,10 @@ class Custom:
             return True
 
 class CustomType:
-    def __init__(self, name, *consts):
+    def __init__(self, name, *constants):
         self.name = name
-        self.constants = {
-                vtype: Custom(self, vtype, 0)
-                for vtype in consts}
 
-    def __getattr__(self, vtype):
-        return self.get(vtype)
-
-    def get(self, vtype):
-        if vtype in self.constants:
-            return self.constants[vtype]
-
-        raise Exception('unrecognized variant')
+        for vtype in constants:
+            setattr(self, vtype, Custom(self, vtype, 0))
 
 
