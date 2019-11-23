@@ -76,8 +76,8 @@ def filter(isGood, lst):
 def filterMap(f, lst):
     for x in lst:
         v = f(x)
-        if Maybe.isJust(v):
-            yield Maybe.unboxJust(v)
+        if v.match('Just'):
+            yield v.val
 
 def length(lst):
     i = 0
@@ -107,14 +107,14 @@ def any(isOkay, lst):
 
 def maximum(lst):
     if lk.isEmpty(lst):
-        return Maybe.Nothing()
+        return Maybe.Nothing
     else:
         (x, xs) = uncons(lst)
         return Maybe.Just(foldl(max, x, xs))
 
 def minimum(lst):
     if lk.isEmpty(lst):
-        return Maybe.Nothing()
+        return Maybe.Nothing
     else:
         (x, xs) = uncons(lst)
         return Maybe.Just(foldl(min, x, xs))
@@ -198,14 +198,14 @@ def isEmpty(lst):
 
 def head(xs):
     if lk.isEmpty(xs):
-        return Maybe.Nothing()
+        return Maybe.Nothing
 
     (h, xs) = uncons(xs)
     return Maybe.Just(h)
 
 def tail(xs):
     if lk.isEmpty(xs):
-        return Maybe.Nothing()
+        return Maybe.Nothing
 
     (h, xs) = uncons(xs)
     return Maybe.Just(xs)

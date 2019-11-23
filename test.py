@@ -23,7 +23,7 @@ toElmTup = TupleKernel.toElm
 toPyTup = TupleKernel.toPy
 
 F = Elm.F
-Nothing = Maybe.Nothing()
+Nothing = Maybe.Nothing
 Just = Maybe.Just
 
 def printList(xs):
@@ -339,7 +339,7 @@ def testListOfLists():
                 [3],
                 ])
 
-    h = lambda lst: Maybe.unboxJust(List.head(lst))
+    h = lambda lst: List.head(lst).val
 
     assertEqual(h(h(lol)), 5)
 

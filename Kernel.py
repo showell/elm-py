@@ -3,7 +3,6 @@ import itertools
 import Elm
 import Bool
 import ListKernel
-import MaybeKernel
 import TupleKernel
 from Custom import Custom, CustomType
 
@@ -21,7 +20,7 @@ def toPy(x):
         return tuple(map(toPy, TupleKernel.toPy(x)))
     elif isCustomType(x, 'Bool'):
         return Bool.toPy(x)
-    elif MaybeKernel.isMaybe(x):
+    elif isCustomType(x, 'Maybe'):
         raise Exception('not serializable to Python yet')
     else:
         return x

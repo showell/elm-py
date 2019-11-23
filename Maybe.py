@@ -1,29 +1,24 @@
-import Elm
-import MaybeKernel as mk
+from Custom import CustomType
 
-# helper methods for other classes
+Maybe = CustomType('Maybe', 'Nothing', Just=1)
 
-Just = mk.Just
-Nothing = mk.Nothing
-isJust = mk.isJust
-unboxJust = mk.unboxJust
+Nothing = Maybe.Nothing
+Just = Maybe.Just
 
 # normal methods
 
 def withDefault(m, default):
-    if mk.isNothing(m):
+    if m == Nothing:
         return default
 
-    return mk.unboxJust(m)
+    return m.val
 
-def mapN(f, *args):
-    maybes = [mk.raw(a) for a in args]
-
+def mapN(f, *maybes):
     for m in maybes:
-        if mk.isRawNothing(m):
-            return Nothing()
+        if m == Nothing:
+            return Nothing
 
-    vals = [mk.unboxRawJust(m) for m in maybes]
+    vals = [m.val for m in maybes]
     return Just(f(*vals))
 
 map = mapN
@@ -32,11 +27,10 @@ map3 = mapN
 map4 = mapN
 map5 = mapN
 
-@Elm.wrap(None, mk.raw, None)
 def andThen(f, m):
-    if mk.isRawNothing(m):
-        return Nothing()
+    if m == Nothing:
+        return Nothing
 
-    return f(mk.unboxRawJust(m))
+    return f(m.val)
 
 
