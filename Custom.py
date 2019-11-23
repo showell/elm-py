@@ -27,7 +27,7 @@ class CustomType:
                 vtype: Custom(self, vtype, 0)
                 for vtype in consts}
 
-    def __attr__(self, vtype):
+    def __getattr__(self, vtype):
         return self.get(vtype)
 
     def get(self, vtype):
