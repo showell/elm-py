@@ -40,37 +40,6 @@ def isCustomType(x, name):
     return (type(x) == Custom) and x.isType(name)
 
 """
-    Order
-"""
-
-Order = CustomType('Order', 'EQ', 'LT', 'GT')
-
-def isOrder(x):
-    return isCustomType(x, 'Order')
-
-def orderToInt(order):
-    if not isOrder(order):
-        raise Exception("expected Order")
-
-    if order == Order.LT:
-        return -1
-
-    if order == Order.EQ:
-        return 0
-
-    return 1
-
-def toOrder(a, b):
-    if a < b:
-        return Order.LT
-
-    if a == b:
-        return Order.EQ
-
-    return Order.GT
-
-
-"""
 Comparisons
 """
 

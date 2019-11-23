@@ -7,6 +7,9 @@ from Bool import (
         true,
         false,
         )
+from Order import (
+        toOrder
+        )
 import Elm
 import Kernel
 import List
@@ -260,7 +263,7 @@ def testListBasics():
             )
 
     assertList(
-            List.sortWith(Kernel.toOrder, toElm([4, 5, 1, 3, 2])),
+            List.sortWith(toOrder, toElm([4, 5, 1, 3, 2])),
             [1, 2, 3, 4, 5]
             )
 

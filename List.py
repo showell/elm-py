@@ -1,6 +1,7 @@
 import functools
 import itertools
 
+from Order import orderToInt
 import Bool
 import TupleKernel
 import ListKernel as lk
@@ -187,7 +188,7 @@ def sortBy(f, lst):
 def sortWith(compF, lst):
     def c(a, b):
         order = compF(a, b)
-        return Kernel.orderToInt(order)
+        return orderToInt(order)
 
     return _sortHelper(c, lst)
 
