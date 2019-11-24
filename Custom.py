@@ -37,6 +37,15 @@ class Custom:
 
         return self.vals == other.vals
 
+    def __str__(self):
+        if self.arity == 0:
+            return self.vtype
+
+        if self.arity == 1:
+            return self.vtype + ' ' + str(self.val)
+
+        return self.vtype + ' ' + str(self.vals)
+
 def factory(typeClass, vtype, arity):
     def make(*vals):
         if len(vals) != arity:

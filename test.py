@@ -542,6 +542,11 @@ def testBasics():
             Order.LT
             )
 
+def testStrings():
+    assertEqual(str(Order.EQ), "EQ")
+    assertEqual(str(Maybe.Nothing), "Nothing")
+    assertEqual(str(Maybe.Just(7)), "Just 7")
+
 testListBasics()
 testPartialApply()
 testListOfLists()
@@ -549,6 +554,7 @@ testTuples()
 testPipes()
 testMaybe()
 testBasics()
+testStrings()
 
 print("\n\nchecking performance...")
 checkPerformance()
