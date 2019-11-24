@@ -551,6 +551,8 @@ def testStrings():
     assertEqual(str(Order.EQ), "EQ")
     assertEqual(str(Maybe.Nothing), "Nothing")
     assertEqual(str(Maybe.Just(7)), "Just 7")
+    assertEqual(str(toElm([1, 2])), "[ 1, 2 ]")
+    assertEqual(str(toElm((1, 2))), "( 1, 2 )")
 
 testListBasics()
 testPartialApply()
