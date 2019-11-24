@@ -542,6 +542,9 @@ def testBasics():
             Order.LT
             )
 
+    assertEqual(Basics.modBy(3, -7), 2)
+    assertEqual(Basics.modBy(3, 7), 1)
+
 def testStrings():
     assertEqual(str(Order.EQ), "EQ")
     assertEqual(str(Maybe.Nothing), "Nothing")
