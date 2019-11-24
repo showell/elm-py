@@ -46,6 +46,11 @@ class List:
 
         return True
 
+    def __str__(self):
+        return ('[ '
+            + ', '.join(str(a) for a in self)
+            + ' ]')
+
 def empty():
     return List(None)
 
