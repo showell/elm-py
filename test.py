@@ -545,6 +545,8 @@ def testBasics():
     assertEqual(Basics.modBy(3, -7), 2)
     assertEqual(Basics.modBy(3, 7), 1)
 
+    assertEqual(Basics.toFloat(5), 5.0)
+
 def testStrings():
     assertEqual(str(Order.EQ), "EQ")
     assertEqual(str(Maybe.Nothing), "Nothing")

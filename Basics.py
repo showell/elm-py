@@ -5,3 +5,7 @@ def compare(a, b):
 
 def modBy(a, b):
     return b % a
+
+def toFloat(a):
+    return float(a)
+
