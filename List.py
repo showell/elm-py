@@ -221,13 +221,12 @@ def drop(n, xs):
     if n <= 0:
         return xs
 
-    i = 0
-    for x in xs:
-        if i >= n:
-            return x
-        i += 1
+    for i in range_(n):
+        if lk.isEmpty(xs):
+            return empty()
+        (_, xs) = uncons(xs)
 
-    return empty()
+    return xs
 
 @Elm.wrap(toPyPred, None, toElmTup)
 def partition(pred, lst):

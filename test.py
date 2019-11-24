@@ -299,23 +299,23 @@ def testListBasics():
             )
 
     assertList(
-            List.take(0, lst3),
+            List.drop(0, lst3),
+            [0, 1, 2]
+            )
+
+    assertList(
+            List.drop(2, lst3),
+            [2]
+            )
+
+    assertList(
+            List.drop(3, lst3),
             []
             )
 
     assertList(
-            List.take(2, lst3),
-            [0, 1]
-            )
-
-    assertList(
-            List.take(3, lst3),
-            [0, 1, 2 ]
-            )
-
-    assertList(
-            List.take(4, lst3),
-            [0, 1, 2 ]
+            List.drop(4, lst3),
+            []
             )
 
     assertEqual(
