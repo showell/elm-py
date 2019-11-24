@@ -10,11 +10,13 @@ from Bool import (
 from Order import (
         toOrder
         )
+import Basics
 import Elm
 import Kernel
 import List
 import ListKernel
 import Maybe
+import Order
 import Tuple
 import TupleKernel
 
@@ -524,12 +526,29 @@ def testPipes():
             ])
     assertEqual(val, 37)
 
+def testBasics():
+    assertEqual(
+            Basics.compare(4, 3),
+            Order.GT
+            )
+
+    assertEqual(
+            Basics.compare(4, 4),
+            Order.EQ
+            )
+
+    assertEqual(
+            Basics.compare(4, 8),
+            Order.LT
+            )
+
 testListBasics()
 testPartialApply()
 testListOfLists()
 testTuples()
 testPipes()
 testMaybe()
+testBasics()
 
 print("\n\nchecking performance...")
 checkPerformance()

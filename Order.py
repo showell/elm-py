@@ -2,25 +2,29 @@ from Custom import CustomType
 
 Order = CustomType('Order', 'EQ', 'LT', 'GT')
 
+EQ = Order.EQ
+LT = Order.LT
+GT = Order.GT
+
 def orderToInt(order):
-    if order == Order.LT:
+    if order == LT:
         return -1
 
-    if order == Order.EQ:
+    if order == EQ:
         return 0
 
-    if order == Order.GT:
+    if order == GT:
         return 1
 
     raise Exception('unhandled value')
 
 def toOrder(a, b):
     if a < b:
-        return Order.LT
+        return LT
 
     if a == b:
-        return Order.EQ
+        return EQ
 
-    return Order.GT
+    return GT
 
 
