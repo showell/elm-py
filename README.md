@@ -325,7 +325,7 @@ on the "Extreme Learning Machine".
 Obviously, many Elm concepts are well understood in (parts of ) the Python community.
 
 For example, folks have written libraries like pyrsistent to implement immutable
-data structures.  Also, core Python has modules like `functools` and `itertools`
+data structures.  Also, core Python has had modules like `functools` and `itertools`
 for well over a decade, and they support functional programming concepts.
 
 ### Conclusion
