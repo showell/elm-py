@@ -40,6 +40,13 @@ def assertFalse(actual):
         raise AssertionError
 
 def assertFloat(actual, expected):
+    if type(actual) == tuple:
+        assert len(actual) == 2
+        assert len(expected) == 2
+        assertFloat(actual[0], expected[0])
+        assertFloat(actual[1], expected[1])
+        return
+
     if abs(actual - expected) < 0.000001:
         print('pass')
     else:
@@ -605,9 +612,31 @@ def testBasics():
     assertFloat(Basics.e, 2.718281828459045)
     assertFloat(Basics.pi, 3.141592653589793)
 
-    assertFloat(Basics.degrees(180), Basics.pi)
+    pi = Basics.pi
+
+    assertFloat(Basics.degrees(180), pi)
     assertFloat(Basics.radians(2), 2)
-    assertFloat(Basics.turns(1/2), Basics.pi)
+    assertFloat(Basics.turns(1/2), pi)
+
+    assertFloat(Basics.cos(pi/3), 0.5)
+    assertFloat(Basics.sin(pi/6), 0.5)
+    assertFloat(Basics.tan(pi/4), 1)
+
+    assertFloat(Basics.acos(0.5), pi/3)
+    assertFloat(Basics.asin(0.5), pi/6)
+
+    assertFloat(Basics.atan(1), pi/4)
+    assertFloat(Basics.atan(-1), -1 * pi/4)
+
+    assertFloat(Basics.atan2(1, 1), pi/4)
+    assertFloat(Basics.atan2(1, -1), 3 * pi/4)
+    assertFloat(Basics.atan2(-1, -1), -3 * pi/4)
+    assertFloat(Basics.atan2(-1, 1), -1 * pi/4)
+
+    assertFloat(Basics.toPolar((3, 4)), ( 5, 0.9272952180016122))
+    assertFloat(Basics.toPolar((5,12)), (13, 1.1760052070951352))
+
+    assertFloat(Basics.fromPolar(Basics.toPolar((-3, -4))), (-3, -4))
 
 def testStrings():
     assertEqual(str(Order.EQ), "EQ")

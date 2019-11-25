@@ -20,6 +20,13 @@ abs = abs
 sqrt = math.sqrt
 e = math.e
 pi = math.pi
+cos = math.cos
+sin = math.sin
+tan = math.tan
+acos = math.acos
+asin = math.asin
+atan = math.atan
+atan2 = math.atan2
 
 def compare(a, b):
     return Order.toOrder(a, b)
@@ -53,3 +60,15 @@ def radians(n):
 
 def turns(n):
     return 2 * pi * n
+
+def toPolar(coord):
+    x, y = coord
+    r = sqrt(x*x + y*y)
+    ang = atan2(y, x)
+    return (r, ang)
+
+def fromPolar(coord):
+    r, ang = coord
+    x = r * cos(ang)
+    y = r * sin(ang)
+    return (x, y)
