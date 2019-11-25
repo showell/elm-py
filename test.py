@@ -39,6 +39,14 @@ def assertFalse(actual):
         print('\n')
         raise AssertionError
 
+def assertFloat(actual, expected):
+    if abs(actual - expected) < 0.000001:
+        print('pass')
+    else:
+        print('\n\nFAIL!\n', actual, expected)
+        print('\n')
+        raise AssertionError
+
 def assertEqual(actual, expected):
     if actual == expected:
         print('pass')
@@ -577,6 +585,22 @@ def testBasics():
 
     assertEqual(Basics.remainderBy(-3, -7), -1)
     assertEqual(Basics.remainderBy(-3, 7), 1)
+
+    assertEqual(Basics.negate(5), -5)
+    assertEqual(Basics.negate(-5), 5)
+
+    assertEqual(Basics.abs(5), 5)
+    assertEqual(Basics.abs(-5), 5)
+
+    assertEqual(Basics.clamp(100, 200, 80), 100)
+    assertEqual(Basics.clamp(100, 200, 150), 150)
+    assertEqual(Basics.clamp(100, 200, 220), 200)
+
+    assertEqual(Basics.sqrt(81), 9)
+
+    assertFloat(Basics.logBase(10, 100), 2)
+    assertFloat(Basics.logBase(10, 1000), 3)
+    assertFloat(Basics.logBase(2, 256), 8)
 
 def testStrings():
     assertEqual(str(Order.EQ), "EQ")

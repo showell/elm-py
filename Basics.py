@@ -16,6 +16,8 @@ ceiling = math.ceil
 truncate = math.trunc
 max = max
 min = min
+abs = abs
+sqrt = math.sqrt
 
 def compare(a, b):
     return Order.toOrder(a, b)
@@ -32,3 +34,11 @@ def remainderBy(a, b):
     else:
         return -1 * ((-1 * b) % abs(a))
 
+def negate(n):
+    return -1 * n
+
+def clamp(lo, hi, x):
+    return max(min(x, hi), lo)
+
+def logBase(base, n):
+    return math.log(n, base)
