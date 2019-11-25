@@ -153,7 +153,7 @@ Even though this library is obviously inspired by Elm, the code is
 fairly vanilla Python.  All objects support `str()` for easy print
 debugging.
 
-# Partial functions
+### Partial functions
 
 Most Python functions complain if you try to partially apply operators
 to them, but this is easily worked around, as demonstrated below:
@@ -192,6 +192,17 @@ iterator.
 'Just [ 1, 2, 3 ]'
 >>> list(maybe_list.val)
 [1, 2, 3]
+~~~
+
+For deeper conversions, use the `toPy` helper:
+
+~~~ python
+>>> from Kernel import toElm, toPy
+>>> lstOfLsts = toElm([ [1, 2, 3], [4, 5, 6] ])
+>>> list(lstOfLsts)
+[<ListKernel.List object at 0x02DE5FD0>, <ListKernel.List object at 0x02DF20B8>]
+>>> toPy(lstOfLsts)
+[[1, 2, 3], [4, 5, 6]]
 ~~~
 
 It is also easy to work with Maybe types:
