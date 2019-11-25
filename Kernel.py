@@ -2,7 +2,6 @@ import functools
 import itertools
 import Elm
 import ListKernel
-import TupleKernel
 from Custom import Custom, CustomType
 
 """
@@ -15,10 +14,10 @@ all of our data types play nice with each other.
 def toPy(x):
     if ListKernel.isList(x):
         return list(map(toPy, x))
-    elif TupleKernel.isTup(x):
-        return tuple(map(toPy, TupleKernel.toPy(x)))
     elif isCustomType(x, 'Maybe'):
         raise Exception('not serializable to Python yet')
+    elif type(x) == tuple:
+        return tuple(map(toPy, list(x)))
     else:
         return x
 
@@ -26,7 +25,7 @@ def toElm(x):
     if type(x) == list:
         return ListKernel.toElm(toElm(item) for item in x)
     elif type(x) == tuple:
-        return TupleKernel.toElm(tuple(map(toElm, list(x))))
+        return tuple(map(toElm, list(x)))
     return x
 
 
@@ -56,7 +55,7 @@ def eq(a, b):
     if ListKernel.isList(a):
         return a == b
 
-    if TupleKernel.isTup(a):
+    if type(a) == tuple:
         return a == b
 
     raise Exception('eq not implemented fully yet')

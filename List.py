@@ -2,7 +2,6 @@ import functools
 import itertools
 
 from Order import orderToInt
-import TupleKernel
 import ListKernel as lk
 import operator
 import Kernel
@@ -18,8 +17,6 @@ immutable.
     [1, 2] = (1, (2, ...))
 """
 
-toElmTup = TupleKernel.toElm
-toPyTup = TupleKernel.toPy
 toElm = lk.toElm
 empty = lk.empty
 cons = lk.cons
@@ -222,7 +219,6 @@ def drop(n, xs):
 
     return xs
 
-@Elm.wrap(None, None, toElmTup)
 def partition(pred, lst):
     def step(x, tup):
         (trues, falses) = tup
@@ -234,10 +230,8 @@ def partition(pred, lst):
 
     return foldr(step, (empty(), empty()), lst)
 
-@Elm.wrap(None, toElmTup)
 def unzip(pairs):
 
-    @Elm.wrap(toPyTup, None, None)
     def step(pair, lsts):
         (x, y) = pair
         (xs, ys) = lsts

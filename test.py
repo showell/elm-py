@@ -13,11 +13,8 @@ import ListKernel
 import Maybe
 import Order
 import Tuple
-import TupleKernel
 
 isList = ListKernel.isList
-toElmTup = TupleKernel.toElm
-toPyTup = TupleKernel.toPy
 
 F = Elm.F
 Nothing = Maybe.Nothing
@@ -65,10 +62,10 @@ double = lambda x : x * 2
 triple = lambda x : x * 3
 add = lambda x, y: x + y
 
-f2 = lambda a, b: toElmTup((a, b))
-f3 = lambda a, b, c: toElmTup((a, b, c))
-f4 = lambda a, b, c, d: toElmTup((a, b, c, d))
-f5 = lambda a, b, c, d, e: toElmTup((a, b, c, d, e))
+f2 = lambda a, b: (a, b)
+f3 = lambda a, b, c: (a, b, c)
+f4 = lambda a, b, c, d: (a, b, c, d)
+f5 = lambda a, b, c, d, e: (a, b, c, d, e)
 
 def toMaybe(n):
     if n in [2, 4]:
@@ -439,7 +436,7 @@ def checkPerformance():
     List.take(99999, bigList)
     List.drop(99999, bigList)
 
-    (evens, odds) = toPyTup(List.partition(even, bigList))
+    (evens, odds) = List.partition(even, bigList)
     assertEqual(List.length(evens), 50000)
     assertEqual(List.length(odds), 50000)
 
@@ -462,16 +459,20 @@ def testTuples():
     assertEqual(Tuple.second(t), 6)
 
     assertEqual(
-            toPy(Tuple.mapFirst(double, t)),
+            Tuple.mapFirst(double, t),
             (10, 6))
 
     assertEqual(
-            toPy(Tuple.mapSecond(double, t)),
+            Tuple.mapSecond(double, t),
             (5, 12))
 
     assertEqual(
-            toPy(Tuple.mapBoth(triple, double, t)),
+            Tuple.mapBoth(triple, double, t),
             (15, 12))
+
+    assertEqual(
+            toPy(Tuple.mapFirst(F(List.cons)(0), toElm(([1], [2])))),
+            ([0, 1], [2]))
 
 def testMaybe():
     assertEqual(Maybe.withDefault(Nothing, 5), 5)
@@ -488,7 +489,7 @@ def testMaybe():
             Nothing)
     assertEqual(
             Maybe.map2(f2, Just(1), Just(2)),
-            Just(toElmTup((1, 2))))
+            Just((1, 2)))
 
     assertEqual(
             Maybe.map3(f3, Just(1), Nothing, Nothing),
@@ -501,7 +502,7 @@ def testMaybe():
             Nothing)
     assertEqual(
             Maybe.map3(f3, Just(1), Just(2), Just(3)),
-            Just(toElmTup((1, 2, 3))))
+            Just((1, 2, 3)))
 
     # cheat for map4/map5
     assertEqual(Maybe.map4, Maybe.mapN)
@@ -547,7 +548,7 @@ def testStrings():
     assertEqual(str(Maybe.Nothing), "Nothing")
     assertEqual(str(Maybe.Just(7)), "Just 7")
     assertEqual(str(toElm([1, 2])), "[ 1, 2 ]")
-    assertEqual(str(toElm((1, 2))), "( 1, 2 )")
+    assertEqual(str((1, 2)), "(1, 2)")
 
 testListBasics()
 testPartialApply()
