@@ -523,6 +523,19 @@ def testPipes():
     assertEqual(val, 37)
 
 def testBasics():
+    assertEqual(Basics.toFloat(5), 5.0)
+    assertEqual(Basics.round(8.2), 8)
+    assertEqual(Basics.round(8.8), 9)
+    assertEqual(Basics.round(-8.8), -9)
+    assertEqual(Basics.floor(8.8), 8)
+    assertEqual(Basics.floor(-8.8), -9)
+    assertEqual(Basics.ceiling(8.8), 9)
+    assertEqual(Basics.ceiling(-8.8), -8)
+    assertEqual(Basics.truncate(8.8), 8)
+    assertEqual(Basics.truncate(-8.8), -8)
+    assertEqual(Basics.min(5, 3), 3)
+    assertEqual(Basics.max(5, 3), 5)
+
     assertEqual(
             Basics.compare(4, 3),
             Order.GT
@@ -540,17 +553,6 @@ def testBasics():
 
     assertEqual(Basics.modBy(3, -7), 2)
     assertEqual(Basics.modBy(3, 7), 1)
-
-    assertEqual(Basics.toFloat(5), 5.0)
-    assertEqual(Basics.round(8.2), 8)
-    assertEqual(Basics.round(8.8), 9)
-    assertEqual(Basics.round(-8.8), -9)
-    assertEqual(Basics.floor(8.8), 8)
-    assertEqual(Basics.floor(-8.8), -9)
-    assertEqual(Basics.ceiling(8.8), 9)
-    assertEqual(Basics.ceiling(-8.8), -8)
-    assertEqual(Basics.truncate(8.8), 8)
-    assertEqual(Basics.truncate(-8.8), -8)
 
 def testStrings():
     assertEqual(str(Order.EQ), "EQ")

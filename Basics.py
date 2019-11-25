@@ -9,26 +9,17 @@ Operators -- We don't have any special support for operators.  Most
     use things like `lambda a: a + 1`.
 """
 
-round_ = round
+round = round
+toFloat = float
+floor = math.floor
+ceiling = math.ceil
+truncate = math.trunc
+max = max
+min = min
 
 def compare(a, b):
     return Order.toOrder(a, b)
 
 def modBy(a, b):
     return b % a
-
-def toFloat(n):
-    return float(n)
-
-def round(n):
-    return round_(n)
-
-def floor(n):
-    return math.floor(n)
-
-def ceiling(n):
-    return math.ceil(n)
-
-def truncate(n):
-    return math.trunc(n)
 
