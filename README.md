@@ -248,3 +248,68 @@ def minimum(lst):
 ~~~
 
 
+### Static type checking
+
+Python has support for [function annotations](https://www.python.org/dev/peps/pep-3107/),
+but I have not added those yet.  I am waiting on this to see how much support I can
+get from elm-in-elm, once they add annotation support on the Elm side.
+
+In principle we should be able to make elm-py play nice with any Python static
+checker, such as [mypy](http://mypy-lang.org/).  I would consider any PR that adds
+type annotations to the library, but let's try to discuss it first on Slack.
+
+### Runtime type checking
+
+I try to make this library Pythonic.  Even though Python is partly dynamic in nature,
+it is more strongly typed than, say, JavaScript:
+
+~~~ python
+>>> 1 + 'hello'
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: unsupported operand type(s) for +: 'int' and 'str'
+~~~
+
+Where possible, I try to make elm-py code fail in obvious ways.  All the
+errors below are intentional!
+
+~~~ python
+>>> m = Maybe.noting
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: module 'Maybe' has no attribute 'noting'
+>>> m = Maybe.jut(42)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: module 'Maybe' has no attribute 'jut'
+>>>
+>>> m = Maybe.Just(42)
+>>> m = Maybe.Just("too", "many", "args")
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "C:\Users\Steve\PROJECTS\elm-py\Custom.py", line 52, in make
+    raise Exception('wrong number of vals')
+Exception: wrong number of vals
+~~~
+
+There is still plenty of room for improvement here.
+
+### Testing
+
+I have automated tests in [test.py](ahttps://github.com/showell/elm-py/blob/master/test.py).
+
+You should also check out [metaElm.py](https://github.com/showell/elm-py/blob/master/metaElm.py), which was Python code actually generated from Elm!
+(It wasn't using elm-in-elm, but it demonstrates a similar idea.)
+
+
+### Conclusion
+
+Thanks for reading!
+
+After I get more feedback I will announce future plans.  For now the
+most immediate goals are to finish porting some of the simpler
+libraries from elm/core.
+
+-- Steve Howell
+
+(find me on Elm's Slack or Github: userid = "showell")
