@@ -5,7 +5,6 @@ from Kernel import (
     )
 from Elm import F, pipe
 import Basics
-import Bool
 import List
 import Maybe
 import Order
@@ -80,7 +79,7 @@ def all(lst):
     return \
         F(List.all)(
             lambda x:
-                toElm(1 == x)
+                (1 == x)
             ,
             lst
         )
@@ -89,7 +88,7 @@ test(
     'all',
     all,
     [1, 1, 1],
-    Bool.true
+    True
 )
 
 
@@ -97,7 +96,7 @@ test(
     'all',
     all,
     [1, 1, 3],
-    Bool.false
+    False
 )
 
 
@@ -108,7 +107,7 @@ def any(lst):
     return \
         F(List.any)(
             lambda x:
-                toElm(4 == x)
+                (4 == x)
             ,
             lst
         )
@@ -117,7 +116,7 @@ test(
     'any',
     any,
     [1, 2, 3],
-    Bool.false
+    False
 )
 
 
@@ -125,7 +124,7 @@ test(
     'any',
     any,
     [1, 4, 3],
-    Bool.true
+    True
 )
 
 
@@ -134,13 +133,13 @@ test(
 
 def basicTupleStuff(n):
     return \
-        Tuple.toElm(( 5, (2 + 4) ))
+        ( 5, (2 + 4) )
 
 test(
     'basicTupleStuff',
     basicTupleStuff,
     5,
-    Tuple.toElm(( 5, 6 ))
+    ( 5, 6 )
 )
 
 
@@ -334,7 +333,7 @@ test(
     'f5Test',
     f5Test,
     5,
-    Tuple.toElm(( 1, Tuple.toElm(( 2, Tuple.toElm(( 3, Tuple.toElm(( 4, 5 )) )) )) ))
+    ( 1, ( 2, ( 3, ( 4, 5 ) ) ) )
 )
 
 
@@ -350,7 +349,7 @@ def factorial(n):
     return \
         (1
         if
-            toPy(toElm(n == 0))
+            toPy((n == 0))
         else
             (n * (factorial)(
                 (n - 1)
@@ -398,7 +397,7 @@ def filter(lst):
         [
             F(List.filter)(
                 lambda x:
-                    toElm(x == 4)
+                    (x == 4)
                 
             )
         ])
@@ -527,7 +526,7 @@ test(
     'isEmpty',
     isEmpty,
     [],
-    Bool.true
+    True
 )
 
 
@@ -535,7 +534,7 @@ test(
     'isEmpty',
     isEmpty,
     [1, 2],
-    Bool.false
+    False
 )
 
 
@@ -731,9 +730,9 @@ test(
     'map5',
     map5,
     [5, 10, 15, 20],
-    List.toElm([ Tuple.toElm(( 10, Tuple.toElm(( 5, Tuple.toElm(( 1, Tuple.toElm(( 33, 5 )) )) )) ))
-    , Tuple.toElm(( 20, Tuple.toElm(( 8, Tuple.toElm(( 2, Tuple.toElm(( 97, 10 )) )) )) ))
-    , Tuple.toElm(( 30, Tuple.toElm(( 7, Tuple.toElm(( 3, Tuple.toElm(( 103, 15 )) )) )) )) ])
+    List.toElm([ ( 10, ( 5, ( 1, ( 33, 5 ) ) ) )
+    , ( 20, ( 8, ( 2, ( 97, 10 ) ) ) )
+    , ( 30, ( 7, ( 3, ( 103, 15 ) ) ) ) ])
 )
 
 
@@ -776,7 +775,7 @@ test(
     'member',
     member,
     [41, 42, 43],
-    Bool.true
+    True
 )
 
 
@@ -815,7 +814,7 @@ def partition(lst):
     return \
         F(List.partition)(
             lambda n:
-                toElm(F(Basics.modBy)(
+                (F(Basics.modBy)(
                     2,
                     n
                 ) == 0)
@@ -827,7 +826,7 @@ test(
     'partition',
     partition,
     [1, 2, 3, 4, 5, 6, 7],
-    Tuple.toElm(( List.toElm([ 2, 4, 6 ]), List.toElm([ 1, 3, 5, 7 ]) ))
+    ( List.toElm([ 2, 4, 6 ]), List.toElm([ 1, 3, 5, 7 ]) )
 )
 
 
@@ -1166,6 +1165,6 @@ test(
     'unzip',
     unzip,
     [ 1, 2, 3, 4 ],
-    Tuple.toElm(( List.toElm([ 1, 2, 3, 4 ]), List.toElm([ 3, 6, 9, 12 ]) ))
+    ( List.toElm([ 1, 2, 3, 4 ]), List.toElm([ 3, 6, 9, 12 ]) )
 )
 
