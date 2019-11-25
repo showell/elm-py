@@ -48,3 +48,9 @@ def pipe(val, fns):
     for fn in fns:
         val = fn(val)
     return val
+
+def lcompose(g, f):
+    return lambda x: g(f(x))
+
+def rcompose(g, f):
+    return lambda x: f(g(x))

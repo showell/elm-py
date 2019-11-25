@@ -656,6 +656,11 @@ def testBasics():
 
     assertTrue(hasattr(Basics, 'never'))
 
+    # The following are << and >> in Basics.elm, but we put them
+    # in Elm.py.
+    assertEqual(Elm.lcompose(Basics.sqrt, double)(50), 10)
+    assertEqual(Elm.rcompose(Basics.sqrt, double)(49), 14)
+
 def testStrings():
     assertEqual(str(Order.EQ), "EQ")
     assertEqual(str(Maybe.Nothing), "Nothing")

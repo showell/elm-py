@@ -10,6 +10,10 @@ Operators -- We don't have any special support for operators.  Most
 
     To support nan/inf, a Python emitter should emit Basics.div(a, b)
     instead of a / b.
+
+Composition --
+    For function composition, either have your emitter inline
+    f(g(...), etc., or use helpers from Elm.py (pipe, lcompose, rcompose).
 """
 
 round = round
