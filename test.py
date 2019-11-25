@@ -651,6 +651,11 @@ def testBasics():
     assertTrue(Basics.isInfinite(Basics.div(1, 0)))
     assertFalse(Basics.isInfinite(42))
 
+    assertEqual(Basics.identity(42), 42)
+    assertEqual(Basics.always(42, 99), 42)
+
+    assertTrue(hasattr(Basics, 'never'))
+
 def testStrings():
     assertEqual(str(Order.EQ), "EQ")
     assertEqual(str(Maybe.Nothing), "Nothing")

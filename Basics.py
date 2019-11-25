@@ -95,3 +95,12 @@ def div(a, b):
             return float('inf')
 
     return a / b
+
+def identity(a):
+    return a
+
+def always(a, b):
+    return a
+
+def never():
+    raise Exception("type system is broke, never got called")
