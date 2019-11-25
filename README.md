@@ -100,6 +100,11 @@ For Elm custom types, we use a Python module called
 It has a class called `CustomType` to build new types, and then instances
 of the types are instances of `Custom`.
 
+The following types are custom types:
+
+- Order (EQ/LT/GT)
+- Maybe (Just/Nothing)
+
 The following things are **not** native Python, but they are
 instead wrapped versions of persistent data types:
 
@@ -304,7 +309,7 @@ There is still plenty of room for improvement here.
 
 ### Testing
 
-I have automated tests in [test.py](ahttps://github.com/showell/elm-py/blob/master/test.py).
+I have automated tests in [test.py](https://github.com/showell/elm-py/blob/master/test.py).
 
 You should also check out [metaElm.py](https://github.com/showell/elm-py/blob/master/metaElm.py), which was Python code actually generated from Elm!
 (It wasn't using elm-in-elm, but it demonstrates a similar idea.)
