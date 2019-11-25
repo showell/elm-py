@@ -234,6 +234,8 @@ False
 42
 ~~~
 
+## Pattern matching
+
 Python doesn't have the equivalent of Elm's case statement, but
 you can use idiomatic Python code to accomplish the same
 results:
