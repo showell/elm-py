@@ -26,13 +26,25 @@ min = min
 abs = abs
 e = math.e
 pi = math.pi
+
 cos = math.cos
 sin = math.sin
 tan = math.tan
-acos = math.acos
-asin = math.asin
-atan = math.atan
-atan2 = math.atan2
+
+def safe(f):
+    def wrapper(*args):
+        try:
+            return f(*args)
+        except ValueError:
+            return float('nan')
+
+    return wrapper
+
+acos = safe(math.acos)
+asin = safe(math.asin)
+atan = safe(math.atan)
+atan2 = safe(math.atan2)
+sqrt = safe(math.sqrt)
 
 def compare(a, b):
     return Order.toOrder(a, b)
@@ -78,12 +90,6 @@ def fromPolar(coord):
     x = r * cos(ang)
     y = r * sin(ang)
     return (x, y)
-
-def sqrt(n):
-    try:
-        return math.sqrt(n)
-    except ValueError:
-        return float('nan')
 
 def isNaN(n):
     return math.isnan(n)
