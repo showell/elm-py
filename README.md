@@ -64,12 +64,12 @@ Given that elm-in-elm will eventually allow automatic translation, why
 am I bothering to write this library?  Well, some of the core Elm code is
 actually "kernel" code written in JS.  Also, for the most core pieces of
 Elm, there are performance advantages to using hand-written Python.  Also,
-some of this code may go away once elm-in-elm becomes more mature!  (but we
-will make sure the behavior remains the same)
+some of this code may go away once elm-in-elm becomes more mature!  (but
+having these libraries now allows us to make progress until then)
 
 ### Completed pieces
 
-The following modules have been ported 100%:
+The following modules have been 100% ported:
 
 - Basics
 - List
@@ -77,17 +77,23 @@ The following modules have been ported 100%:
 - Order
 - Tuple
 
-You can also now create arbitrary custom types.  Just follow the
-example of [Maybe.py](https://github.com/showell/elm-py/blob/master/Maybe.py).
+
+### Custom types
+
+You can now create arbitrary custom types in Python!
+
+Just follow the example of
+[Maybe.py](https://github.com/showell/elm-py/blob/master/Maybe.py).
 
 ### Data representation
 
-For the following types of data, we use native Python equivalents:
+For the following types of data, we use the native immutable
+Python equivalents:
 
+- bools
 - numbers
 - strings
 - tuples
-- bools
 
 For Elm custom types, we use a Python module called
 [Custom.py](https://github.com/showell/elm-py/blob/master/Custom.py).
@@ -243,7 +249,7 @@ def minimum(lst):
     if List.isEmpty(lst):
         return Maybe.Nothing
     else:
-        (x, xs) = uncons(lst)
+        (x, xs) = List.uncons(lst)
         return Maybe.Just(foldl(min, x, xs))
 ~~~
 
@@ -301,6 +307,17 @@ I have automated tests in [test.py](ahttps://github.com/showell/elm-py/blob/mast
 You should also check out [metaElm.py](https://github.com/showell/elm-py/blob/master/metaElm.py), which was Python code actually generated from Elm!
 (It wasn't using elm-in-elm, but it demonstrates a similar idea.)
 
+### Prior art
+
+I am not aware of any other attempts at Elm/Python interoperability.  Let me
+know if I am missing anything!  Googling for "Python Elm" turns up many results
+on the "Extreme Learning Machine".
+
+Obviously, many Elm concepts are well understood in (parts of ) the Python community.
+
+For example, folks have written libraries like pyrsistent to implement immutable
+data structures.  Also, core Python has modules like `functools` and `itertools`
+for well over a decade, and they support functional programming concepts.
 
 ### Conclusion
 
