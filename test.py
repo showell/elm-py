@@ -602,6 +602,13 @@ def testBasics():
     assertFloat(Basics.logBase(10, 1000), 3)
     assertFloat(Basics.logBase(2, 256), 8)
 
+    assertFloat(Basics.e, 2.718281828459045)
+    assertFloat(Basics.pi, 3.141592653589793)
+
+    assertFloat(Basics.degrees(180), Basics.pi)
+    assertFloat(Basics.radians(2), 2)
+    assertFloat(Basics.turns(1/2), Basics.pi)
+
 def testStrings():
     assertEqual(str(Order.EQ), "EQ")
     assertEqual(str(Maybe.Nothing), "Nothing")

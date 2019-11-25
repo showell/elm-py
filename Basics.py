@@ -18,6 +18,8 @@ max = max
 min = min
 abs = abs
 sqrt = math.sqrt
+e = math.e
+pi = math.pi
 
 def compare(a, b):
     return Order.toOrder(a, b)
@@ -42,3 +44,12 @@ def clamp(lo, hi, x):
 
 def logBase(base, n):
     return math.log(n, base)
+
+def degrees(n):
+    return n * pi / 180
+
+def radians(n):
+    return n
+
+def turns(n):
+    return 2 * pi * n
