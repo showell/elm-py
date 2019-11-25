@@ -7,6 +7,9 @@ Operators -- We don't have any special support for operators.  Most
     side, if you are working with numbers or strings, just use
     normal Python operators.  If you need to pass in partial functions,
     use things like `lambda a: a + 1`.
+
+    To support nan/inf, a Python emitter should emit Basics.div(a, b)
+    instead of a / b.
 """
 
 round = round
@@ -17,7 +20,6 @@ truncate = math.trunc
 max = max
 min = min
 abs = abs
-sqrt = math.sqrt
 e = math.e
 pi = math.pi
 cos = math.cos
@@ -72,3 +74,24 @@ def fromPolar(coord):
     x = r * cos(ang)
     y = r * sin(ang)
     return (x, y)
+
+def sqrt(n):
+    try:
+        return math.sqrt(n)
+    except ValueError:
+        return float('nan')
+
+def isNaN(n):
+    return math.isnan(n)
+
+def isInfinite(n):
+    return math.isinf(n)
+
+def div(a, b):
+    if b == 0:
+        if a == 0:
+            return float('nan')
+        else:
+            return float('inf')
+
+    return a / b

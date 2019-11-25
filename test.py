@@ -638,6 +638,19 @@ def testBasics():
 
     assertFloat(Basics.fromPolar(Basics.toPolar((-3, -4))), (-3, -4))
 
+
+    assertFloat(Basics.div(7, 2), 3.5)
+
+    assertTrue(Basics.isNaN(Basics.sqrt(-1)))
+    assertTrue(Basics.isNaN(Basics.div(0, 0)))
+    assertFalse(Basics.isNaN(Basics.div(1, 0)))
+    assertFalse(Basics.isNaN(42))
+
+    assertFalse(Basics.isInfinite(Basics.div(0, 0)))
+    assertFalse(Basics.isInfinite(Basics.sqrt(-1)))
+    assertTrue(Basics.isInfinite(Basics.div(1, 0)))
+    assertFalse(Basics.isInfinite(42))
+
 def testStrings():
     assertEqual(str(Order.EQ), "EQ")
     assertEqual(str(Maybe.Nothing), "Nothing")
