@@ -23,6 +23,36 @@ Python.  There are some things that can map pretty naturally, though.
 If you are using Elm to create static HTML content, for example, that
 could map easily to Python.
 
+### Example
+
+Here is an example of using the library:
+
+~~~ py
+# ranks =
+#     \lst ->
+#         lst
+#             |> List.indexedMap Tuple.pair
+#             |> List.sortBy Tuple.second
+#             |> List.map Tuple.first
+#             |> List.indexedMap Tuple.pair
+#             |> List.sortBy Tuple.second
+#             |> List.map Tuple.first
+#             |> List.map (\n -> n + 1)
+
+def ranks(lst):
+    return \
+        pipe(lst,
+        [
+            F(List.indexedMap)(Tuple.pair),
+            F(List.sortBy)(Tuple.second),
+            F(List.map)(Tuple.first),
+            F(List.indexedMap)(Tuple.pair),
+            F(List.sortBy)(Tuple.second),
+            F(List.map)(Tuple.first),
+            F(List.map)(lambda n: n + 1)
+        ])
+~~~
+
 ### elm-in-elm
 
 There is a young project called [elm-in-elm](https://github.com/elm-in-elm/compiler)
@@ -88,7 +118,7 @@ simply haven't gotten to them yet:
 
 - Bitwise
 - Char
-- Debug (most folks will probably just debug natively in Python)
+- Debug
 - Result (should be very similar to Maybe) 
 - String
 
@@ -101,4 +131,109 @@ challenges:
 - Platform.Sub
 - Process
 - Task
+
+There are also important packages that aren't technically part of
+elm/core that may be worth porting, especially if they use kernel
+code:
+
+- elm/html
+- elm/http
+- elm/json
+- elm/parser
+- elm/url
+
+
+### Debugging
+
+I intend to port `Debug.elm` to Python, but most folks will just debug
+Python as they normally debug Python (which varies among Python
+programmers).
+
+Even though this library is obviously inspired by Elm, the code is
+fairly vanilla Python.  All objects support `str()` for easy print
+debugging.
+
+# Partial functions
+
+Most Python functions complain if you try to partially apply operators
+to them, but this is easily worked around, as demonstrated below:
+
+~~~ python
+>>> import List
+>>> List.repeat(5)("hello")
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: repeat() missing 1 required positional argument: 'x'
+>>>
+>>> from Elm import F
+>>>
+>>> F(List.repeat)(5)("hello")
+<ListKernel.List object at 0x0382FC40>
+>>> list(F(List.repeat)(5)("hello"))
+['hello', 'hello', 'hello', 'hello', 'hello']
+~~~
+
+See [Elm.py](https://github.com/showell/elm-py/blob/master/Elm.py) for more
+details on the `F` function.
+
+### Type conversions
+
+As mentioned above, the elm-py ecosystem mostly uses standard Python types,
+so there should be few interop concerns.  If you want to use the Python
+equivalent of an Elm list, then use the `toElm` helper on the inbound side.
+On the outbound side, just use `list(...)`, because the `List` type is an
+iterator.
+
+~~~ python
+>>> from Kernel import toElm
+>>> lst = toElm([ [1, 2, 3], [4, 5] ])
+>>> maybe_list = List.head(lst)
+>>> str(maybe_list)
+'Just [ 1, 2, 3 ]'
+>>> list(maybe_list.val)
+[1, 2, 3]
+~~~
+
+It is also easy to work with Maybe types:
+
+~~~ python
+>>> import Maybe
+>>> m1 = Maybe.Nothing
+>>> m2 = Maybe.Just(42)
+>>>
+>>> m1.vtype
+'Nothing'
+>>> m2.vtype
+'Just'
+>>> m1.match('Just')
+False
+>>> m2.match('Just')
+True
+>>> m1 is Maybe.Nothing
+True
+>>> m2 is Maybe.Nothing
+False
+>>> m2.val
+42
+~~~
+
+Python doesn't have the equivalent of Elm's case statement, but
+you can use idiomatic Python code to accomplish the same
+results:
+
+~~~ py
+def andThen(f, m):
+    if m == Maybe.Nothing:
+        return Maybe.Nothing
+
+    return f(m.val)
+
+def minimum(lst):
+    if List.isEmpty(lst):
+        return Maybe.Nothing
+    else:
+        (x, xs) = uncons(lst)
+        return Maybe.Just(foldl(min, x, xs))
+~~~
+
 
