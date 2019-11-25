@@ -551,13 +551,32 @@ def testBasics():
             Order.LT
             )
 
-    assertEqual(Basics.modBy(3, -7), 2)
-    assertEqual(Basics.modBy(3, 7), 1)
-
     assertEqual(Basics.xor(True, False), True)
     assertEqual(Basics.xor(False, True), True)
     assertEqual(Basics.xor(True, True), False)
     assertEqual(Basics.xor(False, False), False)
+
+    assertEqual(Basics.modBy(3, 0), 0)
+    assertEqual(Basics.modBy(3, 6), 0)
+    assertEqual(Basics.modBy(3, 7), 1)
+
+    assertEqual(Basics.modBy(3, -8), 1)
+    assertEqual(Basics.modBy(3, -7), 2)
+    assertEqual(Basics.modBy(3, -6), 0)
+
+    assertEqual(Basics.modBy(-3, 7), -2)
+
+    assertEqual(Basics.remainderBy(3, 0), 0)
+    assertEqual(Basics.remainderBy(3, 3), 0)
+    assertEqual(Basics.remainderBy(3, 6), 0)
+    assertEqual(Basics.remainderBy(3, 7), 1)
+
+    assertEqual(Basics.remainderBy(3, -6), 0)
+    assertEqual(Basics.remainderBy(3, -7), -1)
+    assertEqual(Basics.remainderBy(3, -8), -2)
+
+    assertEqual(Basics.remainderBy(-3, -7), -1)
+    assertEqual(Basics.remainderBy(-3, 7), 1)
 
 def testStrings():
     assertEqual(str(Order.EQ), "EQ")

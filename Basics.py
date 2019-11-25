@@ -20,9 +20,15 @@ min = min
 def compare(a, b):
     return Order.toOrder(a, b)
 
+def xor(a, b):
+    return bool(a) != bool(b)
+
 def modBy(a, b):
     return b % a
 
-def xor(a, b):
-    return bool(a) != bool(b)
+def remainderBy(a, b):
+    if b >= 0:
+        return b % abs(a)
+    else:
+        return -1 * ((-1 * b) % abs(a))
 
