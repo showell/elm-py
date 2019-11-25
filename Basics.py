@@ -23,3 +23,6 @@ def compare(a, b):
 def modBy(a, b):
     return b % a
 
+def xor(a, b):
+    return bool(a) != bool(b)
+
