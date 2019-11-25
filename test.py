@@ -2,11 +2,6 @@ from Kernel import (
         toElm,
         toPy,
         )
-from Bool import (
-        toElmPred,
-        true,
-        false,
-        )
 from Order import (
         toOrder
         )
@@ -32,7 +27,7 @@ def printList(xs):
     print(toPy(xs))
 
 def assertTrue(actual):
-    if actual == true:
+    if actual == True:
         print('pass')
     else:
         print('\n\nFAIL!\n', actual)
@@ -40,7 +35,7 @@ def assertTrue(actual):
         raise AssertionError
 
 def assertFalse(actual):
-    if actual == false:
+    if actual == False:
         print('pass')
     else:
         print('\n\nFAIL!\n', actual)
@@ -63,9 +58,9 @@ def assertList(elmList, expected):
         print('\n')
         raise AssertionError
 
-even = toElmPred(lambda x : x % 2 == 0)
-negative = toElmPred(lambda x : x < 0)
-positive = toElmPred(lambda x : x > 0)
+even = lambda x : x % 2 == 0
+negative = lambda x : x < 0
+positive = lambda x : x > 0
 double = lambda x : x * 2
 triple = lambda x : x * 3
 add = lambda x, y: x + y
@@ -107,17 +102,17 @@ def testListBasics():
 
     assertEqual(
             Kernel.eq(lst3, lst3Clone),
-            true
+            True
             )
 
     assertEqual(
             Kernel.eq(List.empty(), empty),
-            true
+            True
             )
 
     assertEqual(
             Kernel.eq(lst3, numLst),
-            false
+            False
             )
 
     assertTrue(List.isEmpty(empty))
@@ -358,11 +353,11 @@ def testListOfLists():
 
     assertEqual(
             List.member(List.singleton(2), lol),
-            true)
+            True)
 
     assertEqual(
             List.member(List.singleton(9), lol),
-            false)
+            False)
 
 def testPartialApply():
     assertList(
@@ -394,9 +389,9 @@ def checkPerformance():
             List.length(List.foldr(List.cons, empty, bigList)),
             List.length(bigList)
             )
-    List.all(lambda x: true, bigList)
-    List.any(lambda x: false, bigList)
-    List.filter(lambda x: true, bigList)
+    List.all(lambda x: True, bigList)
+    List.any(lambda x: False, bigList)
+    List.filter(lambda x: True, bigList)
     List.filterMap(toMaybe, bigList)
     List.reverse(bigList)
     assertEqual(List.maximum(bigList), Just(100000))

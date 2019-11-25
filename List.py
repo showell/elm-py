@@ -2,7 +2,6 @@ import functools
 import itertools
 
 from Order import orderToInt
-import Bool
 import TupleKernel
 import ListKernel as lk
 import operator
@@ -19,10 +18,8 @@ immutable.
     [1, 2] = (1, (2, ...))
 """
 
-toElmBool = Bool.toElm
 toElmTup = TupleKernel.toElm
 toPyTup = TupleKernel.toPy
-toPyPred = Bool.toPyPred
 toElm = lk.toElm
 empty = lk.empty
 cons = lk.cons
@@ -68,7 +65,7 @@ def foldr(func, acc, xs):
         acc = func(x, acc)
     return acc
 
-@Elm.wrap(toPyPred, None, toElm)
+@Elm.wrap(None, None, toElm)
 def filter(isGood, lst):
     return filter_(isGood, lst)
 
@@ -91,14 +88,12 @@ def reverse(lst):
 def member(x, xs):
     return any(lambda b: Kernel.eq(x, b), xs)
 
-@Elm.wrap(toPyPred, None, toElmBool)
 def all(isOkay, lst):
     for x in lst:
         if not isOkay(x):
             return False
     return True
 
-@Elm.wrap(toPyPred, None, toElmBool)
 def any(isOkay, lst):
     for x in lst:
         if isOkay(x):
@@ -192,7 +187,6 @@ def sortWith(compF, lst):
 
     return _sortHelper(c, lst)
 
-@Elm.wrap(None, toElmBool)
 def isEmpty(lst):
     return lk.isEmpty(lst)
 
@@ -228,7 +222,7 @@ def drop(n, xs):
 
     return xs
 
-@Elm.wrap(toPyPred, None, toElmTup)
+@Elm.wrap(None, None, toElmTup)
 def partition(pred, lst):
     def step(x, tup):
         (trues, falses) = tup

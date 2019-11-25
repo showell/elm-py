@@ -1,7 +1,6 @@
 import functools
 import itertools
 import Elm
-import Bool
 import ListKernel
 import TupleKernel
 from Custom import Custom, CustomType
@@ -18,8 +17,6 @@ def toPy(x):
         return list(map(toPy, x))
     elif TupleKernel.isTup(x):
         return tuple(map(toPy, TupleKernel.toPy(x)))
-    elif isCustomType(x, 'Bool'):
-        return Bool.toPy(x)
     elif isCustomType(x, 'Maybe'):
         raise Exception('not serializable to Python yet')
     else:
@@ -30,8 +27,6 @@ def toElm(x):
         return ListKernel.toElm(toElm(item) for item in x)
     elif type(x) == tuple:
         return TupleKernel.toElm(tuple(map(toElm, list(x))))
-    elif type(x) == bool:
-        return Bool.toElm(x)
     return x
 
 
@@ -51,13 +46,17 @@ def compare(a, b):
 
     return 0
 
-@Elm.wrap(None, None, Bool.toElm)
 def eq(a, b):
     if type(a) == int:
         return a == b
-    elif ListKernel.isList(a):
+
+    if type(a) == bool:
         return a == b
-    elif TupleKernel.isTup(a):
+
+    if ListKernel.isList(a):
+        return a == b
+
+    if TupleKernel.isTup(a):
         return a == b
 
     raise Exception('eq not implemented fully yet')
