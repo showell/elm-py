@@ -9,6 +9,9 @@ def j(*lst):
 def jj(lst):
     return '\n\n'.join(str(item) for item in lst)
 
+def oneLine(*lst):
+    return ' '.join(lst)
+
 def commas(items):
     if len(items) == 0:
         return 'MISSING params!'
@@ -31,6 +34,18 @@ class Tuple:
 
     def __str__(self):
         return 'TUP: ' + str(self.ast)
+
+class Lambda:
+    def __init__(self, ast):
+        self.params = ast[0]
+        self.expr = ast[1]
+
+    def __str__(self):
+        return oneLine(
+            str(self.params),
+            '->',
+            str(self.expr)
+            )
 
 class Import:
     def __init__(self, ast):

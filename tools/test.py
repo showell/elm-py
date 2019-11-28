@@ -119,6 +119,13 @@ succeed(parseElm.captureExpr(
 
 succeed(parseElm.captureAnnotation(
     parse.State("""
-foo : List String ->
+foo : List String  ->
    String ->
    Int""")))
+
+succeed(parseElm.captureLambda(
+    parse.State("""
+    \\a b -> c
+    """)))
+
+

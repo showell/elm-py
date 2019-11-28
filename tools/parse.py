@@ -65,6 +65,19 @@ def tokenChar(s, i):
 
     return True
 
+def pChar(c):
+    if len(c) != 1:
+        raise Exception('pChar wants single character')
+
+    def wrapper(state):
+        (s, i) = state.position()
+        if i > len(s) or s[i] != c:
+            return
+
+        return state.setIndex(i+1)
+
+    return wrapper
+
 def parseAll(state):
     (s, i) = state.position()
     return state.setIndex(len(s))
@@ -221,15 +234,17 @@ def fixAsts(asts):
 
 def captureSeq(*fns):
     def wrapper(state):
-        state = spaceOptional(state)
 
         asts = []
         for fn in fns:
+            state = spaceOptional(state)
             res = fn(state) # captureSeq
             if res is None:
                 return
             state = res.state
             asts.append(res.ast)
+
+        state = spaceOptional(state)
 
         ast = fixAsts(asts)
         return Result(state, ast)
@@ -435,6 +450,16 @@ def parseKeywordBlock(keyword):
             parseBlock
             )(state)
     return wrapper
+
+def captureUntilKeyword(keyword, fCapture):
+    return \
+        captureSeq(
+            twoPass(
+                pUntil(keyword),
+                fCapture
+                ),
+            skip(pKeyword(keyword)),
+            )
 
 def captureUntilKeywordEndsLine(keyword, fCapture):
     return \

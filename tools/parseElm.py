@@ -7,6 +7,7 @@ from parse import (
         captureOneOrMore,
         captureSeq,
         captureSubBlock,
+        captureUntilKeyword,
         captureUntilKeywordEndsLine,
         captureZeroOrMore,
         grab,
@@ -18,6 +19,7 @@ from parse import (
         parseRange,
         parseSameLine,
         peek,
+        pChar,
         pKeyword,
         pLine,
         printState,
@@ -217,6 +219,19 @@ captureCall = \
         types.Call,
         captureOneOrMore(
             grab(token),
+            )
+        )
+
+captureLambda = \
+    transform(
+        types.Lambda,
+        captureSeq(
+            skip(pChar('\\')),
+            captureUntilKeyword(
+                '->',
+                captureParams
+                ),
+            captureExpr,
             )
         )
 
