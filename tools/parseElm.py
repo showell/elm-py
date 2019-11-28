@@ -5,7 +5,7 @@ from parse import (
         captureKeywordBlock,
         captureOneOf,
         captureOneOrMore,
-        captureSeq,
+        captureStuff,
         captureSubBlock,
         captureUntilKeyword,
         captureUntilKeywordEndsLine,
@@ -69,7 +69,7 @@ captureType = \
 captureIf = \
     transform(
         types.If,
-        captureSeq(
+        captureStuff(
             skip(pKeyword('if')),
             captureUntilKeywordEndsLine(
                 'then',
@@ -89,7 +89,7 @@ captureIf = \
 captureCaseOf = \
     transform(
         types.CaseOf,
-        captureSeq(
+        captureStuff(
             skip(pKeyword('case')),
             captureUntilKeywordEndsLine(
                 'of',
@@ -101,7 +101,7 @@ captureCaseOf = \
 capturePatternDef = \
     transform(
         types.PatternDef,
-        captureSeq(
+        captureStuff(
             captureUntilKeywordEndsLine(
                 '->',
                 capturePunt
@@ -112,7 +112,7 @@ capturePatternDef = \
 captureOneCase = \
     transform(
         types.OneCase,
-        captureSeq(
+        captureStuff(
             capturePatternDef,
             skip(spaceOptional),
             twoPass(
@@ -125,7 +125,7 @@ captureOneCase = \
 captureCase = \
     transform(
         types.Case,
-        captureSeq(
+        captureStuff(
             captureCaseOf,
             skip(spaceOptional),
             twoPass(
@@ -138,7 +138,7 @@ captureCase = \
 captureTuple = \
     transform(
         types.Tuple,
-        captureSeq(
+        captureStuff(
             skip(pKeyword('(')),
             twoPass(
                 pUntilChar(')'),
@@ -165,7 +165,7 @@ captureDef = \
         types.Def,
         captureUntilKeywordEndsLine(
             '=',
-            captureSeq(
+            captureStuff(
                 grab(token),
                 skip(spaceOptional),
                 captureParams,
@@ -176,7 +176,7 @@ captureDef = \
 captureBinding = \
     transform(
         types.Binding,
-        captureSeq(
+        captureStuff(
             captureDef,
             skip(spaceOptional),
             twoPass(
@@ -193,7 +193,7 @@ captureLetBindings = \
 captureLet = \
     transform(
         types.Let,
-        captureSeq(
+        captureStuff(
             captureSubBlock('let', captureLetBindings),
             captureSubBlock('in', capturePunt),
             )
@@ -202,9 +202,9 @@ captureLet = \
 captureAnnotation = \
     transform(
         types.Annotation,
-        captureSeq(
+        captureStuff(
             onlyIf(
-                captureSeq(
+                captureStuff(
                     skip(token),
                     skip(spaceOptional),
                     skip(pKeyword(':')),
@@ -217,7 +217,7 @@ captureAnnotation = \
 captureLambda = \
     transform(
         types.Lambda,
-        captureSeq(
+        captureStuff(
             skip(pChar('\\')),
             captureUntilKeyword(
                 '->',
@@ -249,7 +249,7 @@ captureComment = \
         )
 
 doCaptureExpr = \
-    captureSeq(
+    captureStuff(
         skipManyCaptures(captureComment),
         captureOneOf(
             captureLet,
@@ -280,7 +280,7 @@ captureMainCode = \
         )
 
 captureAll = \
-    captureSeq(
+    captureStuff(
         captureTopOfFile,
         captureMainCode,
         )

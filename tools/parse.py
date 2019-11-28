@@ -232,13 +232,13 @@ def fixAsts(asts):
         return asts[0]
     return asts
 
-def captureSeq(*fns):
+def captureStuff(*fns):
     def wrapper(state):
 
         asts = []
         for fn in fns:
             state = spaceOptional(state)
-            res = fn(state) # captureSeq
+            res = fn(state) # captureStuff
             if res is None:
                 return
             state = res.state
@@ -453,7 +453,7 @@ def parseKeywordBlock(keyword):
 
 def captureUntilKeyword(keyword, fCapture):
     return \
-        captureSeq(
+        captureStuff(
             twoPass(
                 pUntil(keyword),
                 fCapture
@@ -463,7 +463,7 @@ def captureUntilKeyword(keyword, fCapture):
 
 def captureUntilKeywordEndsLine(keyword, fCapture):
     return \
-        captureSeq(
+        captureStuff(
             twoPass(
                 pUntilLineEndsWith(keyword),
                 fCapture
@@ -474,7 +474,7 @@ def captureUntilKeywordEndsLine(keyword, fCapture):
             )
 
 def captureKeywordBlock(keyword):
-    return captureSeq(
+    return captureStuff(
         grab(parseKeywordBlock(keyword)),
         skip(spaceOptional))
 
