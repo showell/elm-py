@@ -24,6 +24,13 @@ def commas(items):
 
     return str(items[0]) + '(' + ', '.join(str(x) for x in items[1:]) + ')'
 
+class Comment:
+    def __init__(self, ast):
+        self.ast = ast
+
+    def __str__(self):
+        return 'COMMENT: ' + self.ast
+
 class UnParsed:
     def __init__(self, ast):
         self.ast = ast

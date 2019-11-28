@@ -1,10 +1,10 @@
 import types
 
 from parse import (
-        bigSkip,
         captureKeywordBlock,
         captureOneOf,
         captureOneOrMore,
+        captureRange,
         captureSeq,
         captureStuff,
         captureSubBlock,
@@ -17,7 +17,6 @@ from parse import (
         parseBlock,
         parseKeywordBlock,
         parseMyLevel,
-        parseRange,
         parseSameLine,
         peek,
         pChar,
@@ -49,10 +48,24 @@ capturePunt = \
 
 parseModule = parseKeywordBlock('module')
 
-parseDocs = parseRange('{-|', '-}')
+captureDocs = \
+    transform(
+        types.Comment,
+        captureRange(
+            '{-|',
+            '-}',
+            ),
+        )
 
-parseLineComment = bigSkip(pKeyword('--'), pLine)
 
+captureLineComment = \
+    transform(
+        types.Comment,
+        captureStuff(
+            skip(pKeyword('--')),
+            grab(pLine)
+            )
+        )
 
 captureImport = \
     transform(
@@ -234,8 +247,8 @@ captureCall = \
 captureComment = \
     captureOneOf(
         skip(spaceRequired),
-        skip(parseLineComment),
-        skip(parseDocs),
+        captureLineComment,
+        captureDocs,
         captureAnnotation,
         )
 

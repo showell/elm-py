@@ -19,18 +19,18 @@ def succeed(res):
     print(ast)
 
 
-succeed(parseElm.skip(parseElm.parseDocs)(
-    parse.State("""
-    {-|
-       bla bla bla
-    -}
-    """)))
-
 succeed(parseElm.skip(parseElm.parseModule)(
     parse.State("""
     module foo exposing (
         foo, bar
         )
+    """)))
+
+succeed(parseElm.captureDocs(
+    parse.State("""
+    {-|
+       bla bla bla
+    -}
     """)))
 
 succeed(parseElm.captureImport(

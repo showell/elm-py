@@ -192,22 +192,6 @@ def pKeyword(kw):
                 return state.setIndex(iEnd)
     return wrapper
 
-def pUntilIncluding(kw):
-    if kw != kw.strip():
-        raise Exception('do not pad until keywords')
-
-    n = len(kw)
-
-    def wrapper(state):
-        (s, i) = state.position()
-        while i < len(s):
-            iEnd = i + n
-            if s[i:iEnd] == kw:
-                if isWord(s, i, iEnd):
-                    return state.setIndex(iEnd)
-            i += 1
-    return wrapper
-
 def pUntil(kw):
     if kw == '\n':
         raise Exception('use pLine for detecting end of line')
@@ -301,25 +285,14 @@ def parseKeywordBlock(keyword):
             )(state)
     return wrapper
 
-def parseRange(start, end):
-    return bigSkip(
-            spaceOptional,
-            pKeyword(start),
-            pUntilIncluding(end),
-            spaceOptional
-            )
-
 # CAPTURE
 
-def bigSkip(*fns):
-    def wrapper(state):
-        state = spaceOptional(state)
-        for fn in fns:
-            state = fn(state)
-            if state is None: return
-        state = spaceOptional(state)
-        return state
-    return wrapper
+def captureRange(start, end):
+    return captureStuff(
+            skip(pKeyword(start)),
+            grab(pUntil(end)),
+            skip(pKeyword(end))
+            )
 
 def captureSeq(start, delim, end, fCaptureItem):
     pStart = pChar(start)
@@ -362,15 +335,15 @@ def captureSeq(start, delim, end, fCaptureItem):
     return wrapper
 
 def captureSubBlock(keyword, f):
+    parse1 = pKeyword(keyword)
+
     def wrapper(state):
-        state = bigSkip(
-                spaceOptional,
-                pKeyword(keyword),
-                pLine,
-                spaceOptional
-                )(state)
-        if not state:
+        state = spaceOptional(state)
+        state = parse1(state)
+        if state is None:
             return
+
+        state = spaceOptional(state)
 
         return twoPass(parseMyLevel, f)(state)
 
