@@ -38,18 +38,28 @@ class CaptureManyFailure:
     def __str__(self):
         return 'CaptureManyFailure'
 
-def printState(state):
-    (s, i) = state.position()
-    print('state:\n' + s[i:i+50])
-
 def transform(f, cap):
-
     def wrapper(state):
         res = cap(state) # transform
         if res is None:
             return
         return Result(res.state, f(res.ast))
     return wrapper
+
+# PARSING HELPERS
+
+def printState(state):
+    (s, i) = state.position()
+    print('state:\n' + s[i:i+50])
+
+def isBeginWord(s, start):
+    return start == 0 or s[start-1].isspace()
+
+def isEndWord(s, end):
+    return end >= len(s) or s[end].isspace()
+
+def isWord(s, start, end):
+    return isBeginWord(s, start) and isEndWord(s, end)
 
 def tokenChar(s, i):
     if i >= len(s):
@@ -64,6 +74,45 @@ def tokenChar(s, i):
         return False
 
     return True
+
+def peek(state, kw):
+    (s, i) = state.position()
+    return s[i:i+len(kw)] == kw
+
+def readline(s, i):
+    while i < len(s) and s[i] != '\n':
+        i += 1
+
+    # skip over blank lines
+    while i < len(s) and s[i].isspace():
+        i += 1
+    return i
+
+def indentLevel(s, i):
+    if s[i].isspace():
+        raise Exception('expected nonspace')
+    i -= 1
+    n = 0
+    while i >= 0 and s[i] != '\n':
+        n += 1
+        if not s[i].isspace():
+            raise Exception('expected space')
+        i -= 1
+
+    return n
+
+
+# PARSING
+
+def token(state):
+    (s, i) = state.position()
+
+    if not tokenChar(s, i):
+        return
+
+    while tokenChar(s, i):
+        i += 1
+    return state.setIndex(i)
 
 def pChar(c):
     if len(c) != 1:
@@ -81,6 +130,186 @@ def pChar(c):
 def parseAll(state):
     (s, i) = state.position()
     return state.setIndex(len(s))
+
+def parseSameLine(parse):
+    return twoPassParse(
+            pLine,
+            parse)
+
+def twoPassParse(parse1, parse2):
+    def wrapper(state):
+        (s, iOrig) = state.position()
+        state1 = parse1(state)
+        if state1 is None:
+            return None
+
+        (s, iEnd) = state1.position()
+
+        lineText = s[iOrig:iEnd]
+        subState = State(lineText, 0)
+
+        state2 = parse2(subState)
+        if state2 is None:
+            return None
+
+        (_, n) = state2
+        return state.setIndex(iOrig + n)
+
+    return wrapper
+
+def spaceOptional(state):
+    (s, i) = state.position()
+
+    while i < len(s) and s[i].isspace():
+        i += 1
+
+    return state.maybeSetIndex(i)
+
+def spaceRequired(state):
+    (s, i) = state.position()
+
+    iOrig = i
+
+    while i < len(s) and s[i].isspace():
+        i += 1
+
+    if i == iOrig:
+        return
+
+    return state.setIndex(i)
+
+
+def pKeyword(kw):
+    if kw != kw.strip():
+        raise Exception('do not pad until keywords; we already check boundaries')
+    n = len(kw)
+
+    def wrapper(state):
+        (s, i) = state.position()
+        iEnd = i + n
+        if s[i : iEnd] == kw:
+            if isWord(s, i, iEnd):
+                return state.setIndex(iEnd)
+    return wrapper
+
+def pUntilIncluding(kw):
+    if kw != kw.strip():
+        raise Exception('do not pad until keywords')
+
+    n = len(kw)
+
+    def wrapper(state):
+        (s, i) = state.position()
+        while i < len(s):
+            iEnd = i + n
+            if s[i:iEnd] == kw:
+                if isWord(s, i, iEnd):
+                    return state.setIndex(iEnd)
+            i += 1
+    return wrapper
+
+def pUntil(kw):
+    if kw == '\n':
+        raise Exception('use pLine for detecting end of line')
+    if len(kw) == 1:
+        raise Exception('use pUntilIncludingChar for single characters')
+    if kw != kw.strip():
+        raise Exception('do not pad until keywords; we already check boundaries')
+    n = len(kw)
+
+    def wrapper(state):
+        (s, i) = state.position()
+        while i < len(s):
+            iEnd = i + n
+            if s[i:iEnd] == kw:
+                if isWord(s, i, iEnd):
+                    return state.setIndex(i)
+            i += 1
+    return wrapper
+
+def pUntilLineEndsWith(kw):
+    if kw == '\n':
+        raise Exception('use pLine for detecting end of line')
+    if kw != kw.strip():
+        raise Exception('do not pad until keywords')
+    kw = ' ' + kw
+    n = len(kw)
+
+    def wrapper(state):
+        (s, i) = state.position()
+        while i < len(s) and s[i] != '\n':
+            i += 1
+        if s[i-n:i] == kw:
+            return state.setIndex(i-n+1)
+    return wrapper
+
+def pUntilChar(c):
+    def wrapper(state):
+        (s, i) = state.position()
+        while i < len(s):
+            if s[i] == c:
+                return state.setIndex(i)
+            i += 1
+    return wrapper
+
+def pLine(state):
+    (s, i) = state.position()
+    while i < len(s):
+        if s[i] == '\n':
+            return state.maybeSetIndex(i)
+        i += 1
+    # end of file is equivalent to newline
+    return state.maybeSetIndex(i)
+
+def parseMyLevel(state):
+    (s, i) = state.position()
+    level = indentLevel(s, i)
+
+    i = readline(s, i)
+
+    while i < len(s) and indentLevel(s, i) >= level:
+        i = readline(s, i)
+
+    return state.setIndex(i)
+
+def parseBlock(state):
+    (s, i) = state.position()
+    level = indentLevel(s, i)
+
+    i = readline(s, i)
+
+    while i < len(s) and indentLevel(s, i) > level:
+        i = readline(s, i)
+
+    return state.setIndex(i)
+
+def onlyIf(parse1, parse2):
+    def wrapper(state):
+        if parse1(state) is None:
+            return
+        return parse2(state)
+    return wrapper
+
+def parseKeywordBlock(keyword):
+    def wrapper(state):
+        state = spaceOptional(state)
+        if state is None:
+            return
+        return onlyIf(
+            pKeyword(keyword),
+            parseBlock
+            )(state)
+    return wrapper
+
+def parseRange(start, end):
+    return bigSkip(
+            spaceOptional,
+            pKeyword(start),
+            pUntilIncluding(end),
+            spaceOptional
+            )
+
+# CAPTURE
 
 def bigSkip(*fns):
     def wrapper(state):
@@ -144,32 +373,6 @@ def captureSubBlock(keyword, f):
             return
 
         return twoPass(parseMyLevel, f)(state)
-
-    return wrapper
-
-def parseSameLine(parse):
-    return twoPassParse(
-            pLine,
-            parse)
-
-def twoPassParse(parse1, parse2):
-    def wrapper(state):
-        (s, iOrig) = state.position()
-        state1 = parse1(state)
-        if state1 is None:
-            return None
-
-        (s, iEnd) = state1.position()
-
-        lineText = s[iOrig:iEnd]
-        subState = State(lineText, 0)
-
-        state2 = parse2(subState)
-        if state2 is None:
-            return None
-
-        (_, n) = state2
-        return state.setIndex(iOrig + n)
 
     return wrapper
 
@@ -302,196 +505,6 @@ def captureOneOf(*fns):
                 return res
     return wrapper
 
-def peek(state, kw):
-    (s, i) = state.position()
-    return s[i:i+len(kw)] == kw
-
-def spaceOptional(state):
-    (s, i) = state.position()
-
-    while i < len(s) and s[i].isspace():
-        i += 1
-
-    return state.maybeSetIndex(i)
-
-def spaceRequired(state):
-    (s, i) = state.position()
-
-    iOrig = i
-
-    while i < len(s) and s[i].isspace():
-        i += 1
-
-    if i == iOrig:
-        return
-
-    return state.setIndex(i)
-
-
-def pKeyword(kw):
-    if kw != kw.strip():
-        raise Exception('do not pad until keywords; we already check boundaries')
-    n = len(kw)
-
-    def wrapper(state):
-        (s, i) = state.position()
-        iEnd = i + n
-        if s[i : iEnd] == kw:
-            if isWord(s, i, iEnd):
-                return state.setIndex(iEnd)
-    return wrapper
-
-def pUntilIncluding(kw):
-    if kw != kw.strip():
-        raise Exception('do not pad until keywords')
-
-    n = len(kw)
-
-    def wrapper(state):
-        (s, i) = state.position()
-        while i < len(s):
-            iEnd = i + n
-            if s[i:iEnd] == kw:
-                if isWord(s, i, iEnd):
-                    return state.setIndex(iEnd)
-            i += 1
-    return wrapper
-
-def pUntil(kw):
-    if kw == '\n':
-        raise Exception('use pLine for detecting end of line')
-    if len(kw) == 1:
-        raise Exception('use pUntilIncludingChar for single characters')
-    if kw != kw.strip():
-        raise Exception('do not pad until keywords; we already check boundaries')
-    n = len(kw)
-
-    def wrapper(state):
-        (s, i) = state.position()
-        while i < len(s):
-            iEnd = i + n
-            if s[i:iEnd] == kw:
-                if isWord(s, i, iEnd):
-                    return state.setIndex(i)
-            i += 1
-    return wrapper
-
-def pUntilLineEndsWith(kw):
-    if kw == '\n':
-        raise Exception('use pLine for detecting end of line')
-    if kw != kw.strip():
-        raise Exception('do not pad until keywords')
-    kw = ' ' + kw
-    n = len(kw)
-
-    def wrapper(state):
-        (s, i) = state.position()
-        while i < len(s) and s[i] != '\n':
-            i += 1
-        if s[i-n:i] == kw:
-            return state.setIndex(i-n+1)
-    return wrapper
-
-def pUntilChar(c):
-    def wrapper(state):
-        (s, i) = state.position()
-        while i < len(s):
-            if s[i] == c:
-                return state.setIndex(i)
-            i += 1
-    return wrapper
-
-def pLine(state):
-    (s, i) = state.position()
-    while i < len(s):
-        if s[i] == '\n':
-            return state.maybeSetIndex(i)
-        i += 1
-    # end of file is equivalent to newline
-    return state.maybeSetIndex(i)
-
-def isBeginWord(s, start):
-    return start == 0 or s[start-1].isspace()
-
-def isEndWord(s, end):
-    return end >= len(s) or s[end].isspace()
-
-def isWord(s, start, end):
-    return isBeginWord(s, start) and isEndWord(s, end)
-
-def token(state):
-    (s, i) = state.position()
-
-    if not tokenChar(s, i):
-        return
-
-    while tokenChar(s, i):
-        i += 1
-    return state.setIndex(i)
-
-def readline(s, i):
-    while i < len(s) and s[i] != '\n':
-        i += 1
-
-    # skip over blank lines
-    while i < len(s) and s[i].isspace():
-        i += 1
-    return i
-
-def indentLevel(s, i):
-    if s[i].isspace():
-        raise Exception('expected nonspace')
-    i -= 1
-    n = 0
-    while i >= 0 and s[i] != '\n':
-        n += 1
-        if not s[i].isspace():
-            raise Exception('expected space')
-        i -= 1
-
-    return n
-
-
-def parseMyLevel(state):
-    (s, i) = state.position()
-    level = indentLevel(s, i)
-
-    i = readline(s, i)
-
-    while i < len(s) and indentLevel(s, i) >= level:
-        i = readline(s, i)
-
-    return state.setIndex(i)
-
-def parseBlock(state):
-    (s, i) = state.position()
-    level = indentLevel(s, i)
-
-    i = readline(s, i)
-
-    while i < len(s) and indentLevel(s, i) > level:
-        i = readline(s, i)
-
-    return state.setIndex(i)
-
-def onlyIf(parse1, parse2):
-    def wrapper(state):
-        if parse1(state) is None:
-            return
-        return parse2(state)
-    return wrapper
-
-def parseKeywordBlock(keyword):
-    def wrapper(state):
-        state = spaceOptional(state)
-        if state is None:
-            return
-        return onlyIf(
-            pKeyword(keyword),
-            parseBlock
-            )(state)
-    return wrapper
-
 def captureUntilKeyword(keyword, fCapture):
     return \
         captureStuff(
@@ -516,12 +529,3 @@ def captureKeywordBlock(keyword):
     return captureStuff(
         grab(parseKeywordBlock(keyword)),
         )
-
-def parseRange(start, end):
-    return bigSkip(
-            spaceOptional,
-            pKeyword(start),
-            pUntilIncluding(end),
-            spaceOptional
-            )
-
