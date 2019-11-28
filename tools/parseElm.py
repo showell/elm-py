@@ -200,7 +200,7 @@ captureLet = \
         types.Let,
         captureStuff(
             captureSubBlock('let', captureLetBindings),
-            captureSubBlock('in', capturePunt),
+            captureSubBlock('in', captureExpr),
             )
         )
 
@@ -236,9 +236,9 @@ captureCall = \
         types.Call,
         captureOneOrMore(
             captureOneOf(
-                grab(token),
                 captureLambda,
                 captureTuple,
+                grab(token),
                 )
             )
         )
