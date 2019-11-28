@@ -5,7 +5,8 @@ import types
 def succeed(res):
     if res is None:
         raise Exception('parse failure')
-    state, ast = res
+    state = res.state
+    ast = res.ast
     (s, i) = state.position()
     if i != len(s):
         parse.printState(state)

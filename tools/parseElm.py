@@ -254,9 +254,14 @@ captureAll = \
 
 def parseCode(code):
     state = parse.State(code)
-    (state, asts) = captureAll(state)
+    res = captureAll(state)
 
-    for ast in asts:
+    if res is None:
+        raise Exception('could not parse')
+
+    state = res.state
+
+    for ast in res.ast:
         print('==')
         print(ast)
 

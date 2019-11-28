@@ -4,6 +4,15 @@ parser : state -> state
 capture : state -> (state, ast)
 """
 
+class Result:
+    def __init__(self, state, ast):
+        if type(state) != State:
+            raise Exception('expected State')
+
+        self.state = state
+        self.ast = ast
+
+
 class State:
     def __init__(self, s, i=0):
         self.s = s
@@ -39,8 +48,7 @@ def transform(f, cap):
         res = cap(state) # transform
         if res is None:
             return
-        state, ast = res
-        return state, f(ast)
+        return Result(res.state, f(res.ast))
     return wrapper
 
 def tokenChar(s, i):
@@ -126,8 +134,7 @@ def twoPass(parse, f):
         if res is None:
             return None
 
-        _, ast = res
-        return (newState, ast)
+        return Result(newState, res.ast)
 
     return wrapper
 
@@ -140,7 +147,7 @@ def grab(parse):
             return
         (_, iNew) = newState.position()
         text = s[iOrig:iNew]
-        return (newState, text)
+        return Result(newState, text)
 
     return f
 
@@ -150,17 +157,17 @@ def skipManyCaptures(f):
             res = f(state)
             if res is None:
                 break
-            state, _ = res
-        return (state, Skip())
+            state = res.state
+        return Result(state, Skip())
 
     return wrapper
 
 def skip(parse):
     def f(state):
-        newState = parse(state)
+        newState = parse(state) #skip
         if newState is None:
             return
-        return (newState, Skip())
+        return Result(newState, Skip())
 
     return f
 
@@ -175,11 +182,11 @@ def captureZeroOrMore(f):
 
             res = f(state)
             if res is None: break
-            state, ast = res
-            asts.append(ast)
+            state = res.state
+            asts.append(res.ast)
 
         asts = noSkips(asts)
-        return (state, asts)
+        return Result(state, asts)
     return wrapper
 
 def captureOneOrMore(f):
@@ -193,14 +200,14 @@ def captureOneOrMore(f):
 
             res = f(state)
             if res is None: break
-            state, ast = res
-            asts.append(ast)
+            state = res.state
+            asts.append(res.ast)
 
         if len(asts) == 0:
             return
 
         asts = noSkips(asts)
-        return (state, asts)
+        return Result(state, asts)
     return wrapper
 
 def noSkips(asts):
@@ -221,14 +228,11 @@ def captureSeq(*fns):
             res = fn(state) # captureSeq
             if res is None:
                 return
-            state, ast = res
-            if type(state) != State:
-                print(fn)
-                raise Exception('misconfigured')
-            asts.append(ast)
+            state = res.state
+            asts.append(res.ast)
 
         ast = fixAsts(asts)
-        return (state, ast)
+        return Result(state, ast)
     return wrapper
 
 class Skip:
