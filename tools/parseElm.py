@@ -51,7 +51,12 @@ parseDocs = parseRange('{-|', '-}')
 
 parseLineComment = bigSkip(pKeyword('--'), pLine)
 
-parseImport = parseKeywordBlock('import')
+
+captureImport = \
+    transform(
+        types.Import,
+        captureKeywordBlock('import')
+        )
 
 captureType = \
     transform(
@@ -211,7 +216,7 @@ captureNoise = \
     captureOneOf(
         skip(spaceRequired),
         skip(parseModule),
-        skip(parseImport),
+        captureImport,
         skip(parseLineComment),
         skip(parseDocs),
         captureAnnotation,

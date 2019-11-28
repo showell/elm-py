@@ -26,18 +26,18 @@ succeed(parseElm.skip(parseElm.parseDocs)(
     -}
     """)))
 
-succeed(parseElm.skip(parseElm.parseImport)(
-    parse.State("""
-import foo exposing (
-    foo, bar
-    )
-    """)))
-
 succeed(parseElm.skip(parseElm.parseModule)(
     parse.State("""
     module foo exposing (
         foo, bar
         )
+    """)))
+
+succeed(parseElm.captureImport(
+    parse.State("""
+import foo exposing (
+    foo, bar
+    )
     """)))
 
 succeed(parseElm.captureType(

@@ -32,6 +32,15 @@ class Tuple:
     def __str__(self):
         return 'TUP: ' + str(self.ast)
 
+class Import:
+    def __init__(self, ast):
+        self.ast = ast
+
+    def __str__(self):
+        return j(
+            'IMPORT',
+            self.ast)
+
 class Annotation:
     def __init__(self, ast):
         self.ast = ast
