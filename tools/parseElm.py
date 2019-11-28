@@ -214,14 +214,6 @@ captureAnnotation = \
             ),
         )
 
-captureCall = \
-    transform(
-        types.Call,
-        captureOneOrMore(
-            grab(token),
-            )
-        )
-
 captureLambda = \
     transform(
         types.Lambda,
@@ -232,6 +224,18 @@ captureLambda = \
                 captureParams
                 ),
             captureExpr,
+            )
+        )
+
+captureCall = \
+    transform(
+        types.Call,
+        captureOneOrMore(
+            captureOneOf(
+                grab(token),
+                captureLambda,
+                captureTuple,
+                )
             )
         )
 
@@ -252,6 +256,7 @@ doCaptureExpr = \
             captureIf,
             captureCase,
             captureCall,
+            captureLambda,
             capturePunt,
             )
         )

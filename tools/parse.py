@@ -71,7 +71,7 @@ def pChar(c):
 
     def wrapper(state):
         (s, i) = state.position()
-        if i > len(s) or s[i] != c:
+        if i >= len(s) or s[i] != c:
             return
 
         return state.setIndex(i+1)

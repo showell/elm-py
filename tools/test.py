@@ -129,3 +129,19 @@ succeed(parseElm.captureLambda(
     """)))
 
 
+succeed(parseElm.captureLambda(
+    parse.State("""
+    \\x y ->
+        if b then
+            t
+        else
+            f
+    """)))
+
+# lambda in expressions
+succeed(parseElm.captureExpr(
+    parse.State("""
+    map2 ( \\x y -> 5 ) lst
+    """)))
+
+
