@@ -212,18 +212,6 @@ captureAnnotation = \
             ),
         )
 
-captureNoise = \
-    captureOneOf(
-        skip(spaceRequired),
-        skip(parseModule),
-        captureImport,
-        skip(parseLineComment),
-        skip(parseDocs),
-        captureAnnotation,
-        )
-
-skipNoise = skipManyCaptures(captureNoise)
-
 captureCall = \
     transform(
         types.Call,
@@ -232,9 +220,18 @@ captureCall = \
             )
         )
 
+# We call annotations "comments" for now
+captureComment = \
+    captureOneOf(
+        skip(spaceRequired),
+        skip(parseLineComment),
+        skip(parseDocs),
+        captureAnnotation,
+        )
+
 doCaptureExpr = \
     captureSeq(
-        skipNoise,
+        skipManyCaptures(captureComment),
         captureOneOf(
             captureLet,
             captureIf,
@@ -244,17 +241,28 @@ doCaptureExpr = \
             )
         )
 
-captureStuff = \
-    captureOneOf(
-        captureNoise,
-        captureType,
-        captureBinding,
+captureTopOfFile = \
+    captureOneOrMore(
+        captureOneOf(
+            skip(parseModule),
+            captureImport,
+            captureComment,
+            captureType,
+            )
+        )
+
+captureMainCode = \
+    captureOneOrMore(
+        captureOneOf(
+            captureComment,
+            captureBinding,
+            )
         )
 
 captureAll = \
     captureSeq(
-        skipNoise,
-        captureOneOrMore(captureStuff)
+        captureTopOfFile,
+        captureMainCode,
         )
 
 def parseCode(code):
@@ -265,8 +273,15 @@ def parseCode(code):
         raise Exception('could not parse')
 
     state = res.state
+    topAst, mainAst = res.ast
 
-    for ast in res.ast:
+    print('TOP\n\n')
+    for ast in topAst:
+        print('==')
+        print(ast)
+
+    print('\n\n\nMAIN\n\n\n')
+    for ast in mainAst:
         print('==')
         print(ast)
 
