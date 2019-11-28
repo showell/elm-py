@@ -28,7 +28,6 @@ from parse import (
         pUntilLineEndsWith,
         skip,
         skipManyCaptures,
-        spaceOptional,
         spaceRequired,
         token,
         transform,
@@ -114,7 +113,6 @@ captureOneCase = \
         types.OneCase,
         captureStuff(
             capturePatternDef,
-            skip(spaceOptional),
             twoPass(
                 parseMyLevel,
                 captureExpr,
@@ -127,7 +125,6 @@ captureCase = \
         types.Case,
         captureStuff(
             captureCaseOf,
-            skip(spaceOptional),
             twoPass(
                 parseMyLevel,
                 captureOneOrMore(captureOneCase),
@@ -145,7 +142,6 @@ captureTuple = \
                 capturePunt,
                 ),
             skip(pKeyword(')')),
-            skip(spaceOptional)
             ),
         )
 
@@ -167,7 +163,6 @@ captureDef = \
             '=',
             captureStuff(
                 grab(token),
-                skip(spaceOptional),
                 captureParams,
                 ),
             ),
@@ -178,12 +173,10 @@ captureBinding = \
         types.Binding,
         captureStuff(
             captureDef,
-            skip(spaceOptional),
             twoPass(
                 parseMyLevel,
                 captureExpr
                 ),
-            skip(spaceOptional),
             ),
         )
 
@@ -206,7 +199,6 @@ captureAnnotation = \
             onlyIf(
                 captureStuff(
                     skip(token),
-                    skip(spaceOptional),
                     skip(pKeyword(':')),
                     ),
                 grab(parseBlock),

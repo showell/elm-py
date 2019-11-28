@@ -468,15 +468,13 @@ def captureUntilKeywordEndsLine(keyword, fCapture):
                 pUntilLineEndsWith(keyword),
                 fCapture
                 ),
-            skip(spaceOptional),
             skip(pKeyword(keyword)),
-            skip(spaceOptional),
             )
 
 def captureKeywordBlock(keyword):
     return captureStuff(
         grab(parseKeywordBlock(keyword)),
-        skip(spaceOptional))
+        )
 
 def parseRange(start, end):
     return bigSkip(
