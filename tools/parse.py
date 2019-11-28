@@ -314,7 +314,6 @@ def captureSeq(start, delim, end, fCaptureItem):
             res = fCaptureItem(state)
             if res is None:
                 return
-            printState(res.state)
 
             ast.append(res.ast)
             state = res.state

@@ -138,6 +138,13 @@ succeed(parseElm.captureLambda(
             f
     """)))
 
+# tuples in lambda params
+succeed(parseElm.captureExpr(
+    parse.State("""
+    \\(x,y) -> a
+    """)))
+
+
 # lambda in expressions
 succeed(parseElm.captureExpr(
     parse.State("""
