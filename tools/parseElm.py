@@ -5,6 +5,7 @@ from parse import (
         captureKeywordBlock,
         captureOneOf,
         captureOneOrMore,
+        captureSeq,
         captureStuff,
         captureSubBlock,
         captureUntilKeyword,
@@ -135,14 +136,12 @@ captureCase = \
 captureTuple = \
     transform(
         types.Tuple,
-        captureStuff(
-            skip(pKeyword('(')),
-            twoPass(
-                pUntilChar(')'),
-                capturePunt,
-                ),
-            skip(pKeyword(')')),
-            ),
+        captureSeq(
+            '(',
+            ',',
+            ')',
+            captureExpr,
+            )
         )
 
 captureParams = \

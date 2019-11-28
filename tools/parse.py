@@ -92,6 +92,46 @@ def bigSkip(*fns):
         return state
     return wrapper
 
+def captureSeq(start, delim, end, fCaptureItem):
+    pStart = pChar(start)
+    pDelim = pChar(delim)
+    pEnd = pChar(end)
+
+
+    def wrapper(state):
+        state = spaceOptional(state)
+        state = pStart(state)
+        if state is None:
+            return
+
+        state = spaceOptional(state)
+
+        ast = []
+        while True:
+
+            res = fCaptureItem(state)
+            if res is None:
+                return
+            printState(res.state)
+
+            ast.append(res.ast)
+            state = res.state
+            state = spaceOptional(state)
+
+            if peek(state, delim):
+                state = pDelim(state)
+                state = spaceOptional(state)
+                continue
+
+            if peek(state, end):
+                state = pEnd(state)
+                state = spaceOptional(state)
+                return Result(state, ast)
+
+            return
+
+    return wrapper
+
 def captureSubBlock(keyword, f):
     def wrapper(state):
         state = bigSkip(
@@ -255,6 +295,7 @@ class Skip:
 
 def captureOneOf(*fns):
     def wrapper(state):
+        state = spaceOptional(state)
         for fn in fns:
             res = fn(state) # captureOneOf
             if res is not None:

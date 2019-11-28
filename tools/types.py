@@ -12,14 +12,17 @@ def jj(lst):
 def oneLine(*lst):
     return ' '.join(lst)
 
+def formatList(lst, start, end):
+    return start + ', '.join(str(item) for item in lst) + end
+
 def commas(items):
     if len(items) == 0:
         return 'MISSING params!'
 
     if len(items) == 1:
-        return items[0]
+        return str(items[0])
 
-    return items[0] + '(' + ', '.join(str(x) for x in items[1:]) + ')'
+    return str(items[0]) + '(' + ', '.join(str(x) for x in items[1:]) + ')'
 
 class UnParsed:
     def __init__(self, ast):
@@ -30,10 +33,10 @@ class UnParsed:
 
 class Tuple:
     def __init__(self, ast):
-        self.ast = ast
+        self.items = ast
 
     def __str__(self):
-        return 'TUP: ' + str(self.ast)
+        return 'TUP ' + formatList(self.items, '(', ')')
 
 class Lambda:
     def __init__(self, ast):
@@ -79,9 +82,7 @@ class Call:
         self.items = ast
 
     def __str__(self):
-        return j(
-            'CALL ' + commas(self.items)
-            )
+        return 'CALL ' + commas(self.items)
 
 class Params:
     def __init__(self, ast):
