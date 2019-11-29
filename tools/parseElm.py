@@ -196,7 +196,7 @@ captureTupleVar = \
             '(',
             ',',
             ')',
-            grab(token),
+            captureElmToken
             )
         )
 
@@ -296,7 +296,7 @@ captureAnnotation = \
         captureStuff(
             onlyIf(
                 captureStuff(
-                    skip(token),
+                    captureElmToken,
                     skip(pKeyword(':')),
                     ),
                 grab(parseBlock),
@@ -415,6 +415,10 @@ def parseCode(code):
     state = res.state
     topAst, mainAst = res.ast
 
+    if state.incomplete():
+        printState(state)
+        raise Exception('incomplete!')
+
     print('TOP\n\n')
     for ast in topAst:
         print('==')
@@ -424,8 +428,6 @@ def parseCode(code):
     for ast in mainAst:
         print('==')
         print(ast)
-
-    printState(state)
 
 if __name__ == '__main__':
     fn = 'Dict.elm'

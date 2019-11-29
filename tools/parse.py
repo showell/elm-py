@@ -34,6 +34,9 @@ class State:
 
         return self.setIndex(i)
 
+    def incomplete(self):
+        return self.i < len(self.s)
+
 class CaptureManyFailure:
     def __str__(self):
         return 'CaptureManyFailure'
