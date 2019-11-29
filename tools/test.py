@@ -246,5 +246,34 @@ def testBlocks():
         parse.parseBlock(state),
         "y =")
 
+    s = """
+    else if cond then
+        5
+    else
+        7
+        """
+    state = parse.State(s)
+    state = parse.spaceOptional(state)
+    assert parse.peek(state, 'else')
+    state = parse.pKeyword('else')(state)
+    state = parse.spaceOptional(state)
+    assert parse.peek(state, 'if cond')
+    assert parse.peek(
+        parse.parseBlock(state),
+        'else')
+
+    s = """
+        let x =
+            5
+        in foo
+        """
+    state = parse.State(s)
+    state = parse.spaceOptional(state)
+    state = parse.pKeyword('let')(state)
+    state = parse.spaceOptional(state)
+    assert parse.peek(state, 'x =')
+    assert parse.peek(
+        parse.parseBlock(state),
+        'in foo')
 
 testBlocks()
