@@ -18,6 +18,7 @@ from parse import (
         parseBlock,
         parseKeywordBlock,
         parseMyLevel,
+        parseOperator,
         parseSameLine,
         peek,
         pChar,
@@ -55,6 +56,15 @@ parseModule = parseKeywordBlock('module')
 captureElmToken = \
     captureUnReservedWord(
         [ 'case', 'of', 'let', 'if', 'then', 'else']
+        )
+
+captureElmOperator = \
+    captureStuff(
+        grab(
+            parseOperator(
+                ['<', '>', '<=', '>=', '==']
+                )
+            )
         )
 
 captureDocs = \
@@ -274,6 +284,7 @@ captureCall = \
             captureOneOf(
                 captureLambda,
                 captureTuple,
+                captureElmOperator,
                 captureElmToken,
                 )
             )

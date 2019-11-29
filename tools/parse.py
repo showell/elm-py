@@ -135,6 +135,15 @@ def parseAll(state):
     (s, i) = state.position()
     return state.setIndex(len(s))
 
+def parseOperator(operators):
+    def wrapper(state):
+        (s, i) = state.position()
+        for operator in operators:
+            if peek(state, operator):
+                return state.setIndex(i + len(operator))
+
+    return wrapper
+
 def parseSameLine(parse):
     return twoPassParse(
             pLine,

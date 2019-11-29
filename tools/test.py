@@ -187,3 +187,15 @@ succeed(parseElm.captureOneCase(
         5
         """)))
 
+succeed(parseElm.captureExpr(
+    parse.State("""
+    x < y
+        """)))
+
+succeed(parseElm.captureOneCase(
+    parse.State("""
+    head :: rest ->
+        5
+        """)))
+
+
