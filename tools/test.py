@@ -75,6 +75,17 @@ succeed(parseElm.captureExpr(
     foo bar
         """)))
 
+succeed(parseElm.captureLet(
+    parse.State("""
+    let
+        foo a b c =
+            one
+
+        bar x y z =
+            two
+    in
+    foo bar""")))
+
 succeed(parseElm.captureOneCase(
     parse.State("""
     foo ->
@@ -102,17 +113,6 @@ succeed(parseElm.captureCase(
             f bar
                 bla
         """)))
-
-succeed(parseElm.captureLet(
-    parse.State("""
-    let
-        foo a b c =
-            one
-
-        bar x y z =
-            two
-    in
-    foo bar""")))
 
 succeed(parseElm.captureIf(
     parse.State("""
@@ -219,15 +219,21 @@ succeed(parseElm.captureOneCase(
         5
         """)))
 
+succeed(parseElm.captureIf(
+    parse.State("""
+    if foo then 1 else 2
+        """)))
+
+
 def testBlocks():
     s = """
     let
         x =
             if cond then
                 1
+
             else
                 2
-
         y =
             bla
     in foo

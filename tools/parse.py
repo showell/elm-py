@@ -263,6 +263,7 @@ def pLine(state):
 
 def parseMyLevel(state):
     (s, i) = state.position()
+
     level = indentLevel(s, i)
 
     i = readline(s, i)

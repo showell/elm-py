@@ -1,5 +1,11 @@
 import types
 
+def error(*args):
+    raise Exception('could not parse')
+
+types.UnParsed = error
+
+
 from parse import (
         captureKeywordBlock,
         captureOneOf,
@@ -55,7 +61,7 @@ parseModule = parseKeywordBlock('module')
 
 captureElmToken = \
     captureUnReservedWord(
-        [ 'case', 'of', 'let', 'if', 'then', 'else']
+        [ 'case', 'of', 'let', 'if', 'then', 'else', '->']
         )
 
 captureElmOperator = \
@@ -112,18 +118,11 @@ captureIf = \
         types.If,
         captureStuff(
             skip(pKeyword('if')),
-            captureUntilKeywordEndsLine(
-                'then',
-                captureExpr
-                ),
-            twoPass(
-                parseMyLevel,
-                captureExpr
-                ),
-            captureSubBlock(
-                'else',
-                captureExpr
-                ),
+            captureExpr,
+            skip(pKeyword('then')),
+            captureExpr,
+            skip(pKeyword('else')),
+            captureExpr
             )
         )
 
