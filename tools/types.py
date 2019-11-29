@@ -38,6 +38,13 @@ class UnParsed:
     def __str__(self):
         return 'unparsed: ' + self.ast
 
+class List:
+    def __init__(self, ast):
+        self.items = ast
+
+    def __str__(self):
+        return 'LIST ' + formatList(self.items, '(', ')')
+
 class Tuple:
     def __init__(self, ast):
         self.items = ast

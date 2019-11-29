@@ -152,3 +152,15 @@ succeed(parseElm.captureExpr(
     """)))
 
 
+succeed(parseElm.capturePatternList(
+    parse.State("""
+    [ a, 5, c ]
+    """)))
+
+
+succeed(parseElm.capturePatternDef(
+    parse.State("""
+    [x, y] ->
+    """)))
+
+

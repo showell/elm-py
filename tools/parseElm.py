@@ -35,9 +35,12 @@ from parse import (
         )
 import parse
 
-# We declare a few things to avoid circular dependencies
+# We declare a few things at the top to avoid circular dependencies
 def captureExpr(state):
     return doCaptureExpr(state)
+
+def capturePatternExpr(state):
+    return doCapturePatternExpr(state)
 
 # This should obviously eventually go away!
 capturePunt = \
@@ -111,13 +114,18 @@ captureCaseOf = \
             )
         )
 
+capturePattern = \
+    captureOneOf(
+        capturePatternExpr,
+        )
+
 capturePatternDef = \
     transform(
         types.PatternDef,
         captureStuff(
             captureUntilKeywordEndsLine(
                 '->',
-                capturePunt
+                capturePattern
                 ),
             ),
         )
@@ -154,6 +162,17 @@ captureTuple = \
             ',',
             ')',
             captureExpr,
+            )
+        )
+
+capturePatternList = \
+    transform(
+        types.List,
+        captureSeq(
+            '[',
+            ',',
+            ']',
+            capturePatternExpr,
             )
         )
 
@@ -261,6 +280,16 @@ doCaptureExpr = \
             captureCase,
             captureCall,
             captureLambda,
+            capturePunt,
+            )
+        )
+
+doCapturePatternExpr = \
+    captureStuff(
+        skipManyCaptures(captureComment),
+        captureOneOf(
+            capturePatternList,
+            grab(token),
             capturePunt,
             )
         )
