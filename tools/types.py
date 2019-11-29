@@ -72,6 +72,15 @@ class Lambda:
             str(self.expr)
             )
 
+class Module:
+    def __init__(self, ast):
+        self.ast = ast
+
+    def __str__(self):
+        return j(
+            'MODULE',
+            self.ast)
+
 class Import:
     def __init__(self, ast):
         self.ast = ast

@@ -40,8 +40,6 @@ def captureExpr(state):
 def capturePatternExpr(state):
     return doCapturePatternExpr(state)
 
-parseModule = parseKeywordBlock('module')
-
 captureElmToken = \
     captureUnReservedWord(
         [ 'case', 'of', 'let', 'if', 'then', 'else', '->']
@@ -83,6 +81,12 @@ captureLineComment = \
             skip(pKeyword('--')),
             grab(pLine)
             )
+        )
+
+captureModule = \
+    transform(
+        types.Module,
+        captureKeywordBlock('module')
         )
 
 captureImport = \
@@ -360,7 +364,7 @@ doCapturePatternExpr = \
 captureTopOfFile = \
     captureOneOrMore(
         captureOneOf(
-            skip(parseModule),
+            captureModule,
             captureImport,
             captureComment,
             captureType,

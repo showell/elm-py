@@ -3,8 +3,8 @@ import parseElm
 import parse
 
 def succeed(fCapture, s):
-    s = parse.State(s)
-    res = fCapture(s)
+    state = parse.State(s)
+    res = fCapture(state)
 
     if res is None:
         print('\n\n------------\n')
@@ -33,9 +33,9 @@ assertIndent(' \n  fred', 3, 2)
 assertIndent(' \n  fred', 4, 2)
 assertIndent(' \n  fred', 5, 2)
 
-succeed(parseElm.skip(parseElm.parseModule),
+succeed(parseElm.captureModule,
     """
-    module foo exposing ,
+    module foo exposing (
         foo, bar
         )
     """)
