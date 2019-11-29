@@ -1,11 +1,5 @@
 import types
 
-def error(*args):
-    raise Exception('could not parse')
-
-types.UnParsed = error
-
-
 from parse import (
         captureKeywordBlock,
         captureOneOf,
@@ -48,13 +42,6 @@ def captureExpr(state):
 
 def capturePatternExpr(state):
     return doCapturePatternExpr(state)
-
-# This should obviously eventually go away!
-capturePunt = \
-    transform(
-        types.UnParsed,
-        grab(parseAll)
-    )
 
 parseModule = parseKeywordBlock('module')
 
@@ -365,7 +352,6 @@ doCaptureExpr = \
             captureCase,
             captureCall,
             captureLambda,
-            capturePunt,
             )
         )
 
@@ -375,7 +361,6 @@ doCapturePatternExpr = \
         captureOneOf(
             capturePatternList,
             captureCustomTypePattern,
-            capturePunt,
             )
         )
 

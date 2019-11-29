@@ -39,13 +39,6 @@ class Comment:
     def __str__(self):
         return 'COMMENT: ' + self.ast
 
-class UnParsed:
-    def __init__(self, ast):
-        self.ast = ast
-
-    def __str__(self):
-        return 'unparsed: ' + self.ast
-
 class List:
     def __init__(self, ast):
         self.items = ast

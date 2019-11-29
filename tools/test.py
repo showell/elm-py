@@ -1,10 +1,4 @@
 import types
-
-def error(*args):
-    raise Exception('could not parse')
-
-types.UnParsed = error
-
 import parseElm
 import parse
 
