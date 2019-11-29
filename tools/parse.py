@@ -321,6 +321,8 @@ def captureSeq(start, delim, end, fCaptureItem):
 
         ast = []
         while True:
+            if peek(state, end):
+                break
 
             res = fCaptureItem(state)
             if res is None:
@@ -336,11 +338,13 @@ def captureSeq(start, delim, end, fCaptureItem):
                 continue
 
             if peek(state, end):
-                state = pEnd(state)
-                state = spaceOptional(state)
-                return Result(state, ast)
+                break
 
             return
+
+        state = pEnd(state)
+        state = spaceOptional(state)
+        return Result(state, ast)
 
     return wrapper
 

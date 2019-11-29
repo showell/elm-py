@@ -115,7 +115,7 @@ captureCaseOf = \
             skip(pKeyword('case')),
             captureUntilKeywordEndsLine(
                 'of',
-                capturePunt
+                captureExpr,
                 ),
             )
         )

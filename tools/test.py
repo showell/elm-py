@@ -163,4 +163,9 @@ succeed(parseElm.capturePatternDef(
     [x, y] ->
     """)))
 
+succeed(parseElm.capturePatternExpr(
+    parse.State("""
+    []
+    """)))
+
 
