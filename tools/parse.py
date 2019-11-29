@@ -70,7 +70,7 @@ def tokenChar(s, i):
     if c.isspace():
         return False
 
-    if c in '(),[]=\\':
+    if c in '()<>-,[]=\\':
         return False
 
     return True
@@ -286,6 +286,17 @@ def parseKeywordBlock(keyword):
     return wrapper
 
 # CAPTURE
+
+def captureUnReservedWord(reservedWords):
+    def wrapper(state):
+        state = spaceOptional(state)
+        for word in reservedWords:
+            if peek(state, word):
+                return
+
+        return grab(token)(state)
+
+    return wrapper
 
 def captureRange(start, end):
     return captureStuff(

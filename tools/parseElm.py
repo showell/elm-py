@@ -8,6 +8,7 @@ from parse import (
         captureSeq,
         captureStuff,
         captureSubBlock,
+        captureUnReservedWord,
         captureUntilKeyword,
         captureUntilKeywordEndsLine,
         captureZeroOrMore,
@@ -50,6 +51,11 @@ capturePunt = \
     )
 
 parseModule = parseKeywordBlock('module')
+
+captureElmToken = \
+    captureUnReservedWord(
+        [ 'case', 'of', 'let', 'if', 'then', 'else']
+        )
 
 captureDocs = \
     transform(
@@ -181,7 +187,7 @@ captureParams = \
         types.Params,
         captureZeroOrMore(
             captureOneOf(
-                grab(token),
+                captureElmToken,
                 captureTuple,
                 )
             )
@@ -193,7 +199,7 @@ captureDef = \
         captureUntilKeywordEndsLine(
             '=',
             captureStuff(
-                grab(token),
+                captureElmToken,
                 captureParams,
                 ),
             ),
@@ -257,7 +263,7 @@ captureCall = \
             captureOneOf(
                 captureLambda,
                 captureTuple,
-                grab(token),
+                captureElmToken,
                 )
             )
         )
@@ -289,7 +295,7 @@ doCapturePatternExpr = \
         skipManyCaptures(captureComment),
         captureOneOf(
             capturePatternList,
-            grab(token),
+            captureElmToken,
             capturePunt,
             )
         )
