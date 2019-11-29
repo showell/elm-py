@@ -8,9 +8,15 @@ types.UnParsed = error
 import parseElm
 import parse
 
-def succeed(res):
+def succeed(fCapture, s):
+    s = parse.State(s)
+    res = fCapture(s)
+
     if res is None:
+        print('\n\n------------\n')
+        parse.printState(state)
         raise Exception('parse failure')
+
     state = res.state
     ast = res.ast
     (s, i) = state.position()
@@ -33,51 +39,51 @@ assertIndent(' \n  fred', 3, 2)
 assertIndent(' \n  fred', 4, 2)
 assertIndent(' \n  fred', 5, 2)
 
-succeed(parseElm.skip(parseElm.parseModule)(
-    parse.State("""
-    module foo exposing (
+succeed(parseElm.skip(parseElm.parseModule),
+    """
+    module foo exposing ,
         foo, bar
         )
-    """)))
+    """)
 
-succeed(parseElm.captureDocs(
-    parse.State("""
+succeed(parseElm.captureDocs,
+    """
     {-|
        bla bla bla
     -}
-    """)))
+    """)
 
-succeed(parseElm.captureImport(
-    parse.State("""
-import foo exposing (
+succeed(parseElm.captureImport,
+    """
+import foo exposing ,
     foo, bar
     )
-    """)))
+    """)
 
-succeed(parseElm.captureType(
-    parse.State("""
+succeed(parseElm.captureType,
+    """
     type Value =
         = Int
         | String
-    """)))
+    """)
 
-succeed(parseElm.captureDef(
-    parse.State("""
+succeed(parseElm.captureDef,
+    """
     x =
-    """)))
+    """)
 
-succeed(parseElm.captureBinding(
-    parse.State("""
+succeed(parseElm.captureBinding,
+    """
     x =
-        5""")))
+        5""")
 
-succeed(parseElm.captureExpr(
-    parse.State("""
+succeed(parseElm.captureExpr,
+    """
     foo bar
-        """)))
+        """)
 
-succeed(parseElm.captureLet(
-    parse.State("""
+succeed(parseElm.captureLet,
+    """
     let
         foo a b c =
             one
@@ -85,10 +91,10 @@ succeed(parseElm.captureLet(
         bar x y z =
             two
     in
-    foo bar""")))
+    foo bar""")
 
-succeed(parseElm.captureOneCase(
-    parse.State("""
+succeed(parseElm.captureOneCase,
+    """
     foo ->
         let
             x =
@@ -96,15 +102,15 @@ succeed(parseElm.captureOneCase(
         in
         x
 
-        """)))
+        """)
 
-succeed(parseElm.captureCaseOf(
-    parse.State("""
+succeed(parseElm.captureCaseOf,
+    """
     case fred of
-        """)))
+        """)
 
-succeed(parseElm.captureCase(
-    parse.State("""
+succeed(parseElm.captureCase,
+    """
     case fred of
         foo ->
             f foo
@@ -113,10 +119,10 @@ succeed(parseElm.captureCase(
         bar ->
             f bar
                 bla
-        """)))
+        """)
 
-succeed(parseElm.captureIf(
-    parse.State("""
+succeed(parseElm.captureIf,
+    """
     if cond then
         if cond2 then
             a
@@ -126,122 +132,122 @@ succeed(parseElm.captureIf(
     else
         false_val
             stuff
-        """)))
+        """)
 
 # tuples are dumb now
-succeed(parseElm.captureExprTuple(
-    parse.State("""
+succeed(parseElm.captureExprTuple,
+    """
         ( foo, bar )
-        """)))
+        """)
 
-succeed(parseElm.captureExpr(
-    parse.State("""
+succeed(parseElm.captureExpr,
+    """
         add 5 7
-        """)))
+        """)
 
-succeed(parseElm.captureAnnotation(
-    parse.State("""
+succeed(parseElm.captureAnnotation,
+    """
 foo : List String  ->
    String ->
-   Int""")))
+   Int""")
 
-succeed(parseElm.captureLambda(
-    parse.State("""
+succeed(parseElm.captureLambda,
+    """
     \\a b -> c
-    """)))
+    """)
 
 
-succeed(parseElm.captureLambda(
-    parse.State("""
+succeed(parseElm.captureLambda,
+    """
     \\x y ->
         if b then
             t
         else
             f
-    """)))
+    """)
 
 # tuples in lambda params
-succeed(parseElm.captureExpr(
-    parse.State("""
+succeed(parseElm.captureExpr,
+    """
     \\(x,y) -> a
-    """)))
+    """)
 
 
 # lambda in expressions
-succeed(parseElm.captureExpr(
-    parse.State("""
+succeed(parseElm.captureExpr,
+    """
     map2 ( \\x y -> 5 ) lst
-    """)))
+    """)
 
 
-succeed(parseElm.capturePatternList(
-    parse.State("""
+succeed(parseElm.capturePatternList,
+    """
     [ a, 5, c ]
-    """)))
+    """)
 
 
-succeed(parseElm.capturePatternDef(
-    parse.State("""
+succeed(parseElm.capturePatternDef,
+    """
     [x, y] ->
-    """)))
+    """)
 
-succeed(parseElm.capturePatternExpr(
-    parse.State("""
+succeed(parseElm.capturePatternExpr,
+    """
     []
-    """)))
+    """)
 
-succeed(parseElm.captureOneCase(
-    parse.State("""
+succeed(parseElm.captureOneCase,
+    """
     foo bar ->
         5
-        """)))
+        """)
 
-succeed(parseElm.captureOneCase(
-    parse.State("""
+succeed(parseElm.captureOneCase,
+    """
     foo (x y) ->
         5
-        """)))
+        """)
 
-succeed(parseElm.captureExpr(
-    parse.State("""
+succeed(parseElm.captureExpr,
+    """
     x < y
-        """)))
+        """)
 
-succeed(parseElm.captureOneCase(
-    parse.State("""
+succeed(parseElm.captureOneCase,
+    """
     head :: rest ->
         5
-        """)))
+        """)
 
 
-succeed(parseElm.captureOneCase(
-    parse.State("""
+succeed(parseElm.captureOneCase,
+    """
     (first, second) :: rest ->
         5
-        """)))
+        """)
 
-succeed(parseElm.captureIf(
-    parse.State("""
+succeed(parseElm.captureIf,
+    """
     if foo then 1 else 2
-        """)))
+        """)
 
 
-succeed(parseElm.captureExpr(
-    parse.State("""
+succeed(parseElm.captureExpr,
+    """
     n+1
-        """)))
+        """)
 
 
-succeed(parseElm.captureTupleVar(
-    parse.State("""
+succeed(parseElm.captureTupleVar,
+    """
     (x, y)
-        """)))
+        """)
 
-succeed(parseElm.captureBinding(
-    parse.State("""
+succeed(parseElm.captureBinding,
+    """
     (x, y) =
         foo
-        """)))
+        """)
 
 
 def testBlocks():
