@@ -1,0 +1,19 @@
+support "as"
+
+add parens to supercede tup:
+    simple grab params, pattern
+    assert tuples >= 2
+
+think about contexts:
+    toplevel bindings
+    let/in bindings
+    pattern-matches
+
+add value support:
+    support _:
+        patterns
+        bindings (specifically TupleIgnore)
+
+    simple values:
+        patterns
+        functions
