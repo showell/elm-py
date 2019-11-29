@@ -6,4 +6,5 @@ List.elm
 List.js
 Basics.elm
 Basics.js
-./todo.txt
+tools/Dict.elm
+foo.txt
