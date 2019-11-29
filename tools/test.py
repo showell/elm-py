@@ -219,4 +219,32 @@ succeed(parseElm.captureOneCase(
         5
         """)))
 
+def testBlocks():
+    s = """
+    let
+        x =
+            if cond then
+                1
+            else
+                2
 
+        y =
+            bla
+    in foo
+        """
+    state = parse.State(s)
+    state = parse.spaceOptional(state)
+    assert parse.peek(state, "let")
+    assert parse.peek(
+        parse.parseBlock(state),
+        "in foo")
+
+    state = parse.pKeyword('let')(state)
+    state = parse.spaceOptional(state)
+    assert parse.peek(state, "x =")
+    assert parse.peek(
+        parse.parseBlock(state),
+        "y =")
+
+
+testBlocks()

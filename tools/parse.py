@@ -87,7 +87,7 @@ def readline(s, i):
     while i < len(s) and s[i] != '\n':
         i += 1
 
-    # skip over blank lines
+    # skip over blank lines and leading space
     while i < len(s) and s[i].isspace():
         i += 1
     return i
