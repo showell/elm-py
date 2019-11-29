@@ -70,7 +70,7 @@ def tokenChar(s, i):
     if c.isspace():
         return False
 
-    if c in '()<>-,[]=\\':
+    if c in '()<>-,[]=\\+-*/':
         return False
 
     return True
