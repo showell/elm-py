@@ -10,7 +10,6 @@ from parse import (
         captureSubBlock,
         captureUnReservedWord,
         captureUntilKeyword,
-        captureUntilKeywordEndsLine,
         captureZeroOrMore,
         grab,
         onlyIf,
@@ -25,8 +24,6 @@ from parse import (
         pLine,
         printState,
         pUntil,
-        pUntilChar,
-        pUntilLineEndsWith,
         skip,
         skipManyCaptures,
         spaceRequired,
@@ -118,10 +115,8 @@ captureCaseOf = \
         types.CaseOf,
         captureStuff(
             skip(pKeyword('case')),
-            captureUntilKeywordEndsLine(
-                'of',
-                captureExpr,
-                ),
+            captureExpr,
+            skip(pKeyword('of')),
             )
         )
 
@@ -134,11 +129,9 @@ capturePatternDef = \
     transform(
         types.PatternDef,
         captureStuff(
-            captureUntilKeywordEndsLine(
-                '->',
-                capturePattern
-                ),
-            ),
+            capturePattern,
+            skip(pKeyword('->')),
+            )
         )
 
 captureOneCase = \
@@ -243,13 +236,13 @@ captureFunctionDef = \
 captureDef = \
     transform(
         types.Def,
-        captureUntilKeywordEndsLine(
-            '=',
+        captureStuff(
             captureOneOf(
                 captureTupleVar,
                 captureFunctionDef,
                 ),
-            ),
+            skip(pChar('=')),
+            )
         )
 
 captureBinding = \

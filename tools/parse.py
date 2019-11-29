@@ -185,8 +185,6 @@ def pKeyword(kw):
 def pUntil(kw):
     if kw == '\n':
         raise Exception('use pLine for detecting end of line')
-    if len(kw) == 1:
-        raise Exception('use pUntilIncludingChar for single characters')
     if kw != kw.strip():
         raise Exception('do not pad until keywords; we already check boundaries')
     n = len(kw)
@@ -198,31 +196,6 @@ def pUntil(kw):
             if s[i:iEnd] == kw:
                 if isWord(s, i, iEnd):
                     return state.setIndex(i)
-            i += 1
-    return wrapper
-
-def pUntilLineEndsWith(kw):
-    if kw == '\n':
-        raise Exception('use pLine for detecting end of line')
-    if kw != kw.strip():
-        raise Exception('do not pad until keywords')
-    kw = ' ' + kw
-    n = len(kw)
-
-    def wrapper(state):
-        (s, i) = state.position()
-        while i < len(s) and s[i] != '\n':
-            i += 1
-        if s[i-n:i] == kw:
-            return state.setIndex(i-n+1)
-    return wrapper
-
-def pUntilChar(c):
-    def wrapper(state):
-        (s, i) = state.position()
-        while i < len(s):
-            if s[i] == c:
-                return state.setIndex(i)
             i += 1
     return wrapper
 
@@ -492,16 +465,6 @@ def captureUntilKeyword(keyword, fCapture):
         captureStuff(
             twoPass(
                 pUntil(keyword),
-                fCapture
-                ),
-            skip(pKeyword(keyword)),
-            )
-
-def captureUntilKeywordEndsLine(keyword, fCapture):
-    return \
-        captureStuff(
-            twoPass(
-                pUntilLineEndsWith(keyword),
                 fCapture
                 ),
             skip(pKeyword(keyword)),
