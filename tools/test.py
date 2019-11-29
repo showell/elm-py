@@ -1,6 +1,12 @@
+import types
+
+def error(*args):
+    raise Exception('could not parse')
+
+types.UnParsed = error
+
 import parseElm
 import parse
-import types
 
 def succeed(res):
     if res is None:
@@ -12,9 +18,6 @@ def succeed(res):
         parse.printState(state)
         raise Exception('partial parse')
     print("\n---")
-
-    if type(ast) == types.UnParsed:
-        raise Exception('did not really parse')
 
     print(ast)
 
@@ -66,7 +69,8 @@ succeed(parseElm.captureOneCase(
     parse.State("""
     foo ->
         let
-            x = 2
+            x =
+                2
         in
         x
 
@@ -195,6 +199,13 @@ succeed(parseElm.captureExpr(
 succeed(parseElm.captureOneCase(
     parse.State("""
     head :: rest ->
+        5
+        """)))
+
+
+succeed(parseElm.captureOneCase(
+    parse.State("""
+    (first, second) :: rest ->
         5
         """)))
 

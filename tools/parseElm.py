@@ -67,6 +67,15 @@ captureElmOperator = \
             )
         )
 
+capturePatternOperator = \
+    captureStuff(
+        grab(
+            parseOperator(
+                ['::']
+                )
+            )
+        )
+
 captureDocs = \
     transform(
         types.Comment,
@@ -303,11 +312,15 @@ captureCustomTypePattern = \
     transform(
         types.CustomTypePattern,
         captureStuff(
-            captureElmToken,
+            captureOneOf(
+                captureElmToken,
+                capturePatternTuple,
+            ),
             captureZeroOrMore(
                 captureOneOf(
                     capturePatternTuple,
                     capturePatternList,
+                    capturePatternOperator,
                     captureElmToken,
                     )
                 )

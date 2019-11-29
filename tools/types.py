@@ -30,7 +30,7 @@ class CustomTypePattern:
         self.items = ast[1]
 
     def __str__(self):
-        return 'CUSTOM TYPE ' + self.token + ' ' + formatList(self.items, '(', ')')
+        return 'CUSTOM TYPE ' + str(self.token) + ' ' + formatList(self.items, '(', ')')
 
 class Comment:
     def __init__(self, ast):
