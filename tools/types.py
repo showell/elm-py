@@ -60,6 +60,13 @@ class Tuple:
     def __str__(self):
         return 'TUP ' + formatList(self.items, '(', ')')
 
+class TupleVar:
+    def __init__(self, ast):
+        self.items = ast
+
+    def __str__(self):
+        return 'TUPVAR ' + formatList(self.items, '(', ')')
+
 class Lambda:
     def __init__(self, ast):
         self.params = ast[0]
@@ -140,6 +147,13 @@ class If:
             indent(self.elseExpr))
 
 class Def:
+    def __init__(self, ast):
+        self.ast = ast
+
+    def __str__(self):
+        return 'ASSIGN ' + str(self.ast)
+
+class FunctionDef:
     def __init__(self, ast):
         self.var = ast[0]
         self.params = ast[1]

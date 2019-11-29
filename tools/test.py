@@ -15,6 +15,7 @@ def succeed(res):
     ast = res.ast
     (s, i) = state.position()
     if i != len(s):
+        print('\n\n------------\n')
         parse.printState(state)
         raise Exception('partial parse')
     print("\n---")
@@ -128,7 +129,7 @@ succeed(parseElm.captureIf(
         """)))
 
 # tuples are dumb now
-succeed(parseElm.captureTuple(
+succeed(parseElm.captureExprTuple(
     parse.State("""
         ( foo, bar )
         """)))
@@ -222,6 +223,24 @@ succeed(parseElm.captureOneCase(
 succeed(parseElm.captureIf(
     parse.State("""
     if foo then 1 else 2
+        """)))
+
+
+succeed(parseElm.captureExpr(
+    parse.State("""
+    n+1
+        """)))
+
+
+succeed(parseElm.captureTupleVar(
+    parse.State("""
+    (x, y)
+        """)))
+
+succeed(parseElm.captureBinding(
+    parse.State("""
+    (x, y) =
+        foo
         """)))
 
 

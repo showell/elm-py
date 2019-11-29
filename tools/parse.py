@@ -396,8 +396,7 @@ def twoPass(parse, f):
 
         state = spaceOptional(res.state)
         if not emptyState(state):
-            # TODO : enforce this
-            pass
+            return
 
         return Result(newState, res.ast)
 

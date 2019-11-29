@@ -68,7 +68,8 @@ captureElmOperator = \
     captureStuff(
         grab(
             parseOperator(
-                ['<', '>', '<=', '>=', '==']
+                ['<', '>', '<=', '>=', '==',
+                    '+', '-', '*', '/']
                 )
             )
         )
@@ -178,7 +179,7 @@ captureCase = \
             )
         )
 
-captureTuple = \
+captureExprTuple = \
     transform(
         types.Tuple,
         captureSeq(
@@ -186,6 +187,17 @@ captureTuple = \
             ',',
             ')',
             captureExpr,
+            )
+        )
+
+captureTupleVar = \
+    transform(
+        types.TupleVar,
+        captureSeq(
+            '(',
+            ',',
+            ')',
+            grab(token),
             )
         )
 
@@ -197,6 +209,17 @@ capturePatternTuple = \
             ',',
             ')',
             capturePatternExpr,
+            )
+        )
+
+captureExprList = \
+    transform(
+        types.List,
+        captureSeq(
+            '[',
+            ',',
+            ']',
+            captureExpr,
             )
         )
 
@@ -217,8 +240,17 @@ captureParams = \
         captureZeroOrMore(
             captureOneOf(
                 captureElmToken,
-                captureTuple,
+                captureExprTuple,
                 )
+            )
+        )
+
+captureFunctionDef = \
+    transform(
+        types.FunctionDef,
+        captureStuff(
+            captureElmToken,
+            captureParams,
             )
         )
 
@@ -227,9 +259,9 @@ captureDef = \
         types.Def,
         captureUntilKeywordEndsLine(
             '=',
-            captureStuff(
-                captureElmToken,
-                captureParams,
+            captureOneOf(
+                captureTupleVar,
+                captureFunctionDef,
                 ),
             ),
         )
@@ -291,7 +323,8 @@ captureCall = \
         captureOneOrMore(
             captureOneOf(
                 captureLambda,
-                captureTuple,
+                captureExprTuple,
+                captureExprList,
                 captureElmOperator,
                 captureElmToken,
                 )
