@@ -298,13 +298,11 @@ captureCall = \
             )
         )
 
-# We call annotations "comments" for now
 captureComment = \
     captureOneOf(
         skip(spaceRequired),
         captureLineComment,
         captureDocs,
-        captureAnnotation,
         )
 
 captureCustomTypePattern = \
@@ -363,6 +361,7 @@ captureMainCode = \
     captureOneOrMore(
         captureOneOf(
             captureComment,
+            captureAnnotation,
             captureBinding,
             )
         )
