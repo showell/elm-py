@@ -24,6 +24,14 @@ def commas(items):
 
     return str(items[0]) + '(' + ', '.join(str(x) for x in items[1:]) + ')'
 
+class CustomTypePattern:
+    def __init__(self, ast):
+        self.token = ast[0]
+        self.items = ast[1]
+
+    def __str__(self):
+        return 'CUSTOM TYPE ' + self.token + ' ' + formatList(self.items, '(', ')')
+
 class Comment:
     def __init__(self, ast):
         self.ast = ast

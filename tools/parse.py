@@ -75,6 +75,10 @@ def tokenChar(s, i):
 
     return True
 
+def emptyState(state):
+    (s, i) = state.position()
+    return i == len(s)
+
 def peek(state, kw):
     (s, i) = state.position()
     return s[i:i+len(kw)] == kw
@@ -376,6 +380,11 @@ def twoPass(parse, f):
         res = f(subState) # twoPass
         if res is None:
             return None
+
+        state = spaceOptional(res.state)
+        if not emptyState(state):
+            # TODO : enforce this
+            pass
 
         return Result(newState, res.ast)
 

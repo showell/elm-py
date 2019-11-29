@@ -171,6 +171,17 @@ captureTuple = \
             )
         )
 
+capturePatternTuple = \
+    transform(
+        types.Tuple,
+        captureSeq(
+            '(',
+            ',',
+            ')',
+            capturePatternExpr,
+            )
+        )
+
 capturePatternList = \
     transform(
         types.List,
@@ -277,6 +288,21 @@ captureComment = \
         captureAnnotation,
         )
 
+captureCustomTypePattern = \
+    transform(
+        types.CustomTypePattern,
+        captureStuff(
+            captureElmToken,
+            captureZeroOrMore(
+                captureOneOf(
+                    capturePatternTuple,
+                    capturePatternList,
+                    captureElmToken,
+                    )
+                )
+            )
+        )
+
 doCaptureExpr = \
     captureStuff(
         skipManyCaptures(captureComment),
@@ -295,7 +321,7 @@ doCapturePatternExpr = \
         skipManyCaptures(captureComment),
         captureOneOf(
             capturePatternList,
-            captureElmToken,
+            captureCustomTypePattern,
             capturePunt,
             )
         )

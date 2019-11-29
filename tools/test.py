@@ -57,11 +57,18 @@ succeed(parseElm.captureBinding(
     x =
         5""")))
 
+succeed(parseElm.captureExpr(
+    parse.State("""
+    foo bar
+        """)))
+
 succeed(parseElm.captureOneCase(
     parse.State("""
-    foo bar ->
-        hello
-        world
+    foo ->
+        let
+            x = 2
+        in
+        x
 
         """)))
 
@@ -168,4 +175,15 @@ succeed(parseElm.capturePatternExpr(
     []
     """)))
 
+succeed(parseElm.captureOneCase(
+    parse.State("""
+    foo bar ->
+        5
+        """)))
+
+succeed(parseElm.captureOneCase(
+    parse.State("""
+    foo (x y) ->
+        5
+        """)))
 
