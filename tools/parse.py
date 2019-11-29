@@ -147,32 +147,6 @@ def parseOperator(operators):
 
     return wrapper
 
-def parseSameLine(parse):
-    return twoPassParse(
-            pLine,
-            parse)
-
-def twoPassParse(parse1, parse2):
-    def wrapper(state):
-        (s, iOrig) = state.position()
-        state1 = parse1(state)
-        if state1 is None:
-            return None
-
-        (s, iEnd) = state1.position()
-
-        lineText = s[iOrig:iEnd]
-        subState = State(lineText, 0)
-
-        state2 = parse2(subState)
-        if state2 is None:
-            return None
-
-        (_, n) = state2
-        return state.setIndex(iOrig + n)
-
-    return wrapper
-
 def spaceOptional(state):
     (s, i) = state.position()
 

@@ -25,7 +25,6 @@ from parse import (
         parseKeywordBlock,
         parseMyLevel,
         parseOperator,
-        parseSameLine,
         peek,
         pChar,
         pKeyword,
