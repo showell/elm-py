@@ -83,6 +83,15 @@ captureLineComment = \
             )
         )
 
+captureUnit = \
+    transform(
+        types.Unit,
+        captureStuff(
+            skip(pChar('(')),
+            skip(pChar(')')),
+            )
+        )
+
 captureModule = \
     transform(
         types.Module,
@@ -162,6 +171,13 @@ captureCase = \
             )
         )
 
+captureParenExpr = \
+    captureStuff(
+        skip(pKeyword('(')),
+        captureExpr,
+        skip(pKeyword(')')),
+        )
+
 captureExprTuple = \
     transform(
         types.Tuple,
@@ -222,6 +238,7 @@ captureParams = \
         types.Params,
         captureZeroOrMore(
             captureOneOf(
+                captureUnit,
                 captureElmToken,
                 captureExprTuple,
                 )
@@ -344,6 +361,8 @@ doCaptureExpr = \
     captureStuff(
         skipManyCaptures(captureComment),
         captureOneOf(
+            captureUnit,
+            captureParenExpr,
             captureLet,
             captureIf,
             captureCase,

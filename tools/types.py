@@ -72,6 +72,13 @@ class Lambda:
             str(self.expr)
             )
 
+class Unit:
+    def __init__(self, ast):
+        assert len(ast) == 0
+
+    def __str__(self):
+        return 'UNIT'
+
 class Module:
     def __init__(self, ast):
         self.ast = ast

@@ -145,6 +145,15 @@ foo : List String  ->
    String ->
    Int""")
 
+succeed(parseElm.captureUnit, '()')
+succeed(parseElm.captureUnit, '(  )')
+
+succeed(parseElm.captureLambda,
+    """
+    \\() -> a (b c)
+    """)
+
+
 succeed(parseElm.captureLambda,
     """
     \\a b -> c
