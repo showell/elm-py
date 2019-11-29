@@ -21,6 +21,16 @@ def succeed(res):
 
     print(ast)
 
+def assertIndent(s, i, expected):
+    assert parse.indentLevel(s, i) == expected
+
+assertIndent('', 0, 0)
+assertIndent('\n', 0, 0)
+assertIndent('\n', 1, 0)
+assertIndent('  fred', 0, 2)
+assertIndent(' \n  fred', 3, 2)
+assertIndent(' \n  fred', 4, 2)
+assertIndent(' \n  fred', 5, 2)
 
 succeed(parseElm.skip(parseElm.parseModule)(
     parse.State("""

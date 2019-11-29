@@ -93,15 +93,18 @@ def readline(s, i):
     return i
 
 def indentLevel(s, i):
-    if s[i].isspace():
-        raise Exception('expected nonspace')
-    i -= 1
-    n = 0
+    if i >= len(s) or s[i] == '\n':
+        return 0
+
     while i >= 0 and s[i] != '\n':
-        n += 1
-        if not s[i].isspace():
-            raise Exception('expected space')
         i -= 1
+
+    i += 1
+
+    n = 0
+    while i < len(s) and s[i] != '\n' and s[i].isspace():
+        i += 1
+        n += 1
 
     return n
 
