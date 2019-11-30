@@ -1,6 +1,7 @@
 emit:
     keep fixing stuff
 
+elminate more grab()
 support "as"
 
 add parens to supercede tup:

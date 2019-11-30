@@ -61,11 +61,14 @@ captureElmOperator = \
             )
         )
 
-capturePatternOperator = \
-    captureStuff(
-        grab(
-            parseOperator(
-                ['::']
+capturePatternCons = \
+    transform(
+        types.PatternCons,
+        captureStuff(
+            grab(
+                parseOperator(
+                    ['::']
+                    )
                 )
             )
         )
@@ -356,7 +359,7 @@ captureCustomTypePattern = \
                 captureOneOf(
                     capturePatternTuple,
                     capturePatternList,
-                    capturePatternOperator,
+                    capturePatternCons,
                     captureElmToken,
                     )
                 )

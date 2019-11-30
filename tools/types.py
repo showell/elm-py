@@ -69,6 +69,16 @@ class Token:
     def emit(self):
         return self.token
 
+class PatternCons:
+    def __init__(self, ast):
+        self.token = ast
+
+    def __str__(self):
+        return self.token
+
+    def emit(self):
+        return self.token
+
 class Tuple:
     def __init__(self, ast):
         self.items = ast
@@ -187,7 +197,7 @@ class CustomTypePattern:
 
     def emit(self):
         typeParam = 'Type(' + self.token.emit() + ')'
-        items = [str(item) for item in self.items]
+        items = [item.emit() for item in self.items]
 
         return ', '.join([typeParam] + items)
 
