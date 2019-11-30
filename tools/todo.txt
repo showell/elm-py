@@ -1,3 +1,8 @@
+emit:
+    git add Dict.elm
+    run elm-format
+
+
 support "as"
 
 add parens to supercede tup:
