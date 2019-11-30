@@ -86,7 +86,7 @@ We have to desugar some stuff:
 """
 
 
-PythonCode = CustomType('PythonCode', Simple =1, Block=2)
+PythonCode = CustomType('PythonCode', Simple =1, Block=1)
 Simple = PythonCode.Simple
 Block = PythonCode.Block
 
@@ -429,7 +429,18 @@ class Binding:
 
     def emit(self):
         defCode = getCode(self.def_)
-        bodyCode = getCode(self.expr)
+
+        body = self.expr.emit()
+
+        if body.match('Simple'):
+            bodyCode = j(
+                'return \\',
+                indent(body.val)
+                )
+        elif body.match('Block'):
+            bodyCode = body.val
+        else:
+            raise Exception('illegal')
 
         return Simple(j(
             defCode,
@@ -480,8 +491,8 @@ class Let:
 
         stmt = j(
             jj(bindings),
-            'return',
+            'return \\',
             indent(body),
             )
-        return Simple(stmt)
+        return Block(stmt)
 
