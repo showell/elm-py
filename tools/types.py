@@ -86,9 +86,10 @@ We have to desugar some stuff:
 """
 
 
-PythonCode = CustomType('PythonCode', Simple =1, Block=1)
+PythonCode = CustomType('PythonCode', Simple =1, Block=1, Anon=1)
 Simple = PythonCode.Simple
 Block = PythonCode.Block
+Anon = PythonCode.Anon
 
 def getFinalCode(ast):
     code = ast.emit()
@@ -120,20 +121,38 @@ def getCode(ast):
 
     raise Exception('not supported yet')
 
-def getDumbCode(ast):
-    # This often won't actually work in Python!
-    code = ast.emit()
-
-    if code.match('Simple'):
-        return code.val
-
-    if code.match('Block'):
-        return code.val
-
-    raise Exception('not supported yet')
-
 def getCodeList(asts):
     return [getCode(ast) for ast in asts]
+
+def processItems(asts):
+    preludes = []
+    items = []
+    i = 0
+
+    for ast in asts:
+        code = ast.emit()
+
+        if code.match('Simple'):
+            items.append(code.val)
+
+        elif code.match('Anon'):
+            i += 1
+            name = '_anon' + str(i)
+            preludes.append('def ' + name + code.val)
+            items.append(name)
+
+        elif code.match('Block'):
+            i += 1
+            name = '_foo' + str(i)
+            preludes.append(j(
+                'def ' + name + '():',
+                indent(code.val)
+            ))
+            items.append(name + '()')
+
+    prelude = '\n\n'.join(preludes)
+
+    return (prelude, items)
 
 def indent(s):
     return '\n'.join(
@@ -154,7 +173,7 @@ def formatList(lst, start, end):
 
 def commas(items):
     if len(items) == 0:
-        return 'MISSING params!'
+        raise Exception('MISSING')
 
     if len(items) == 1:
         return str(items[0])
@@ -162,8 +181,18 @@ def commas(items):
     return str(items[0]) + '(' + ', '.join(str(x) for x in items[1:]) + ')'
 
 def emitTuple(asts):
-    items = getCodeList(asts)
-    return Simple(formatList(items, '(', ')'))
+    prelude, items = processItems(asts)
+
+    # XXX - need to blockify preludes
+    if prelude:
+        stmt = j(
+            prelude,
+            'return ' + formatList(items, '(', ')'),
+            )
+        return Block(stmt)
+
+    stmt = formatList(items, '(', ')')
+    return Simple(stmt)
 
 class Comment:
     def __init__(self, ast):
@@ -289,8 +318,17 @@ class Call:
         return 'CALL ' + commas(self.items)
 
     def emit(self):
-        items = getCodeList(self.items)
-        return Simple(commas(items))
+        prelude, items = processItems(self.items)
+
+        if prelude:
+            stmt = j(
+                prelude,
+                'return ' + commas(items),
+                )
+            return Block(stmt)
+
+        else:
+            return Simple(commas(items))
 
 class If:
     def __init__(self, ast):
@@ -479,16 +517,26 @@ class Lambda:
 
     def emit(self):
         paramCode = getCode(self.params)
-        bodyCode = getDumbCode(self.expr)
 
-        stmt = ' '.join([
-            'lambda',
-            paramCode,
-            ':',
-            bodyCode,
-            ])
+        body = self.expr.emit()
 
-        return Simple(stmt)
+        if body.match('Simple'):
+            stmt = ' '.join([
+                'lambda',
+                paramCode,
+                ':',
+                body.val,
+                ])
+            return Simple(stmt)
+
+        elif body.match('Block'):
+            stmt = j(
+                '(' + paramCode + '):',
+                indent(body.val)
+                )
+            return Anon(stmt)
+
+        raise Exception('cannot handle')
 
 class Let:
     def __init__(self, ast):

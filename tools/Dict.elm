@@ -585,22 +585,6 @@ foldr func acc t =
             foldr func (func key value (foldr func acc right)) left
 
 
-{-| Keep only the key-value pairs that pass the given test.
--}
-filter : (comparable -> v -> Bool) -> Dict comparable v -> Dict comparable v
-filter isGood dict =
-    foldl
-        (\k v d ->
-            if isGood k v then
-                insert k v d
-
-            else
-                d
-        )
-        empty
-        dict
-
-
 {-| Partition a dictionary according to some test. The first dictionary
 contains all key-value pairs which passed the test, and the second contains
 the pairs that did not.
@@ -654,3 +638,20 @@ toList dict =
 fromList : List ( comparable, v ) -> Dict comparable v
 fromList assocs =
     List.foldl (\( key, value ) dict -> insert key value dict) empty assocs
+
+{-| Keep only the key-value pairs that pass the given test.
+-}
+filter : (comparable -> v -> Bool) -> Dict comparable v -> Dict comparable v
+filter isGood dict =
+    foldl
+        (\k v d ->
+            if isGood k v then
+                insert k v d
+
+            else
+                d
+        )
+        empty
+        dict
+
+
