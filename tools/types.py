@@ -28,14 +28,6 @@ def emitTuple(asts):
     items = (ast.emit() for ast in asts)
     return formatList(items, '(', ')')
 
-class CustomTypePattern:
-    def __init__(self, ast):
-        self.token = ast[0]
-        self.items = ast[1]
-
-    def __str__(self):
-        return 'CUSTOM TYPE ' + str(self.token) + ' ' + formatList(self.items, '(', ')')
-
 class Comment:
     def __init__(self, ast):
         self.ast = ast
@@ -183,8 +175,21 @@ class CaseOf:
         return 'CASE OF: ' + str(self.expr)
 
     def emit(self):
-        # XXX
-        return str(self.expr)
+        return self.expr.emit()
+
+class CustomTypePattern:
+    def __init__(self, ast):
+        self.token = ast[0]
+        self.items = ast[1]
+
+    def __str__(self):
+        return 'CUSTOM TYPE ' + str(self.token) + ' ' + formatList(self.items, '(', ')')
+
+    def emit(self):
+        typeParam = 'Type(' + self.token.emit() + ')'
+        items = [str(item) for item in self.items]
+
+        return ', '.join([typeParam] + items)
 
 class PatternDef:
     def __init__(self, ast):
@@ -192,6 +197,9 @@ class PatternDef:
 
     def __str__(self):
         return str(self.expr)
+
+    def emit(self):
+        return self.expr.emit()
 
 class OneCase:
     def __init__(self, ast):
@@ -207,11 +215,11 @@ class OneCase:
             ])
 
     def emit(self):
-        cond = 'patternMatch(pred, ...'
+        cond = 'patternMatch(pred, ' + self.patternDef.emit() + ')'
 
         return j(
             'if ' + cond + ':',
-            indent(self.body.emit())
+            indent('return ' + self.body.emit())
             )
 
 class Case:
@@ -275,9 +283,9 @@ class FunctionDef:
     def emit(self):
         return ''.join([
             'def ',
-            str(self.var),
+            self.var.emit(),
             '(',
-            str(self.params),
+            self.params.emit(),
             '):'
             ])
 
