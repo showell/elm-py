@@ -1,7 +1,5 @@
 emit:
-    git add Dict.elm
-    run elm-format
-
+    keep fixing stuff
 
 support "as"
 
