@@ -41,16 +41,22 @@ def capturePatternExpr(state):
     return doCapturePatternExpr(state)
 
 captureElmToken = \
-    captureUnReservedWord(
-        [ 'case', 'of', 'let', 'if', 'then', 'else', '->']
+    transform(
+        types.Token,
+        captureUnReservedWord(
+            [ 'case', 'of', 'let', 'if', 'then', 'else', '->']
+            )
         )
 
 captureElmOperator = \
-    captureStuff(
-        grab(
-            parseOperator(
-                ['<', '>', '<=', '>=', '==',
-                    '+', '-', '*', '/']
+    transform(
+        types.Operator,
+        captureStuff(
+            grab(
+                parseOperator(
+                    ['<', '>', '<=', '>=', '==',
+                        '+', '-', '*', '/']
+                    )
                 )
             )
         )
