@@ -19,6 +19,7 @@ def assertNothing(v):
 
 Any = MatchParam.Any
 Val = MatchParam.Val
+Var = MatchParam.Var
 
 Number = CustomType('Number', 'Zero', OneDigit=1, TwoDigit=2)
 
@@ -31,6 +32,9 @@ def test():
     v2 = Val(2)
     v3 = Val(3)
     v4 = Val(4)
+
+    x = Var('x')
+    y = Var('y')
 
     jd = Just(dict())
 
@@ -60,4 +64,28 @@ def test():
     assertNothing(patternMatch(twelve, 'TwoDigit', v4, Any))
     assertNothing(patternMatch(twelve, 'TwoDigit', Any, v4))
 
+    # capture matches
+    assertEqual(patternMatch(one, 'OneDigit', x),
+            Just(dict(x=1)))
+
+    assertEqual(patternMatch(twelve, 'TwoDigit', x, y),
+            Just(dict(x=1, y=2)))
+
+    # partial capture matches
+    assertEqual(patternMatch(twelve, 'TwoDigit', x, Any),
+            Just(dict(x=1)))
+
+    assertEqual(patternMatch(twelve, 'TwoDigit', x, v2),
+            Just(dict(x=1)))
+
+    assertEqual(patternMatch(twelve, 'TwoDigit', Any, y),
+            Just(dict(y=2)))
+
+    assertEqual(patternMatch(twelve, 'TwoDigit', v1, y),
+            Just(dict(y=2)))
+
+    # more failures
+    assertNothing(patternMatch(twelve, 'TwoDigit', x, v4))
+    assertNothing(patternMatch(twelve, 'TwoDigit', v4, x))
+    assertNothing(patternMatch(zero, 'TwoDigit', x, y))
 test()

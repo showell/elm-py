@@ -5,6 +5,7 @@ from Maybe import (
         Just
         )
 from Custom import (
+        Custom,
         CustomType,
         )
 
@@ -62,24 +63,36 @@ def lcompose(g, f):
 def rcompose(g, f):
     return lambda x: f(g(x))
 
-MatchParam = CustomType('MatchParam', 'Any', Val=1)
+MatchParam = CustomType('MatchParam',
+        'Any',
+        Val=1,
+        Var=1,
+        )
 
 def patternMatch(val, vtype, *args):
-    if not val.match(vtype):
-        return Nothing
+    if type(val) == Custom:
+        if not val.match(vtype):
+            return Nothing
 
-    if val.arity != len(args):
-        raise Exception('illegal pattern match')
+        if val.arity != len(args):
+            raise Exception('illegal pattern match')
 
-    if val.arity == 0:
-        return Just(dict())
+        if val.arity == 0:
+            return Just(dict())
 
-    vals = val.vals
-    for i, arg in enumerate(args):
-        if arg.match('Val'):
-            if arg.val != vals[i]:
-                return Nothing
+        dct = dict()
+        vals = val.vals
+        for i, arg in enumerate(args):
+            if arg.match('Val'):
+                if arg.val != vals[i]:
+                    return Nothing
+            elif arg.match('Var'):
+                dct[arg.val] = vals[i]
+            else:
+                if not arg.match('Any'):
+                    raise Exception('illegal pattern match')
 
-    return Just(dict())
+        return Just(dct)
 
+    raise Exception('unsupported pattern match')
 

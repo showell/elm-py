@@ -6,12 +6,10 @@ class Custom:
         if arity != len(vals):
             raise Exception('wrong number of vals')
 
+        self.vals = vals
+
         if arity == 1:
             self.val = vals[0]
-            self.vals = vals
-
-        if arity >= 2:
-            self.vals = vals
 
         self.typeClass = typeClass
         self.vtype = vtype
