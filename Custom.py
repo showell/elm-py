@@ -8,6 +8,7 @@ class Custom:
 
         if arity == 1:
             self.val = vals[0]
+            self.vals = vals
 
         if arity >= 2:
             self.vals = vals
@@ -64,35 +65,3 @@ class CustomType:
 
         for vtype, arity in funcs.items():
             setattr(self, vtype, factory(self, vtype, arity))
-
-_PatternMatch = CustomType('_PatternMatch',
-        'Nope',
-        'Yep')
-
-Nope = _PatternMatch.Nope
-Yep = _PatternMatch.Yep
-
-def patternMatch(val, vtype, *args):
-    if not val.match(vtype):
-        return Nope
-
-    if val.arity != len(args):
-        raise Exception('illegal pattern match')
-
-    if val.arity == 0:
-        return Yep
-
-    if val.arity == 1:
-        if args[0] == val.val:
-            return Yep
-        else:
-            return Nope
-
-    vals = val.vals
-    for i, arg in enumerate(args):
-        if arg != vals[i]:
-            return Nope
-
-    return Yep
-
-

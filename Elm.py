@@ -1,5 +1,12 @@
 import functools
 from inspect import signature
+from Maybe import (
+        Nothing,
+        Just
+        )
+from Custom import (
+        CustomType,
+        )
 
 def F(f):
     n = len(signature(f).parameters)
@@ -54,3 +61,25 @@ def lcompose(g, f):
 
 def rcompose(g, f):
     return lambda x: f(g(x))
+
+MatchParam = CustomType('MatchParam', 'Any', Val=1)
+
+def patternMatch(val, vtype, *args):
+    if not val.match(vtype):
+        return Nothing
+
+    if val.arity != len(args):
+        raise Exception('illegal pattern match')
+
+    if val.arity == 0:
+        return Just(dict())
+
+    vals = val.vals
+    for i, arg in enumerate(args):
+        if arg.match('Val'):
+            if arg.val != vals[i]:
+                return Nothing
+
+    return Just(dict())
+
+

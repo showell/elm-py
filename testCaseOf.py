@@ -1,42 +1,50 @@
 from testHelper import (
         assertEqual,
+        assertTrue,
     )
 
-from Custom import (
-        CustomType,
+from Elm import (
         patternMatch,
-        Nope,
-        Yep,
-    )
+        MatchParam,
+        )
 
+from Custom import CustomType
+from Maybe import Nothing
 
-def assertYep(v):
-    assertEqual(v, Yep)
+def assertJust(v):
+    assertTrue(v.match('Just'))
 
-def assertNope(v):
-    assertEqual(v, Nope)
+def assertNothing(v):
+    assertEqual(v, Nothing)
 
-Any = None
+Any = MatchParam.Any
+Val = MatchParam.Val
 
 Number = CustomType('Number', 'Zero', OneDigit=1, TwoDigit=2)
 
 def test():
     zero = Number.Zero
-    five = Number.OneDigit(5)
+    one = Number.OneDigit(1)
     twelve = Number.TwoDigit(1, 2)
 
-    assertYep(patternMatch(zero, 'Zero'))
-    assertYep(patternMatch(five, 'OneDigit', 5))
-    assertYep(patternMatch(twelve, 'TwoDigit', 1, 2))
+    v1 = Val(1)
+    v2 = Val(2)
+    v3 = Val(3)
+    v4 = Val(4)
+
+    # exact, precise matches
+    assertJust(patternMatch(zero, 'Zero'))
+    assertJust(patternMatch(one, 'OneDigit', v1))
+    assertJust(patternMatch(twelve, 'TwoDigit', v1, v2))
 
     # bad vtypes
-    assertNope(patternMatch(five, 'Zero'))
-    assertNope(patternMatch(twelve, 'OneDigit', 5))
-    assertNope(patternMatch(zero, 'TwoDigit', 1, 2))
+    assertNothing(patternMatch(one, 'Zero'))
+    assertNothing(patternMatch(twelve, 'OneDigit', v1))
+    assertNothing(patternMatch(zero, 'TwoDigit', v1, v2))
 
     # good vtypes but wrong values
-    assertNope(patternMatch(five, 'OneDigit', 6))
-    assertNope(patternMatch(twelve, 'TwoDigit', 1, 3))
+    assertNothing(patternMatch(one, 'OneDigit', v4))
+    assertNothing(patternMatch(twelve, 'TwoDigit', v1, v3))
 
 
 test()
