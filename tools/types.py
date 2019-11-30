@@ -1,3 +1,114 @@
+from Custom import (
+    CustomType
+    )
+
+"""
+We have to desugar some stuff:
+
+    You can't say:
+
+        (a, (b, c))
+
+    We say instead:
+        (a, _foo1)
+
+        (b, c) = _foo1
+
+    You can't say:
+        x =
+            if cond:
+                return 2
+            else:
+                return 3
+
+    We say instead:
+        def _foo1():
+            if cond:
+                return 2
+            else:
+                return 3
+        return _foo1()
+
+    You can't say:
+        x = (
+            z = 2
+            def a():
+                return x + y + z
+            )(**arg)
+
+    We say instead:
+
+        def _foo1():
+            z = 2
+            def a():
+                return x + y + z
+        x = _foo1(**arg)
+
+
+    We can't say:
+        if x:
+            return \
+                if a:
+                    return 2
+                else:
+                    return 3
+        else:
+            return 4
+
+    We want to try to combine those:
+        if x:
+            if a:
+                return 2
+            else:
+                return 3
+        else:
+            return 4
+
+    Some expressions are simple:
+
+        5 + 2
+
+        foo(2, 3)
+
+    Some statements are final:
+
+        def a(x):
+            return 5
+
+    Other statements are ready-to-return, but not final nor
+    easily wrapped:
+
+        x = 2
+        if cond:
+            return 2
+        else:
+            return 3
+"""
+
+
+PythonCode = CustomType('PythonCode', Simple =1, Block=2)
+Simple = PythonCode.Simple
+Block = PythonCode.Block
+
+def getFinalCode(ast):
+    code = ast.emit()
+
+    if code.match('Simple'):
+        return code.val
+
+    raise Exception('not supported yet')
+
+def getCode(ast):
+    code = ast.emit()
+
+    if code.match('Simple'):
+        return code.val
+
+    raise Exception('not supported yet')
+
+def getCodeList(asts):
+    return [getCode(ast) for ast in asts]
+
 def indent(s):
     return '\n'.join(
             '    ' + line
@@ -25,8 +136,8 @@ def commas(items):
     return str(items[0]) + '(' + ', '.join(str(x) for x in items[1:]) + ')'
 
 def emitTuple(asts):
-    items = (ast.emit() for ast in asts)
-    return formatList(items, '(', ')')
+    items = getCodeList(asts)
+    return Simple(formatList(items, '(', ')'))
 
 class Comment:
     def __init__(self, ast):
@@ -43,11 +154,13 @@ class List:
         return 'LIST ' + formatList(self.items, '(', ')')
 
     def emit(self):
-        return formatList(
-            [ast.emit() for ast in self.items],
+        items = getCodeList(self.items)
+        stmt = formatList(
+            items,
             '[',
             ']',
             )
+        return Simple(stmt)
 
 class Operator:
     def __init__(self, ast):
@@ -57,7 +170,7 @@ class Operator:
         return self.op
 
     def emit(self):
-        return self.op
+        return Simple(self.op)
 
 class Token:
     def __init__(self, ast):
@@ -67,7 +180,7 @@ class Token:
         return self.token
 
     def emit(self):
-        return self.token
+        return Simple(self.token)
 
 class PatternCons:
     def __init__(self, ast):
@@ -77,7 +190,7 @@ class PatternCons:
         return self.token
 
     def emit(self):
-        return self.token
+        return Simple(self.token)
 
 class Tuple:
     def __init__(self, ast):
@@ -150,8 +263,8 @@ class Call:
         return 'CALL ' + commas(self.items)
 
     def emit(self):
-        items = [ast.emit() for ast in self.items]
-        return commas(items)
+        items = getCodeList(self.items)
+        return Simple(commas(items))
 
 class If:
     def __init__(self, ast):
@@ -169,13 +282,17 @@ class If:
             indent(self.elseExpr))
 
     def emit(self):
+        condCode = getCode(self.cond)
+        thenCode = getCode(self.thenExpr)
+        elseCode = getCode(self.elseExpr)
+
         stmt = j(
-            'if ' + self.cond.emit() + ':',
-            indent('return ' + self.thenExpr.emit()),
+            'if ' + condCode + ':',
+            indent('return ' + thenCode),
             'else:',
-            indent('return ' + self.elseExpr.emit())
+            indent('return ' + elseCode),
             )
-        return stmt
+        return Simple(stmt)
 
 class CaseOf:
     def __init__(self, ast):
@@ -185,7 +302,7 @@ class CaseOf:
         return 'CASE OF: ' + str(self.expr)
 
     def emit(self):
-        return self.expr.emit()
+        return Simple(getCode(self.expr))
 
 class CustomTypePattern:
     def __init__(self, ast):
@@ -196,10 +313,10 @@ class CustomTypePattern:
         return 'CUSTOM TYPE ' + str(self.token) + ' ' + formatList(self.items, '(', ')')
 
     def emit(self):
-        typeParam = 'Type(' + self.token.emit() + ')'
-        items = [item.emit() for item in self.items]
+        typeParam = 'Type(' + getCode(self.token) + ')'
+        items = getCodeList(self.items)
 
-        return ', '.join([typeParam] + items)
+        return Simple(', '.join([typeParam] + items))
 
 class PatternDef:
     def __init__(self, ast):
@@ -209,7 +326,7 @@ class PatternDef:
         return str(self.expr)
 
     def emit(self):
-        return self.expr.emit()
+        return Simple(getCode(self.expr))
 
 class OneCase:
     def __init__(self, ast):
@@ -225,12 +342,15 @@ class OneCase:
             ])
 
     def emit(self):
-        cond = 'patternMatch(pred, ' + self.patternDef.emit() + ')'
+        patternCode = getCode(self.patternDef)
 
-        return j(
+        cond = 'patternMatch(pred, ' + patternCode + ')'
+        bodyCode = getCode(self.body)
+
+        return Simple(j(
             'if ' + cond + ':',
-            indent('return ' + self.body.emit())
-            )
+            indent('return ' + bodyCode)
+            ))
 
 class Case:
     def __init__(self, ast):
@@ -244,16 +364,15 @@ class Case:
             )
 
     def emit(self):
-        stmts = [
-            c.emit() for
-            c in self.cases]
+        predCode = getCode(self.pred)
+        stmts = getCodeList(self.cases)
 
         body = '\n\n'.join(stmts)
 
-        return j(
-            'casePred = ' + self.pred.emit(),
+        return Simple(j(
+            'casePred = ' + predCode,
             body
-            )
+            ))
 
 class Params:
     def __init__(self, ast):
@@ -263,10 +382,8 @@ class Params:
         return ', '.join(str(p) for p in self.params)
 
     def emit(self):
-        params = ', '.join(
-            p.emit() for p in self.params
-            )
-        return params
+        params = ', '.join(getCodeList(self.params))
+        return Simple(params)
 
 class Def:
     def __init__(self, ast):
@@ -291,13 +408,13 @@ class FunctionDef:
             )
 
     def emit(self):
-        return ''.join([
+        return Simple(''.join([
             'def ',
-            self.var.emit(),
+            getCode(self.var),
             '(',
-            self.params.emit(),
+            getCode(self.params),
             '):'
-            ])
+            ]))
 
 class Binding:
     def __init__(self, ast):
@@ -311,11 +428,14 @@ class Binding:
             indent(self.expr))
 
     def emit(self):
-        return j(
-            self.def_.emit(),
-            indent(self.expr.emit()),
+        defCode = getCode(self.def_)
+        bodyCode = getCode(self.expr)
+
+        return Simple(j(
+            defCode,
+            indent(bodyCode),
             '\n',
-            )
+            ))
 
 class Lambda:
     def __init__(self, ast):
@@ -330,12 +450,17 @@ class Lambda:
             )
 
     def emit(self):
-        return ' '.join([
+        paramCode = getCode(self.params)
+        bodyCode = getCode(self.expr)
+
+        stmt = ' '.join([
             'lambda',
-            self.params.emit(),
+            paramCode,
             ':',
-            self.expr.emit()
+            bodyCode,
             ])
+
+        return Simple(stmt)
 
 class Let:
     def __init__(self, ast):
@@ -350,9 +475,13 @@ class Let:
             indent(str(self.expr)))
 
     def emit(self):
-        return j(
-            jj(b.emit() for b in self.bindings),
+        bindings = getCodeList(self.bindings)
+        body = getCode(self.expr)
+
+        stmt = j(
+            jj(bindings),
             'return',
-            indent(self.expr.emit())
+            indent(body),
             )
+        return Simple(stmt)
 

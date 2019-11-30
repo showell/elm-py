@@ -1,5 +1,6 @@
 import parse
 import parseElm
+import types
 
 def emitCode(code):
     state = parse.State(code)
@@ -13,7 +14,7 @@ def emitCode(code):
 
     for ast in mainAst:
         if hasattr(ast, 'emit'):
-            print(ast.emit())
+            print(types.getFinalCode(ast))
 
 if __name__ == '__main__':
     fn = 'Dict.elm'
