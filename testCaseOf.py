@@ -9,10 +9,10 @@ from Elm import (
         )
 
 from Custom import CustomType
-from Maybe import Nothing
-
-def assertJust(v):
-    assertTrue(v.match('Just'))
+from Maybe import (
+        Just,
+        Nothing
+        )
 
 def assertNothing(v):
     assertEqual(v, Nothing)
@@ -32,10 +32,12 @@ def test():
     v3 = Val(3)
     v4 = Val(4)
 
+    jd = Just(dict())
+
     # exact, precise matches
-    assertJust(patternMatch(zero, 'Zero'))
-    assertJust(patternMatch(one, 'OneDigit', v1))
-    assertJust(patternMatch(twelve, 'TwoDigit', v1, v2))
+    assertEqual(jd, patternMatch(zero, 'Zero'))
+    assertEqual(jd, patternMatch(one, 'OneDigit', v1))
+    assertEqual(jd, patternMatch(twelve, 'TwoDigit', v1, v2))
 
     # bad vtypes
     assertNothing(patternMatch(one, 'Zero'))
@@ -46,5 +48,16 @@ def test():
     assertNothing(patternMatch(one, 'OneDigit', v4))
     assertNothing(patternMatch(twelve, 'TwoDigit', v1, v3))
 
+    # easy matches with Any
+    assertEqual(jd, patternMatch(one, 'OneDigit', Any))
+    assertEqual(jd, patternMatch(twelve, 'TwoDigit', Any, Any))
+
+    # partial matches with Any
+    assertEqual(jd, patternMatch(twelve, 'TwoDigit', v1, Any))
+    assertEqual(jd, patternMatch(twelve, 'TwoDigit', Any, v2))
+
+    # mismatches with Any
+    assertNothing(patternMatch(twelve, 'TwoDigit', v4, Any))
+    assertNothing(patternMatch(twelve, 'TwoDigit', Any, v4))
 
 test()
