@@ -67,11 +67,26 @@ MatchParam = CustomType('MatchParam',
         'Any',
         Val=1,
         Var=1,
+        Type=1,
         )
 
-def patternMatch(val, vtype, *args):
+def patternMatch(val, main, *args):
     if type(val) == Custom:
-        if not val.match(vtype):
+        if type(main) != Custom:
+            raise Exception('illegal pattern match')
+
+        if main.typeName != 'MatchParam':
+            raise Exception('illegal pattern match')
+
+        if not main.match('Type'):
+            raise Exception('illegal pattern match')
+
+        variantClass = main.val
+
+        if not val.match(variantClass.vtype):
+            return Nothing
+
+        if not val.isType(variantClass.typeName):
             return Nothing
 
         if val.arity != len(args):

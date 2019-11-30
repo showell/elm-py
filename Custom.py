@@ -6,12 +6,12 @@ class Custom:
         if arity != len(vals):
             raise Exception('wrong number of vals')
 
+        self.typeName = typeClass.name
         self.vals = vals
 
         if arity == 1:
             self.val = vals[0]
 
-        self.typeClass = typeClass
         self.vtype = vtype
         self.arity = arity
 
@@ -19,10 +19,10 @@ class Custom:
         return self.vtype == vtype
 
     def isType(self, typeName):
-        return self.typeClass.name == typeName
+        return self.typeName == typeName
 
     def __eq__(self, other):
-        if type(self.typeClass) != type(other.typeClass):
+        if self.typeName != other.typeName:
             raise Exception('illegal comparison')
 
         if self.vtype != other.vtype:
@@ -45,6 +45,7 @@ class Custom:
 
         return self.vtype + ' ' + str(self.vals)
 
+# TODO: just make this a Variant class with call sugar
 def factory(typeClass, vtype, arity):
     def make(*vals):
         if len(vals) != arity:
@@ -52,6 +53,8 @@ def factory(typeClass, vtype, arity):
 
         return Custom(typeClass, vtype, arity, *vals)
 
+    make.vtype = vtype
+    make.typeName = typeClass.name
     return make
 
 class CustomType:
