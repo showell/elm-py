@@ -98,10 +98,36 @@ def getFinalCode(ast):
 
     raise Exception('not supported yet')
 
+def getBlockCode(ast):
+    body = ast.emit()
+
+    if body.match('Simple'):
+        bodyCode = j(
+            'return ' + body.val
+            )
+    elif body.match('Block'):
+        bodyCode = body.val
+    else:
+        raise Exception('illegal')
+
+    return bodyCode
+
 def getCode(ast):
     code = ast.emit()
 
     if code.match('Simple'):
+        return code.val
+
+    raise Exception('not supported yet')
+
+def getDumbCode(ast):
+    # This often won't actually work in Python!
+    code = ast.emit()
+
+    if code.match('Simple'):
+        return code.val
+
+    if code.match('Block'):
         return code.val
 
     raise Exception('not supported yet')
@@ -283,16 +309,16 @@ class If:
 
     def emit(self):
         condCode = getCode(self.cond)
-        thenCode = getCode(self.thenExpr)
-        elseCode = getCode(self.elseExpr)
+        thenCode = getBlockCode(self.thenExpr)
+        elseCode = getBlockCode(self.elseExpr)
 
         stmt = j(
             'if ' + condCode + ':',
-            indent('return ' + thenCode),
+            indent(thenCode),
             'else:',
-            indent('return ' + elseCode),
+            indent(elseCode),
             )
-        return Simple(stmt)
+        return Block(stmt)
 
 class CaseOf:
     def __init__(self, ast):
@@ -345,11 +371,12 @@ class OneCase:
         patternCode = getCode(self.patternDef)
 
         cond = 'patternMatch(pred, ' + patternCode + ')'
-        bodyCode = getCode(self.body)
+
+        bodyCode = getBlockCode(self.body)
 
         return Simple(j(
             'if ' + cond + ':',
-            indent('return ' + bodyCode)
+            indent(bodyCode)
             ))
 
 class Case:
@@ -367,10 +394,10 @@ class Case:
         predCode = getCode(self.pred)
         stmts = getCodeList(self.cases)
 
-        body = '\n\n'.join(stmts)
+        body = '\n\n\n'.join(stmts)
 
-        return Simple(j(
-            'casePred = ' + predCode,
+        return Block(j(
+            'casePred = ' + predCode + '\n',
             body
             ))
 
@@ -430,17 +457,7 @@ class Binding:
     def emit(self):
         defCode = getCode(self.def_)
 
-        body = self.expr.emit()
-
-        if body.match('Simple'):
-            bodyCode = j(
-                'return \\',
-                indent(body.val)
-                )
-        elif body.match('Block'):
-            bodyCode = body.val
-        else:
-            raise Exception('illegal')
+        bodyCode = getBlockCode(self.expr)
 
         return Simple(j(
             defCode,
@@ -462,7 +479,7 @@ class Lambda:
 
     def emit(self):
         paramCode = getCode(self.params)
-        bodyCode = getCode(self.expr)
+        bodyCode = getDumbCode(self.expr)
 
         stmt = ' '.join([
             'lambda',
@@ -487,12 +504,10 @@ class Let:
 
     def emit(self):
         bindings = getCodeList(self.bindings)
-        body = getCode(self.expr)
 
         stmt = j(
             jj(bindings),
-            'return \\',
-            indent(body),
+            getBlockCode(self.expr),
             )
         return Block(stmt)
 
