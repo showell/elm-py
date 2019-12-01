@@ -2,6 +2,11 @@ import parse
 import parseElm
 import types
 
+def normalPrelude():
+    return """
+from Custom import CustomType
+"""
+
 def emitCode(code):
     state = parse.State(code)
     res = parseElm.captureAll(state)
@@ -26,4 +31,5 @@ if __name__ == '__main__':
     with open(fn) as f:
         code = f.read()
 
+    print(normalPrelude())
     emitCode(code)
