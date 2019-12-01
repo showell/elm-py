@@ -1,9 +1,11 @@
 emit:
-    patterns:
-        force tuples to have 2+ cases
+    focus on can-it-run:
+        need to extract vars from case patterns
+            left = res.val['left']
+            right = res.val['right']
 
-        rigor with vars
-        optimize single _ case
 
-    verticalize long function calls
+    misc:
+        distinguish Type at front vs. nested
+
 
