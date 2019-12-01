@@ -293,7 +293,7 @@ class ExprCons:
         expr1 = getCode(self.expr1)
         expr2 = getCode(self.expr2)
 
-        stmt = 'List.cons(' + expr1 + ', ' + expr2
+        stmt = 'List.cons(' + expr1 + ', ' + expr2 + ')'
 
         return Simple(stmt)
 
