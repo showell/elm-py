@@ -447,6 +447,17 @@ class If:
             )
         return Block(stmt)
 
+class PatternVar:
+    def __init__(self, ast):
+        self.token = ast
+
+    def __str__(self):
+        return self.token
+
+    def emit(self):
+        stmt = "Var('" + self.token + "')"
+        return Simple(stmt)
+
 class CaseOf:
     def __init__(self, ast):
         self.expr = ast

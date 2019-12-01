@@ -156,6 +156,12 @@ captureCaseOf = \
             )
         )
 
+capturePatternVar = \
+    transform(
+        types.PatternVar,
+        captureTokenLower(reservedWords)
+        )
+
 capturePatternDef = \
     transform(
         types.PatternDef,
@@ -357,7 +363,7 @@ doCaptureCallPiece = \
         captureLambda,
         captureExprTuple,
         captureExprList,
-        captureElmToken,
+        captureExprVar,
         captureElmInt,
         captureElmType,
         )
@@ -380,7 +386,6 @@ captureCustomTypePattern = \
         captureStuff(
             captureOneOf(
                 captureElmType,
-                captureElmToken,
             ),
             captureZeroOrMore(
                 captureOneOf(
@@ -388,7 +393,7 @@ captureCustomTypePattern = \
                     capturePatternTuple,
                     capturePatternList,
                     captureElmType,
-                    captureElmToken,
+                    capturePatternVar,
                     )
                 )
             )
@@ -401,7 +406,7 @@ capturePatternCons = \
             captureOneOf(
                 captureWildCardPattern,
                 capturePatternTuple,
-                captureElmToken,
+                capturePatternVar,
                 captureParen(capturePatternExpr),
                 ),
             captureOperator(
@@ -428,6 +433,7 @@ doCapturePatternExpr = \
             capturePatternAs,
             capturePatternCons,
             capturePatternTuple,
+            capturePatternVar,
             captureWildCardPattern,
             capturePatternList,
             captureCustomTypePattern,
