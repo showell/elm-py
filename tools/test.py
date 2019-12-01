@@ -336,6 +336,13 @@ def testEmit():
     res = parseElm.captureBinding(state)
     print(types.getFinalCode(res.ast))
 
+    code = """
+        (x, y) = foo bar
+        """
+    state = parse.State(code)
+    res = parseElm.captureBinding(state)
+    print(types.getFinalCode(res.ast))
+
 testIndents()
 testParse()
 testBlocks()

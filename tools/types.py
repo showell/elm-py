@@ -481,7 +481,30 @@ class FunctionDef:
             '):'
             ]))
 
-class Binding:
+class TupleAssign:
+    def __init__(self, ast):
+        self.def_ = ast[0]
+        self.expr = ast[1]
+
+    def __str__(self):
+        return j(
+            'TUP ASSIGN',
+            self.def_,
+            'EXPR',
+            indent(self.expr))
+
+    def emit(self):
+        defCode = getCode(self.def_)
+
+        bodyCode = getBlockCode(self.expr)
+
+        return Simple(j(
+            defCode + ' =',
+            indent(bodyCode),
+            '\n',
+            ))
+
+class NormalAssign:
     def __init__(self, ast):
         self.def_ = ast[0]
         self.expr = ast[1]
@@ -493,6 +516,9 @@ class Binding:
             indent(self.expr))
 
     def emit(self):
+        if type(self.def_) == TupleVar:
+            raise Exception('tuple binding')
+
         defCode = getCode(self.def_)
 
         bodyCode = getBlockCode(self.expr)

@@ -266,21 +266,31 @@ captureFunctionDef = \
             )
         )
 
+captureTupleAssign = \
+    transform(
+        types.TupleAssign,
+        captureStuff(
+            captureTupleVar,
+            skip(pChar('=')),
+            twoPass(
+                parseMyLevel,
+                captureExpr
+                ),
+            )
+        )
+
 captureDef = \
     transform(
         types.Def,
         captureStuff(
-            captureOneOf(
-                captureTupleVar,
-                captureFunctionDef,
-                ),
+            captureFunctionDef,
             skip(pChar('=')),
             )
         )
 
-captureBinding = \
+captureNormalAssign = \
     transform(
-        types.Binding,
+        types.NormalAssign,
         captureStuff(
             captureDef,
             twoPass(
@@ -289,6 +299,12 @@ captureBinding = \
                 ),
             ),
         )
+
+captureBinding = \
+    captureOneOf(
+        captureNormalAssign,
+        captureTupleAssign,
+    )
 
 captureLetBindings = \
     captureOneOrMore(captureBinding)
