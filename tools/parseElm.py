@@ -390,12 +390,29 @@ captureCustomTypePattern = \
             )
         )
 
+# I should be smarter about binary operators.
+# See https://www.crockford.com/javascript/tdop/tdop.html
+# (he implements a Pratt parser, which wouldn't be terribly
+# difficult to adapt here...I am just being lazy)
+#
+# This only captures simple `foo < ...` expressions.
+captureBinOp = \
+    transform(
+        types.BinOp,
+        captureStuff(
+            captureElmToken,
+            captureElmOperator,
+            captureExpr,
+            )
+        )
+
 doCaptureExpr = \
     captureStuff(
         skipManyCaptures(captureComment),
         captureOneOf(
             captureUnit,
             captureParenExpr,
+            captureBinOp,
             captureLet,
             captureIf,
             captureCase,

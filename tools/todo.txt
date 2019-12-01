@@ -1,5 +1,6 @@
 emit:
-    investigate merge
+    fix _ -> Any
+    verticalize long function calls
     keep fixing stuff
 
 elminate more grab()

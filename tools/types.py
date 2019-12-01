@@ -227,6 +227,26 @@ class Operator:
     def emit(self):
         return Simple(self.op)
 
+class BinOp:
+    def __init__(self, ast):
+        self.expr1, self.op, self.expr2 = ast
+
+    def __str__(self):
+        return j(
+            str(self.expr1),
+            str(self.op),
+            str(self.expr2),
+            )
+
+    def emit(self):
+        expr1 = getCode(self.expr1)
+        expr2 = getCode(self.expr2)
+        op = str(self.op)
+
+        stmt = expr1 + ' ' + op + ' ' + expr2
+
+        return Simple(stmt)
+
 class Token:
     def __init__(self, ast):
         self.token = ast
