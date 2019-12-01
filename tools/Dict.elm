@@ -477,49 +477,6 @@ diff t1 t2 =
     foldl (\k v t -> remove k t) t1 t2
 
 
-{-| The most general way of combining two dictionaries. You provide three
-accumulators for when a given key appears:
-
-1.  Only in the left dictionary.
-2.  In both dictionaries.
-3.  Only in the right dictionary.
-
-You then traverse all the keys from lowest to highest, building up whatever
-you want.
-
--}
-merge :
-    (comparable -> a -> result -> result)
-    -> (comparable -> a -> b -> result -> result)
-    -> (comparable -> b -> result -> result)
-    -> Dict comparable a
-    -> Dict comparable b
-    -> result
-    -> result
-merge leftStep bothStep rightStep leftDict rightDict initialResult =
-    let
-        stepState rKey rValue ( list, result ) =
-            case list of
-                [] ->
-                    ( list, rightStep rKey rValue result )
-
-                ( lKey, lValue ) :: rest ->
-                    if lKey < rKey then
-                        stepState rKey rValue ( rest, leftStep lKey lValue result )
-
-                    else if lKey > rKey then
-                        ( list, rightStep rKey rValue result )
-
-                    else
-                        ( rest, bothStep lKey lValue rValue result )
-
-        ( leftovers, intermediateResult ) =
-            foldl stepState ( toList leftDict, initialResult ) rightDict
-    in
-    List.foldl (\( k, v ) result -> leftStep k v result) intermediateResult leftovers
-
-
-
 -- TRANSFORM
 
 
@@ -653,5 +610,48 @@ filter isGood dict =
         )
         empty
         dict
+
+
+{-| The most general way of combining two dictionaries. You provide three
+accumulators for when a given key appears:
+
+1.  Only in the left dictionary.
+2.  In both dictionaries.
+3.  Only in the right dictionary.
+
+You then traverse all the keys from lowest to highest, building up whatever
+you want.
+
+-}
+merge :
+    (comparable -> a -> result -> result)
+    -> (comparable -> a -> b -> result -> result)
+    -> (comparable -> b -> result -> result)
+    -> Dict comparable a
+    -> Dict comparable b
+    -> result
+    -> result
+merge leftStep bothStep rightStep leftDict rightDict initialResult =
+    let
+        stepState rKey rValue ( list, result ) =
+            case list of
+                [] ->
+                    ( list, rightStep rKey rValue result )
+
+                ( lKey, lValue ) :: rest ->
+                    if lKey < rKey then
+                        stepState rKey rValue ( rest, leftStep lKey lValue result )
+
+                    else if lKey > rKey then
+                        ( list, rightStep rKey rValue result )
+
+                    else
+                        ( rest, bothStep lKey lValue rValue result )
+
+        ( leftovers, intermediateResult ) =
+            foldl stepState ( toList leftDict, initialResult ) rightDict
+    in
+    List.foldl (\( k, v ) result -> leftStep k v result) intermediateResult leftovers
+
 
 
