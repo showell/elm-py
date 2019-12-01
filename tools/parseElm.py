@@ -61,6 +61,12 @@ captureElmOperator = \
             '+', '-', '*', '/']
         )
 
+captureWildCard = \
+    transform(
+        types.WildCard,
+        captureOperator(['_'])
+        )
+
 capturePatternCons = \
     transform(
         types.PatternCons,
@@ -371,6 +377,7 @@ captureCustomTypePattern = \
             ),
             captureZeroOrMore(
                 captureOneOf(
+                    captureWildCard,
                     capturePatternTuple,
                     capturePatternList,
                     capturePatternCons,
@@ -415,6 +422,7 @@ doCapturePatternExpr = \
     captureStuff(
         skipManyCaptures(captureComment),
         captureOneOf(
+            captureWildCard,
             capturePatternList,
             captureCustomTypePattern,
             )

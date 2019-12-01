@@ -217,6 +217,16 @@ class List:
             )
         return Simple(stmt)
 
+class WildCard:
+    def __init__(self, ast):
+        assert(ast == '_')
+
+    def __str__(self):
+        return 'ANY'
+
+    def emit(self):
+        return Simple('Any')
+
 class BinOp:
     def __init__(self, ast):
         self.expr1, self.op, self.expr2 = ast
