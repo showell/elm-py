@@ -1,5 +1,4 @@
 emit:
-    just make all lambdas into defs
     investigate merge
     keep fixing stuff
 

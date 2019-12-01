@@ -517,26 +517,14 @@ class Lambda:
 
     def emit(self):
         paramCode = getCode(self.params)
+        bodyCode = getBlockCode(self.expr)
 
-        body = self.expr.emit()
+        stmt = j(
+            '(' + paramCode + '):',
+            indent(bodyCode)
+            )
+        return Anon(stmt)
 
-        if body.match('Simple'):
-            stmt = ' '.join([
-                'lambda',
-                paramCode,
-                ':',
-                body.val,
-                ])
-            return Simple(stmt)
-
-        elif body.match('Block'):
-            stmt = j(
-                '(' + paramCode + '):',
-                indent(body.val)
-                )
-            return Anon(stmt)
-
-        raise Exception('cannot handle')
 
 class Let:
     def __init__(self, ast):
