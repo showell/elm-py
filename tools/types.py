@@ -316,6 +316,16 @@ class BinOp:
 
         return Simple(stmt)
 
+class ExprVar:
+    def __init__(self, ast):
+        self.token = ast
+
+    def __str__(self):
+        return self.token
+
+    def emit(self):
+        return Simple(self.token)
+
 class Token:
     def __init__(self, ast):
         self.token = ast

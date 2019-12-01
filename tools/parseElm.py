@@ -51,6 +51,12 @@ captureElmType = \
         captureTokenUpper(reservedWords)
         )
 
+captureExprVar = \
+    transform(
+        types.ExprVar,
+        captureTokenLower(reservedWords)
+        )
+
 captureElmToken = \
     transform(
         types.Token,
@@ -204,7 +210,7 @@ captureTupleVar = \
             '(',
             ',',
             ')',
-            captureElmToken
+            captureExprVar
             )
         )
 
@@ -247,7 +253,7 @@ captureParams = \
         captureZeroOrMore(
             captureOneOf(
                 captureUnit,
-                captureElmToken,
+                captureExprVar,
                 captureWildCardVar,
                 captureExprTuple,
                 )
@@ -258,7 +264,7 @@ captureFunctionDef = \
     transform(
         types.FunctionDef,
         captureStuff(
-            captureElmToken,
+            captureExprVar,
             captureParams,
             )
         )
@@ -411,7 +417,7 @@ capturePatternAs = \
         captureStuff(
             captureParen(capturePatternExpr),
             skip(pKeyword('as')),
-            captureElmToken,
+            captureExprVar,
             )
         )
 
@@ -437,7 +443,7 @@ doCapturePatternExpr = \
 
 captureSimpleExpr = \
     captureOneOf(
-        captureElmToken,
+        captureExprVar,
         captureExprTuple,
     )
 
