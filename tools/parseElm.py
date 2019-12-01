@@ -39,6 +39,9 @@ def captureTypeSpec(state):
 def capturePatternExpr(state):
     return doCapturePatternExpr(state)
 
+def captureCallPiece(state):
+    return doCaptureCallPiece(state)
+
 def captureParen(fCapture):
     return captureStuff(
         skip(pChar('(')),
@@ -389,9 +392,6 @@ captureLambda = \
             captureExpr,
             )
         )
-
-def captureCallPiece(state):
-    return doCaptureCallPiece(state)
 
 doCaptureCallPiece = \
     captureOneOf(
