@@ -154,6 +154,14 @@ def processItems(asts):
 
     return (prelude, items)
 
+def fixParams(params):
+    if '(' in params:
+        unpackCode = params + ' = args\n'
+        return '(*args):\n' + indent(unpackCode)
+    else:
+        return '(' + params + '):'
+
+
 def indent(s):
     return '\n'.join(
             '    ' + line
@@ -579,11 +587,7 @@ class FunctionDef:
         fname = getCode(self.var)
         params = getCode(self.params)
 
-        if '(' in params:
-            unpackCode = params + ' = args\n'
-            stmt = 'def ' + fname + '(*args):\n' + indent(unpackCode)
-        else:
-            stmt = 'def ' + fname + '(' + params + '):'
+        stmt = 'def ' + fname + fixParams(params)
 
         return Simple(stmt)
 
@@ -602,12 +606,12 @@ class TupleAssign:
     def emit(self):
         defCode = getCode(self.def_)
 
-        bodyCode = getBlockCode(self.expr)
+        bodyCode = getCode(self.expr)
 
         return Simple(j(
-            defCode + ' =',
+            defCode + ' = (',
             indent(bodyCode),
-            '\n',
+            ')\n',
             ))
 
 class NormalAssign:
@@ -651,7 +655,7 @@ class Lambda:
         bodyCode = getBlockCode(self.expr)
 
         stmt = j(
-            '(' + paramCode + '):',
+            fixParams(paramCode),
             indent(bodyCode)
             )
         return Anon(stmt)
