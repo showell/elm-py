@@ -203,6 +203,12 @@ def testParse():
 
     succeed(parseElm.captureOneCase,
         """
+        foo :: rest ->
+            baz
+            """)
+
+    succeed(parseElm.captureOneCase,
+        """
         foo bar ->
             baz
             """)
@@ -224,6 +230,10 @@ def testParse():
             a
             """)
 
+
+    succeed(parseElm.capturePatternCons,
+        """
+        (first, second) :: rest""")
 
     succeed(parseElm.captureOneCase,
         """

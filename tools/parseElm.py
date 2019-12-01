@@ -81,16 +81,6 @@ captureWildCardPattern = \
         captureOperator(['_'])
         )
 
-capturePatternCons = \
-    transform(
-        types.PatternCons,
-        captureStuff(
-            captureOperator(
-                ['::']
-                )
-            )
-        )
-
 captureDocs = \
     transform(
         types.Comment,
@@ -160,16 +150,11 @@ captureCaseOf = \
             )
         )
 
-capturePattern = \
-    captureOneOf(
-        capturePatternExpr,
-        )
-
 capturePatternDef = \
     transform(
         types.PatternDef,
         captureStuff(
-            capturePattern,
+            capturePatternExpr,
             skip(pKeyword('->')),
             )
         )
@@ -390,14 +375,12 @@ captureCustomTypePattern = \
             captureOneOf(
                 captureElmType,
                 captureElmToken,
-                capturePatternTuple,
             ),
             captureZeroOrMore(
                 captureOneOf(
                     captureWildCardPattern,
                     capturePatternTuple,
                     capturePatternList,
-                    capturePatternCons,
                     captureElmType,
                     captureElmToken,
                     )
@@ -405,10 +388,40 @@ captureCustomTypePattern = \
             )
         )
 
+capturePatternCons = \
+    transform(
+        types.PatternCons,
+        captureStuff(
+            captureOneOf(
+                captureWildCardPattern,
+                capturePatternTuple,
+                captureElmToken,
+                captureParen(capturePatternExpr),
+                ),
+            captureOperator(
+                ['::']
+                ),
+            capturePatternExpr,
+            ),
+        )
+
+capturePatternAs = \
+    transform(
+        types.PatternAs,
+        captureStuff(
+            captureParen(capturePatternExpr),
+            skip(pKeyword('as')),
+            captureElmToken,
+            )
+        )
+
 doCapturePatternExpr = \
     captureStuff(
         skipManyCaptures(captureComment),
         captureOneOf(
+            capturePatternAs,
+            capturePatternCons,
+            capturePatternTuple,
             captureWildCardPattern,
             capturePatternList,
             captureCustomTypePattern,

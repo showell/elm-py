@@ -217,6 +217,36 @@ class List:
             )
         return Simple(stmt)
 
+class PatternCons:
+    def __init__(self, ast):
+        self.head, op, self.rest = ast
+
+    def __str__(self):
+        return j(
+            'PATTERN CONS',
+            self.head,
+            self.rest,
+            )
+
+    def emit(self):
+        stmt = 'Cons(' + getCode(self.head) + ', ' + getCode(self.rest) + ')'
+        return Simple(stmt)
+
+class PatternAs:
+    def __init__(self, ast):
+        self.expr, self.var = ast
+
+    def __str__(self):
+        return j(
+            'AS',
+            self.expr,
+            self.var,
+            )
+
+    def emit(self):
+        stmt = 'AsVar(' + getCode(self.expr) + ', ' + getCode(self.var) + ')'
+        return Simple(stmt)
+
 class Int:
     def __init__(self, ast):
         self.n = ast
@@ -287,16 +317,6 @@ class BinOp:
         return Simple(stmt)
 
 class Token:
-    def __init__(self, ast):
-        self.token = ast
-
-    def __str__(self):
-        return self.token
-
-    def emit(self):
-        return Simple(self.token)
-
-class PatternCons:
     def __init__(self, ast):
         self.token = ast
 
