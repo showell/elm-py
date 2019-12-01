@@ -318,6 +318,25 @@ def testBlocks():
         parse.parseBlock(state),
         'in foo')
 
+def testEmit():
+    print("\n\n\n---- EMIT ---\n\n")
+    code = """
+        f =
+            \\x -> if x then 2 else 3
+        """
+    state = parse.State(code)
+    res = parseElm.captureBinding(state)
+    print(types.getFinalCode(res.ast))
+
+    code = """
+        g =
+            foo (\\x -> if x then 2 else 3) z
+        """
+    state = parse.State(code)
+    res = parseElm.captureBinding(state)
+    print(types.getFinalCode(res.ast))
+
 testIndents()
 testParse()
 testBlocks()
+testEmit()

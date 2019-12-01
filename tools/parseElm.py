@@ -40,6 +40,13 @@ def captureExpr(state):
 def capturePatternExpr(state):
     return doCapturePatternExpr(state)
 
+def captureParen(fCapture):
+    return captureStuff(
+        skip(pChar('(')),
+        fCapture,
+        skip(pChar(')')),
+        )
+
 captureElmToken = \
     transform(
         types.Token,
@@ -181,11 +188,7 @@ captureCase = \
         )
 
 captureParenExpr = \
-    captureStuff(
-        skip(pChar('(')),
-        captureExpr,
-        skip(pChar(')')),
-        )
+    captureParen(captureExpr)
 
 captureExprTuple = \
     transform(
@@ -326,19 +329,23 @@ captureLambda = \
             )
         )
 
+def captureCallPiece(state):
+    return doCaptureCallPiece(state)
+
+doCaptureCallPiece = \
+    captureOneOf(
+        captureParen(captureCallPiece),
+        captureLambda,
+        captureExprTuple,
+        captureExprList,
+        captureElmOperator,
+        captureElmToken,
+        )
+
 captureCall = \
     transform(
         types.Call,
-        captureOneOrMore(
-            captureOneOf(
-                captureParenExpr,
-                captureLambda,
-                captureExprTuple,
-                captureExprList,
-                captureElmOperator,
-                captureElmToken,
-                )
-            )
+        captureOneOrMore(captureCallPiece),
         )
 
 captureComment = \
