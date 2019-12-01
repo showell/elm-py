@@ -201,6 +201,11 @@ def testParse():
         []
         """)
 
+    succeed(parseElm.capturePatternList,
+        """
+        foo :: rest
+            """)
+
     succeed(parseElm.captureOneCase,
         """
         foo :: rest ->
@@ -209,13 +214,13 @@ def testParse():
 
     succeed(parseElm.captureOneCase,
         """
-        foo bar ->
+        Foo bar ->
             baz
             """)
 
     succeed(parseElm.captureOneCase,
         """
-        foo (x y) ->
+        Foo (x, y) ->
             a
             """)
 

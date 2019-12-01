@@ -1,5 +1,7 @@
 emit:
     patterns:
+        force tuples to have 2+ cases
+
         rigor with vars
         optimize single _ case
 

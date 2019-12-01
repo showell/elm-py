@@ -242,17 +242,6 @@ captureExprList = \
             )
         )
 
-capturePatternList = \
-    transform(
-        types.List,
-        captureSeq(
-            '[',
-            ',',
-            ']',
-            capturePatternExpr,
-            )
-        )
-
 captureParams = \
     transform(
         types.Params,
@@ -389,13 +378,20 @@ captureCustomTypePattern = \
             ),
             captureZeroOrMore(
                 captureOneOf(
-                    captureWildCardPattern,
-                    capturePatternTuple,
-                    capturePatternList,
-                    captureElmType,
-                    capturePatternVar,
+                    capturePatternExpr,
                     )
                 )
+            )
+        )
+
+capturePatternListBrackets = \
+    transform(
+        types.List,
+        captureSeq(
+            '[',
+            ',',
+            ']',
+            capturePatternExpr,
             )
         )
 
@@ -416,6 +412,12 @@ capturePatternCons = \
             ),
         )
 
+capturePatternList = \
+    captureOneOf(
+        capturePatternCons,
+        capturePatternListBrackets,
+        )
+
 capturePatternAs = \
     transform(
         types.PatternAs,
@@ -431,12 +433,11 @@ doCapturePatternExpr = \
         skipManyCaptures(captureComment),
         captureOneOf(
             capturePatternAs,
-            capturePatternCons,
-            capturePatternTuple,
-            capturePatternVar,
             captureWildCardPattern,
             capturePatternList,
             captureCustomTypePattern,
+            capturePatternTuple,
+            capturePatternVar,
             )
         )
 
