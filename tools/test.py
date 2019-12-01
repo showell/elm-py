@@ -56,11 +56,18 @@ def testParse():
         )
         """)
 
-    succeed(parseElm.captureType,
+    succeed(parseElm.captureTypeDef,
         """
-        type Value =
+        type Value
             = Int
             | String
+        """)
+
+    succeed(parseElm.captureTypeDef,
+        """
+        type Foo a b
+            = Int a Bar (Baz c d)
+            | String b
         """)
 
     succeed(parseElm.captureDef,

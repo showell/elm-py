@@ -398,14 +398,25 @@ class Annotation:
             'ANNOTATION',
             self.ast)
 
-class Type:
+class VariantDef:
     def __init__(self, ast):
-        self.ast = ast
+        self.variantName = ast[0]
+        self.n = len(ast) - 1
+
+    def __str__(self):
+        return 'VARIANT: ' + str(self.variantName) + ' ' + str(self.n)
+
+class TypeDef:
+    def __init__(self, ast):
+        self.typeName = ast[0]
+        self.variants = ast[1:]
 
     def __str__(self):
         return j(
             'TYPE',
-            self.ast)
+            self.typeName,
+            jj(self.variants),
+            )
 
 class Call:
     def __init__(self, ast):

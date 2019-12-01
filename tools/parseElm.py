@@ -33,6 +33,9 @@ import parse
 def captureExpr(state):
     return doCaptureExpr(state)
 
+def captureTypeSpec(state):
+    return doCaptureTypeSpec(state)
+
 def capturePatternExpr(state):
     return doCapturePatternExpr(state)
 
@@ -127,10 +130,54 @@ captureImport = \
         captureKeywordBlock('import')
         )
 
-captureType = \
+doCaptureTypeSpec = \
+    captureOneOf(
+        captureParen(
+            captureOneOrMore(
+                captureOneOf(
+                    captureElmToken,
+                    captureElmType,
+                    )
+                )
+            ),
+        captureElmToken,
+        captureElmType,
+        )
+
+captureVariantDef = \
     transform(
-        types.Type,
-        captureKeywordBlock('type')
+        types.VariantDef,
+        captureStuff(
+            captureElmType,
+            captureZeroOrMore(
+                captureTypeSpec
+                )
+            )
+        )
+
+captureTypeName = \
+    captureStuff(
+        captureElmType,
+        skipManyCaptures(
+            captureElmToken
+            )
+        )
+
+captureTypeDef = \
+    transform(
+        types.TypeDef,
+        captureStuff(
+            skip(pKeyword('type')),
+            captureTypeName,
+            skip(pChar('=')),
+            captureVariantDef,
+            captureZeroOrMore(
+                captureStuff(
+                    skip(pChar('|')),
+                    captureVariantDef,
+                    )
+                )
+            )
         )
 
 captureIf = \
@@ -496,7 +543,7 @@ captureTopOfFile = \
             captureModule,
             captureImport,
             captureComment,
-            captureType,
+            captureTypeDef,
             )
         )
 
