@@ -64,6 +64,12 @@ def isEndWord(s, end):
 def isWord(s, start, end):
     return isBeginWord(s, start) and isEndWord(s, end)
 
+def digit(s, i):
+    if i >= len(s):
+        return False
+
+    return s[i].isdigit()
+
 def tokenChar(s, i):
     if i >= len(s):
         return False
@@ -81,6 +87,12 @@ def tokenChar(s, i):
 def emptyState(state):
     (s, i) = state.position()
     return i == len(s)
+
+def peekChar(state, f):
+    (s, i) = state.position()
+    if i >= len(s):
+        return False
+    return f(s[i])
 
 def peek(state, kw):
     (s, i) = state.position()
@@ -121,6 +133,16 @@ def token(state):
         return
 
     while tokenChar(s, i):
+        i += 1
+    return state.setIndex(i)
+
+def parseInt(state):
+    (s, i) = state.position()
+
+    if not digit(s, i):
+        return
+
+    while digit(s, i):
         i += 1
     return state.setIndex(i)
 
@@ -253,6 +275,33 @@ def parseKeywordBlock(keyword):
     return wrapper
 
 # CAPTURE
+
+def captureTokenIfChar(reservedWords, fChar):
+    grabber = grab(token)
+
+    def wrapper(state):
+        state = spaceOptional(state)
+
+        if not peekChar(state, fChar):
+            return
+
+        res = grabber(state)
+        if res is None:
+            return
+
+        word = res.ast
+        if word in reservedWords:
+            return
+
+        return res
+
+    return wrapper
+
+def captureTokenLower(reservedWords):
+    return captureTokenIfChar(reservedWords, str.islower)
+
+def captureTokenUpper(reservedWords):
+    return captureTokenIfChar(reservedWords, str.isupper)
 
 def captureUnReservedWord(reservedWords):
     def wrapper(state):
@@ -481,5 +530,6 @@ def captureKeywordBlock(keyword):
 def captureOperator(operators):
     return grab(parseOperator(operators))
 
+captureInt = grab(parseInt)
 captureLine = grab(pLine)
 captureBlock = grab(parseBlock)

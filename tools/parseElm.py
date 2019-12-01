@@ -2,6 +2,7 @@ import types
 
 from parse import (
         captureBlock,
+        captureInt,
         captureKeywordBlock,
         captureLine,
         captureOneOf,
@@ -11,6 +12,8 @@ from parse import (
         captureSeq,
         captureStuff,
         captureSubBlock,
+        captureTokenLower,
+        captureTokenUpper,
         captureUnReservedWord,
         captureUntilKeyword,
         captureZeroOrMore,
@@ -40,12 +43,18 @@ def captureParen(fCapture):
         skip(pChar(')')),
         )
 
+reservedWords = [ 'case', 'of', 'let', 'if', 'then', 'else', '->']
+
+captureElmType = \
+    transform(
+        types.Token,
+        captureTokenUpper(reservedWords)
+        )
+
 captureElmToken = \
     transform(
         types.Token,
-        captureUnReservedWord(
-            [ 'case', 'of', 'let', 'if', 'then', 'else', '->']
-            )
+        captureTokenLower(reservedWords)
         )
 
 captureElmOperator = \
@@ -54,9 +63,21 @@ captureElmOperator = \
             '+', '-', '*', '/']
         )
 
-captureWildCard = \
+captureElmInt = \
     transform(
-        types.WildCard,
+        types.Int,
+        captureInt
+        )
+
+captureWildCardVar = \
+    transform(
+        types.WildCardVar,
+        captureOperator(['_'])
+        )
+
+captureWildCardPattern = \
+    transform(
+        types.WildCardPattern,
         captureOperator(['_'])
         )
 
@@ -242,6 +263,7 @@ captureParams = \
             captureOneOf(
                 captureUnit,
                 captureElmToken,
+                captureWildCardVar,
                 captureExprTuple,
                 )
             )
@@ -345,6 +367,8 @@ doCaptureCallPiece = \
         captureExprTuple,
         captureExprList,
         captureElmToken,
+        captureElmInt,
+        captureElmType,
         )
 
 captureCall = \
@@ -364,15 +388,17 @@ captureCustomTypePattern = \
         types.CustomTypePattern,
         captureStuff(
             captureOneOf(
+                captureElmType,
                 captureElmToken,
                 capturePatternTuple,
             ),
             captureZeroOrMore(
                 captureOneOf(
-                    captureWildCard,
+                    captureWildCardPattern,
                     capturePatternTuple,
                     capturePatternList,
                     capturePatternCons,
+                    captureElmType,
                     captureElmToken,
                     )
                 )
@@ -385,12 +411,29 @@ captureCustomTypePattern = \
 # difficult to adapt here...I am just being lazy)
 #
 # This only captures simple `foo < ...` expressions.
+
+captureSimpleExpr = \
+    captureOneOf(
+        captureElmToken,
+        captureExprTuple,
+    )
+
 captureBinOp = \
     transform(
         types.BinOp,
         captureStuff(
-            captureElmToken,
+            captureSimpleExpr,
             captureElmOperator,
+            captureExpr,
+            )
+        )
+
+captureExprCons = \
+    transform(
+        types.ExprCons,
+        captureStuff(
+            captureSimpleExpr,
+            captureOperator(['::']),
             captureExpr,
             )
         )
@@ -402,6 +445,7 @@ doCaptureExpr = \
             captureUnit,
             captureParenExpr,
             captureBinOp,
+            captureExprCons,
             captureLet,
             captureIf,
             captureCase,
@@ -414,7 +458,7 @@ doCapturePatternExpr = \
     captureStuff(
         skipManyCaptures(captureComment),
         captureOneOf(
-            captureWildCard,
+            captureWildCardPattern,
             capturePatternList,
             captureCustomTypePattern,
             )

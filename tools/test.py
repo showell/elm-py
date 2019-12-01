@@ -19,8 +19,8 @@ def succeed(fCapture, s):
         parse.printState(state)
         raise Exception('partial parse')
     print("\n---")
-
     print(ast)
+    print('pass\n')
 
 def assertIndent(s, i, expected):
     assert parse.indentLevel(s, i) == expected
@@ -71,7 +71,7 @@ def testParse():
     succeed(parseElm.captureBinding,
         """
         x =
-            5""")
+            bla""")
 
     succeed(parseElm.captureExpr,
         """
@@ -94,7 +94,7 @@ def testParse():
         foo ->
             let
                 x =
-                    2
+                    bar
             in
             x
 
@@ -138,7 +138,7 @@ def testParse():
 
     succeed(parseElm.captureExpr,
         """
-            add 5 7
+            add a b
             """)
 
     succeed(parseElm.captureAnnotation,
@@ -181,13 +181,13 @@ def testParse():
     # lambda in expressions
     succeed(parseElm.captureExpr,
         """
-        map2 ( \\x y -> 5 ) lst
+        map2 ( \\x y -> a ) lst
         """)
 
 
     succeed(parseElm.capturePatternList,
         """
-        [ a, 5, c ]
+        [ a, b, c ]
         """)
 
 
@@ -204,13 +204,13 @@ def testParse():
     succeed(parseElm.captureOneCase,
         """
         foo bar ->
-            5
+            baz
             """)
 
     succeed(parseElm.captureOneCase,
         """
         foo (x y) ->
-            5
+            a
             """)
 
     succeed(parseElm.captureExpr,
@@ -221,25 +221,25 @@ def testParse():
     succeed(parseElm.captureOneCase,
         """
         head :: rest ->
-            5
+            a
             """)
 
 
     succeed(parseElm.captureOneCase,
         """
         (first, second) :: rest ->
-            5
+            a
             """)
 
     succeed(parseElm.captureIf,
         """
-        if foo then 1 else 2
+        if foo then a else b
             """)
 
 
     succeed(parseElm.captureExpr,
         """
-        n+1
+        n+m
             """)
 
 
@@ -261,15 +261,22 @@ def testParse():
             """)
 
 
+    succeed(parseElm.captureBinding,
+        """
+        x =
+            foldr (\key value list -> a :: b) [] dict
+            """)
+
+
 def testBlocks():
     s = """
     let
         x =
             if cond then
-                1
+                a
 
             else
-                2
+                b
         y =
             bla
     in foo
@@ -290,9 +297,9 @@ def testBlocks():
 
     s = """
     else if cond then
-        5
+        a
     else
-        7
+        b
         """
     state = parse.State(s)
     state = parse.spaceOptional(state)
@@ -306,7 +313,7 @@ def testBlocks():
 
     s = """
         let x =
-            5
+            a
         in foo
         """
     state = parse.State(s)
@@ -322,7 +329,7 @@ def testEmit():
     print("\n\n\n---- EMIT ---\n\n")
     code = """
         f =
-            \\x -> if x then 2 else 3
+            \\x -> if x then a else b
         """
     state = parse.State(code)
     res = parseElm.captureBinding(state)
@@ -330,7 +337,7 @@ def testEmit():
 
     code = """
         g =
-            foo (\\x -> if x then 2 else 3) z
+            foo (\\x -> if x then a else b) z
         """
     state = parse.State(code)
     res = parseElm.captureBinding(state)

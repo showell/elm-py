@@ -10,6 +10,11 @@ def emitCode(code):
         raise Exception('could not parse')
 
     state = res.state
+
+    if state.incomplete():
+        parse.printState(state)
+        raise Exception('incomplete!')
+
     _, mainAst = res.ast
 
     for ast in mainAst:

@@ -217,7 +217,27 @@ class List:
             )
         return Simple(stmt)
 
-class WildCard:
+class Int:
+    def __init__(self, ast):
+        self.n = ast
+
+    def __str__(self):
+        return str(self.n)
+
+    def emit(self):
+        return Simple(str(self.n))
+
+class WildCardVar:
+    def __init__(self, ast):
+        assert(ast == '_')
+
+    def __str__(self):
+        return '_'
+
+    def emit(self):
+        return Simple('_')
+
+class WildCardPattern:
     def __init__(self, ast):
         assert(ast == '_')
 
@@ -226,6 +246,26 @@ class WildCard:
 
     def emit(self):
         return Simple('Any')
+
+class ExprCons:
+    def __init__(self, ast):
+        self.expr1, op, self.expr2 = ast
+        assert(op == '::')
+
+    def __str__(self):
+        return j(
+            'CONS',
+            str(self.expr1),
+            str(self.expr2),
+            )
+
+    def emit(self):
+        expr1 = getCode(self.expr1)
+        expr2 = getCode(self.expr2)
+
+        stmt = 'List.cons(' + expr1 + ', ' + expr2
+
+        return Simple(stmt)
 
 class BinOp:
     def __init__(self, ast):
