@@ -14,20 +14,13 @@ from parse import (
         captureUnReservedWord,
         captureUntilKeyword,
         captureZeroOrMore,
-        grab,
         onlyIf,
-        parseAll,
-        parseKeywordBlock,
         parseMyLevel,
-        peek,
         pChar,
         pKeyword,
         printState,
-        pUntil,
         skip,
         skipManyCaptures,
-        spaceRequired,
-        token,
         transform,
         twoPass,
         )
@@ -362,7 +355,6 @@ captureCall = \
 
 captureComment = \
     captureOneOf(
-        skip(spaceRequired),
         captureLineComment,
         captureDocs,
         )
