@@ -473,13 +473,16 @@ class FunctionDef:
             )
 
     def emit(self):
-        return Simple(''.join([
-            'def ',
-            getCode(self.var),
-            '(',
-            getCode(self.params),
-            '):'
-            ]))
+        fname = getCode(self.var)
+        params = getCode(self.params)
+
+        if '(' in params:
+            unpackCode = params + ' = args\n'
+            stmt = 'def ' + fname + '(*args):\n' + indent(unpackCode)
+        else:
+            stmt = 'def ' + fname + '(' + params + '):'
+
+        return Simple(stmt)
 
 class TupleAssign:
     def __init__(self, ast):
@@ -520,7 +523,6 @@ class NormalAssign:
             raise Exception('tuple binding')
 
         defCode = getCode(self.def_)
-
         bodyCode = getBlockCode(self.expr)
 
         return Simple(j(
