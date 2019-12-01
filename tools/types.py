@@ -401,15 +401,19 @@ class Annotation:
 class VariantDef:
     def __init__(self, ast):
         self.variantName = ast[0]
-        self.n = len(ast) - 1
+        self.n = len(ast[1])
 
     def __str__(self):
         return 'VARIANT: ' + str(self.variantName) + ' ' + str(self.n)
 
 class TypeDef:
     def __init__(self, ast):
+        assert(len(ast) == 3)
         self.typeName = ast[0]
-        self.variants = ast[1:]
+        v1 = ast[1]
+        rest = ast[2]
+        self.variants = [v1] + rest
+        self.variants.sort(key=lambda v: v.n)
 
     def __str__(self):
         return j(
@@ -417,6 +421,32 @@ class TypeDef:
             self.typeName,
             jj(self.variants),
             )
+
+    def emit(self):
+        def p(variant):
+            name = str(variant.variantName)
+            n = variant.n
+
+            if n == 0:
+                return '"' + name + '"'
+            else:
+                return name + '=' + str(n)
+
+        typeName = str(self.typeName)
+
+        parms = ', '.join(p(v) for v in self.variants)
+
+        typeDef = '%s = CustomType("%s", %s)\n' % (typeName, typeName, parms)
+
+        def shortcut(variant):
+            name = str(variant.variantName)
+            return name + ' = ' + typeName + '.' + name
+
+        shortcuts = '\n'.join(shortcut(v) for v in self.variants)
+
+        stmt =  typeDef + shortcuts + '\n'
+
+        return Simple(stmt)
 
 class Call:
     def __init__(self, ast):

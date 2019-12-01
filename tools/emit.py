@@ -15,9 +15,9 @@ def emitCode(code):
         parse.printState(state)
         raise Exception('incomplete!')
 
-    _, mainAst = res.ast
+    topAst, mainAst = res.ast
 
-    for ast in mainAst:
+    for ast in topAst + mainAst:
         if hasattr(ast, 'emit'):
             print(types.getFinalCode(ast))
 
