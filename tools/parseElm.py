@@ -2,6 +2,7 @@ import types
 
 from parse import (
         captureKeywordBlock,
+        captureLine,
         captureOneOf,
         captureOneOrMore,
         captureOperator,
@@ -21,7 +22,6 @@ from parse import (
         peek,
         pChar,
         pKeyword,
-        pLine,
         printState,
         pUntil,
         skip,
@@ -92,7 +92,7 @@ captureLineComment = \
         types.Comment,
         captureStuff(
             skip(pKeyword('--')),
-            grab(pLine)
+            captureLine,
             )
         )
 

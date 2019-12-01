@@ -481,3 +481,4 @@ def captureKeywordBlock(keyword):
 def captureOperator(operators):
     return grab(parseOperator(operators))
 
+captureLine = grab(pLine)
