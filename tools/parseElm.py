@@ -1,6 +1,7 @@
 import types
 
 from parse import (
+        captureBlock,
         captureKeywordBlock,
         captureLine,
         captureOneOf,
@@ -16,7 +17,6 @@ from parse import (
         grab,
         onlyIf,
         parseAll,
-        parseBlock,
         parseKeywordBlock,
         parseMyLevel,
         peek,
@@ -324,7 +324,7 @@ captureAnnotation = \
                     captureElmToken,
                     skip(pKeyword(':')),
                     ),
-                grab(parseBlock),
+                captureBlock,
                 ),
             ),
         )

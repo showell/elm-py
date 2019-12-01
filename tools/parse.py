@@ -482,3 +482,4 @@ def captureOperator(operators):
     return grab(parseOperator(operators))
 
 captureLine = grab(pLine)
+captureBlock = grab(parseBlock)
