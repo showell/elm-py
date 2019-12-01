@@ -479,8 +479,10 @@ class CustomTypePattern:
     def emit(self):
         typeParam = 'Type(' + getCode(self.token) + ')'
         items = getCodeList(self.items)
+        allItems = [typeParam] + items
+        code = '\n' + indent(',\n'.join(allItems))
 
-        return Simple(', '.join([typeParam] + items))
+        return Simple(code)
 
 class PatternDef:
     def __init__(self, ast):
@@ -508,12 +510,13 @@ class OneCase:
     def emit(self):
         patternCode = getCode(self.patternDef)
 
-        cond = 'patternMatch(pred, ' + patternCode + ')'
+        patternRes = 'res = patternMatch(_cv, ' + patternCode + ')\n'
 
         bodyCode = getBlockCode(self.body)
 
         return Simple(j(
-            'if ' + cond + ':',
+            patternRes,
+            "if res.match('Just'):",
             indent(bodyCode)
             ))
 
@@ -530,12 +533,12 @@ class Case:
 
     def emit(self):
         predCode = getCode(self.pred)
-        stmts = getCodeList(self.cases)
 
+        stmts = getCodeList(self.cases)
         body = '\n\n\n'.join(stmts)
 
         return Block(j(
-            'casePred = ' + predCode + '\n',
+            '_cv = ' + predCode + '\n',
             body
             ))
 

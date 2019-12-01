@@ -397,39 +397,6 @@ moveRedLeft dict =
             dict
 
 
-moveRedRight : Dict k v -> Dict k v
-moveRedRight dict =
-    case dict of
-        RBNode_elm_builtin clr k v (RBNode_elm_builtin lClr lK lV (RBNode_elm_builtin Red llK llV llLeft llRight) lRight) (RBNode_elm_builtin rClr rK rV rLeft rRight) ->
-            RBNode_elm_builtin
-                Red
-                lK
-                lV
-                (RBNode_elm_builtin Black llK llV llLeft llRight)
-                (RBNode_elm_builtin Black k v lRight (RBNode_elm_builtin Red rK rV rLeft rRight))
-
-        RBNode_elm_builtin clr k v (RBNode_elm_builtin lClr lK lV lLeft lRight) (RBNode_elm_builtin rClr rK rV rLeft rRight) ->
-            case clr of
-                Black ->
-                    RBNode_elm_builtin
-                        Black
-                        k
-                        v
-                        (RBNode_elm_builtin Red lK lV lLeft lRight)
-                        (RBNode_elm_builtin Red rK rV rLeft rRight)
-
-                Red ->
-                    RBNode_elm_builtin
-                        Black
-                        k
-                        v
-                        (RBNode_elm_builtin Red lK lV lLeft lRight)
-                        (RBNode_elm_builtin Red rK rV rLeft rRight)
-
-        _ ->
-            dict
-
-
 {-| Update the value of a dictionary for a specific key with a given function.
 -}
 update : comparable -> (Maybe v -> Maybe v) -> Dict comparable v -> Dict comparable v
@@ -653,5 +620,38 @@ merge leftStep bothStep rightStep leftDict rightDict initialResult =
     in
     List.foldl (\( k, v ) result -> leftStep k v result) intermediateResult leftovers
 
+
+
+moveRedRight : Dict k v -> Dict k v
+moveRedRight dict =
+    case dict of
+        RBNode_elm_builtin clr k v (RBNode_elm_builtin lClr lK lV (RBNode_elm_builtin Red llK llV llLeft llRight) lRight) (RBNode_elm_builtin rClr rK rV rLeft rRight) ->
+            RBNode_elm_builtin
+                Red
+                lK
+                lV
+                (RBNode_elm_builtin Black llK llV llLeft llRight)
+                (RBNode_elm_builtin Black k v lRight (RBNode_elm_builtin Red rK rV rLeft rRight))
+
+        RBNode_elm_builtin clr k v (RBNode_elm_builtin lClr lK lV lLeft lRight) (RBNode_elm_builtin rClr rK rV rLeft rRight) ->
+            case clr of
+                Black ->
+                    RBNode_elm_builtin
+                        Black
+                        k
+                        v
+                        (RBNode_elm_builtin Red lK lV lLeft lRight)
+                        (RBNode_elm_builtin Red rK rV rLeft rRight)
+
+                Red ->
+                    RBNode_elm_builtin
+                        Black
+                        k
+                        v
+                        (RBNode_elm_builtin Red lK lV lLeft lRight)
+                        (RBNode_elm_builtin Red rK rV rLeft rRight)
+
+        _ ->
+            dict
 
 
