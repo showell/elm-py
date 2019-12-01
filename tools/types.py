@@ -217,16 +217,6 @@ class List:
             )
         return Simple(stmt)
 
-class Operator:
-    def __init__(self, ast):
-        self.op = ast
-
-    def __str__(self):
-        return self.op
-
-    def emit(self):
-        return Simple(self.op)
-
 class BinOp:
     def __init__(self, ast):
         self.expr1, self.op, self.expr2 = ast
@@ -241,9 +231,8 @@ class BinOp:
     def emit(self):
         expr1 = getCode(self.expr1)
         expr2 = getCode(self.expr2)
-        op = str(self.op)
 
-        stmt = expr1 + ' ' + op + ' ' + expr2
+        stmt = expr1 + ' ' + self.op + ' ' + expr2
 
         return Simple(stmt)
 

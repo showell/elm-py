@@ -4,6 +4,7 @@ from parse import (
         captureKeywordBlock,
         captureOneOf,
         captureOneOrMore,
+        captureOperator,
         captureRange,
         captureSeq,
         captureStuff,
@@ -17,7 +18,6 @@ from parse import (
         parseBlock,
         parseKeywordBlock,
         parseMyLevel,
-        parseOperator,
         peek,
         pChar,
         pKeyword,
@@ -56,26 +56,17 @@ captureElmToken = \
         )
 
 captureElmOperator = \
-    transform(
-        types.Operator,
-        captureStuff(
-            grab(
-                parseOperator(
-                    ['<', '>', '<=', '>=', '==',
-                        '+', '-', '*', '/']
-                    )
-                )
-            )
+    captureOperator(
+        ['<', '>', '<=', '>=', '==',
+            '+', '-', '*', '/']
         )
 
 capturePatternCons = \
     transform(
         types.PatternCons,
         captureStuff(
-            grab(
-                parseOperator(
-                    ['::']
-                    )
+            captureOperator(
+                ['::']
                 )
             )
         )
@@ -354,7 +345,6 @@ doCaptureCallPiece = \
         captureLambda,
         captureExprTuple,
         captureExprList,
-        captureElmOperator,
         captureElmToken,
         )
 

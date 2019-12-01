@@ -477,3 +477,7 @@ def captureKeywordBlock(keyword):
     return captureStuff(
         grab(parseKeywordBlock(keyword)),
         )
+
+def captureOperator(operators):
+    return grab(parseOperator(operators))
+
