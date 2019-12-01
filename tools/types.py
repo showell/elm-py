@@ -322,7 +322,7 @@ class Call:
 
         if prelude:
             stmt = j(
-                prelude,
+                prelude + '\n',
                 'return ' + commas(items),
                 )
             return Block(stmt)
