@@ -405,6 +405,16 @@ captureCustomTypePattern = \
             )
         )
 
+doCapturePatternExpr = \
+    captureStuff(
+        skipManyCaptures(captureComment),
+        captureOneOf(
+            captureWildCardPattern,
+            capturePatternList,
+            captureCustomTypePattern,
+            )
+        )
+
 # I should be smarter about binary operators.
 # See https://www.crockford.com/javascript/tdop/tdop.html
 # (he implements a Pratt parser, which wouldn't be terribly
@@ -451,16 +461,6 @@ doCaptureExpr = \
             captureCase,
             captureCall,
             captureLambda,
-            )
-        )
-
-doCapturePatternExpr = \
-    captureStuff(
-        skipManyCaptures(captureComment),
-        captureOneOf(
-            captureWildCardPattern,
-            capturePatternList,
-            captureCustomTypePattern,
             )
         )
 
