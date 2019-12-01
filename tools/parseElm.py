@@ -182,9 +182,9 @@ captureCase = \
 
 captureParenExpr = \
     captureStuff(
-        skip(pKeyword('(')),
+        skip(pChar('(')),
         captureExpr,
-        skip(pKeyword(')')),
+        skip(pChar(')')),
         )
 
 captureExprTuple = \
@@ -331,6 +331,7 @@ captureCall = \
         types.Call,
         captureOneOrMore(
             captureOneOf(
+                captureParenExpr,
                 captureLambda,
                 captureExprTuple,
                 captureExprList,

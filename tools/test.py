@@ -253,6 +253,12 @@ succeed(parseElm.captureBinding,
         """)
 
 
+succeed(parseElm.captureCall,
+    """
+    foo (bar x) y
+        """)
+
+
 def testBlocks():
     s = """
     let
