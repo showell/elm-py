@@ -87,12 +87,6 @@ captureWildCardVar = \
         captureOperator(['_'])
         )
 
-captureWildCardPattern = \
-    transform(
-        types.WildCardPattern,
-        captureOperator(['_'])
-        )
-
 captureDocs = \
     transform(
         types.Comment,
@@ -414,6 +408,12 @@ captureComment = \
     captureOneOf(
         captureLineComment,
         captureDocs,
+        )
+
+captureWildCardPattern = \
+    transform(
+        types.WildCardPattern,
+        captureOperator(['_'])
         )
 
 captureCustomTypePattern = \
