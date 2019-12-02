@@ -1,5 +1,7 @@
 import Dict
+import time
 from Kernel import toPy
+import  cProfile
 
 print('empty')
 dct = Dict.empty()
@@ -18,10 +20,26 @@ print('keys', keys)
 print('size', Dict.size(dct))
 print('empty', Dict.isEmpty(dct))
 
-dct = Dict.empty()
+print('\n\ninsert many...')
 
-for i in range(1000):
-    dct = Dict.insert(i, i*10, dct)
+def benchmark(n):
+    dct = Dict.empty()
+    t = time.time()
+    for i in range(n):
+        dct = Dict.insert(i, i*10, dct)
+    elapsed = time.time() - t
+    print('done inserting')
+    print(elapsed, elapsed / n)
+    # print('size', Dict.size(dct))
 
+counts = [
+    100,
+    1000
+    ]
 
-print(list(Dict.toList(dct)))
+for n in counts:
+    benchmark(n)
+
+# cProfile.run('benchmark(1000)', sort='time')
+
+# print(list(Dict.toList(dct)))
