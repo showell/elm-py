@@ -123,7 +123,7 @@ def patternMatch(val, main, *args):
                     return None
                 if dct is None:
                     dct = dict()
-                dct.update(res.val)
+                dct.update(res)
             elif flavor is Var:
                 if dct is None:
                     dct = dict()

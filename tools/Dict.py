@@ -204,6 +204,10 @@ def insertHelp(key, value, dict):
             if res is not None:
                 lK = res['lK']
                 lV = res['lV']
+                llK = res['llK']
+                llV = res['llV']
+                llLeft = res['llLeft']
+                llRight = res['llRight']
                 lRight = res['lRight']
                 return RBNode_elm_builtin(Red, lK, lV, (RBNode_elm_builtin(Black, llK, llV, llLeft, llRight)), (RBNode_elm_builtin(Black, nKey, nValue, lRight, nRight)))
 
@@ -524,6 +528,10 @@ def balanceRemoveLeft(clr, key, value, left, right):
         if res is not None:
             rK = res['rK']
             rV = res['rV']
+            rlK = res['rlK']
+            rlV = res['rlV']
+            rlLeft = res['rlLeft']
+            rlRight = res['rlRight']
             rRight = res['rRight']
             return RBNode_elm_builtin(clr, rlK, rlV, (RBNode_elm_builtin(Black, key, value, leftNode, rlLeft)), (RBNode_elm_builtin(Black, rK, rV, rlRight, rRight)))
 
@@ -591,6 +599,10 @@ def balanceRemoveRight(clr, key, value, left, right):
         if res is not None:
             lK = res['lK']
             lV = res['lV']
+            llK = res['llK']
+            llV = res['llV']
+            llLeft = res['llLeft']
+            llRight = res['llRight']
             lRight = res['lRight']
             return RBNode_elm_builtin(clr, lK, lV, (RBNode_elm_builtin(Black, llK, llV, llLeft, llRight)), (RBNode_elm_builtin(Black, key, value, lRight, rightNode)))
 
@@ -642,6 +654,10 @@ def balanceRemoveRight(clr, key, value, left, right):
             lK = res['lK']
             lV = res['lV']
             lLeft = res['lLeft']
+            lrK = res['lrK']
+            lrV = res['lrV']
+            lrLeft = res['lrLeft']
+            lrRight = res['lrRight']
             return RBNode_elm_builtin(Black, lK, lV, lLeft, (RBNode_elm_builtin(Black, key, value, (RBNode_elm_builtin(Red, lrK, lrV, lrLeft, lrRight)), rightNode)))
 
 
@@ -862,6 +878,10 @@ def balanceUpdateLeft(clr, key, value, left, right):
         if res is not None:
             rK = res['rK']
             rV = res['rV']
+            rlK = res['rlK']
+            rlV = res['rlV']
+            rlLeft = res['rlLeft']
+            rlRight = res['rlRight']
             rRight = res['rRight']
             return RBNode_elm_builtin(clr, rlK, rlV, (RBNode_elm_builtin(Black, key, value, leftNode, rlLeft)), (RBNode_elm_builtin(Black, rK, rV, rlRight, rRight)))
 
@@ -915,6 +935,10 @@ def balanceUpdateLeft(clr, key, value, left, right):
     if res is not None:
         lK = res['lK']
         lV = res['lV']
+        llK = res['llK']
+        llV = res['llV']
+        llLeft = res['llLeft']
+        llRight = res['llRight']
         lRight = res['lRight']
         return RBNode_elm_builtin(Red, lK, lV, (RBNode_elm_builtin(Black, llK, llV, llLeft, llRight)), (RBNode_elm_builtin(Black, key, value, lRight, right)))
 
@@ -950,6 +974,10 @@ def balanceUpdateRight(clr, key, value, left, right):
         if res is not None:
             lK = res['lK']
             lV = res['lV']
+            llK = res['llK']
+            llV = res['llV']
+            llLeft = res['llLeft']
+            llRight = res['llRight']
             lRight = res['lRight']
             return RBNode_elm_builtin(clr, lK, lV, (RBNode_elm_builtin(Black, llK, llV, llLeft, llRight)), (RBNode_elm_builtin(Black, key, value, lRight, rightNode)))
 
@@ -1001,6 +1029,10 @@ def balanceUpdateRight(clr, key, value, left, right):
             lK = res['lK']
             lV = res['lV']
             lLeft = res['lLeft']
+            lrK = res['lrK']
+            lrV = res['lrV']
+            lrLeft = res['lrLeft']
+            lrRight = res['lrRight']
             return RBNode_elm_builtin(Black, lK, lV, lLeft, (RBNode_elm_builtin(Black, key, value, (RBNode_elm_builtin(Red, lrK, lrV, lrLeft, lrRight)), rightNode)))
 
 

@@ -25,7 +25,7 @@ print('\n\ninsert many...')
 def benchmark(n):
     dct = Dict.empty()
     t = time.time()
-    for i in range(n):
+    for i in reversed(range(n)):
         dct = Dict.insert(i, i*10, dct)
     elapsed = time.time() - t
     print('done inserting')
@@ -36,11 +36,12 @@ counts = [
     100,
     1000,
     10000,
+    100000,
     ]
 
 for n in counts:
     benchmark(n)
 
-cProfile.run('benchmark(1000)', sort='time')
+cProfile.run('benchmark(10000)', sort='time')
 
 # print(list(Dict.toList(dct)))

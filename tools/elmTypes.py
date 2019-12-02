@@ -241,20 +241,6 @@ class PatternCons:
         stmt = 'Cons(' + getCode(self.head) + ', ' + getCode(self.rest) + ')'
         return Simple(stmt)
 
-class PatternNested:
-    def __init__(self, ast):
-        self.expr = ast
-
-    def __str__(self):
-        return j(
-            'NESTED',
-            self.expr,
-            )
-
-    def emit(self):
-        stmt = '(Nested, [' + getCode(self.expr) + '])'
-        return Simple(stmt)
-
 class PatternAs:
     def __init__(self, ast):
         self.expr, self.var = ast
@@ -531,6 +517,24 @@ class PatternType:
     def emit(self):
         return Simple('(Variant, ' + self.token + ')')
 
+class PatternNested:
+    def __init__(self, ast):
+        self.expr = ast
+
+    def __str__(self):
+        return j(
+            'NESTED',
+            self.expr,
+            )
+
+    def unpacks(self):
+        stmts = self.expr.unpacks()
+        return stmts
+
+    def emit(self):
+        stmt = '(Nested, [' + getCode(self.expr) + '])'
+        return Simple(stmt)
+
 class PatternVar:
     def __init__(self, ast):
         self.token = ast
@@ -578,6 +582,8 @@ class CustomTypePattern:
         for item in self.items:
             if hasattr(item, 'unpack'):
                 stmts.append(item.unpack())
+            if hasattr(item, 'unpacks'):
+                stmts.extend(item.unpacks())
         return stmts
 
 class PatternDef:
