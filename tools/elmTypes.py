@@ -544,7 +544,7 @@ class PatternVar:
 
     def unpack(self):
         name = self.token
-        stmt = name + " = res.val['" + name + "']"
+        stmt = name + " = res['" + name + "']"
         return stmt
 
 class CaseOf:
@@ -642,7 +642,7 @@ class OneCase:
 
         return Block(j(
             patternRes,
-            "if res.match('Just'):",
+            "if res is not None:",
             indent(bodyCode)
             ))
 

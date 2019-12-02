@@ -84,18 +84,18 @@ def patternMatch(val, main, *args):
         variantClass = main.val
 
         if not val.isType(variantClass.typeName):
-            return Nothing
+            return None
 
         if not val.match(variantClass.vtype):
-            return Nothing
+            return None
 
         if val.arity != len(args):
             raise Exception('illegal pattern match')
 
         if val.arity == 0:
-            return Just(dict())
+            return True
 
-        dct = dict()
+        # In first loop, try to exit early
         vals = val.vals
         for i, arg in enumerate(args):
             if arg is Any:
@@ -105,18 +105,31 @@ def patternMatch(val, main, *args):
 
             if flavor is Val:
                 if val != vals[i]:
-                    return Nothing
-            elif flavor is Var:
-                dct[val] = vals[i]
-            elif flavor is Nested:
-                res = patternMatch(vals[i], *val)
-                if res is Nothing:
-                    return Nothing
-                dct.update(res.val)
-            else:
-                raise Exception('illegal pattern match')
+                    return None
 
-        return Just(dct)
+        dct = None
+        for i, arg in enumerate(args):
+            if arg is Any:
+                continue
+
+            (flavor, val) = arg
+
+            if flavor is Nested:
+                res = patternMatch(vals[i], *val)
+                if res is None:
+                    return None
+                if dct is None:
+                    dct = dict()
+                dct.update(res.val)
+            elif flavor is Var:
+                if dct is None:
+                    dct = dict()
+                dct[val] = vals[i]
+
+        if dct is None:
+            return True
+
+        return dct
 
     raise Exception('unsupported pattern match')
 

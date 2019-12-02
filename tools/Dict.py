@@ -38,7 +38,7 @@ def get(targetKey, dict):
     res = patternMatch(_cv,
         Type(RBEmpty_elm_builtin))
 
-    if res.match('Just'):
+    if res is not None:
         return Nothing
 
 
@@ -50,31 +50,31 @@ def get(targetKey, dict):
         (Var, 'left'),
         (Var, 'right'))
 
-    if res.match('Just'):
-        key = res.val['key']
-        value = res.val['value']
-        left = res.val['left']
-        right = res.val['right']
+    if res is not None:
+        key = res['key']
+        value = res['value']
+        left = res['left']
+        right = res['right']
         _cv = compare(targetKey, key)
 
         res = patternMatch(_cv,
             Type(LT))
 
-        if res.match('Just'):
+        if res is not None:
             return get(targetKey, left)
 
 
         res = patternMatch(_cv,
             Type(EQ))
 
-        if res.match('Just'):
+        if res is not None:
             return Just(value)
 
 
         res = patternMatch(_cv,
             Type(GT))
 
-        if res.match('Just'):
+        if res is not None:
             return get(targetKey, right)
 
 
@@ -85,14 +85,14 @@ def member(key, dict):
         Type(Just),
         Any)
 
-    if res.match('Just'):
+    if res is not None:
         return True
 
 
     res = patternMatch(_cv,
         Type(Nothing))
 
-    if res.match('Just'):
+    if res is not None:
         return False
 
 
@@ -106,7 +106,7 @@ def sizeHelp(n, dict):
     res = patternMatch(_cv,
         Type(RBEmpty_elm_builtin))
 
-    if res.match('Just'):
+    if res is not None:
         return n
 
 
@@ -118,9 +118,9 @@ def sizeHelp(n, dict):
         (Var, 'left'),
         (Var, 'right'))
 
-    if res.match('Just'):
-        left = res.val['left']
-        right = res.val['right']
+    if res is not None:
+        left = res['left']
+        right = res['right']
         return sizeHelp((sizeHelp((n + 1), right)), left)
 
 
@@ -130,7 +130,7 @@ def isEmpty(dict):
     res = patternMatch(_cv,
         Type(RBEmpty_elm_builtin))
 
-    if res.match('Just'):
+    if res is not None:
         return True
 
 
@@ -142,7 +142,7 @@ def isEmpty(dict):
         Any,
         Any)
 
-    if res.match('Just'):
+    if res is not None:
         return False
 
 
@@ -157,11 +157,11 @@ def insert(key, value, dict):
         (Var, 'l'),
         (Var, 'r'))
 
-    if res.match('Just'):
-        k = res.val['k']
-        v = res.val['v']
-        l = res.val['l']
-        r = res.val['r']
+    if res is not None:
+        k = res['k']
+        v = res['v']
+        l = res['l']
+        r = res['r']
         return RBNode_elm_builtin(Black, k, v, l, r)
 
 
@@ -175,7 +175,7 @@ def insertHelp(key, value, dict):
     res = patternMatch(_cv,
         Type(RBEmpty_elm_builtin))
 
-    if res.match('Just'):
+    if res is not None:
         return RBNode_elm_builtin(Red, key, value, RBEmpty_elm_builtin, RBEmpty_elm_builtin)
 
 
@@ -187,32 +187,32 @@ def insertHelp(key, value, dict):
         (Var, 'nLeft'),
         (Var, 'nRight'))
 
-    if res.match('Just'):
-        nColor = res.val['nColor']
-        nKey = res.val['nKey']
-        nValue = res.val['nValue']
-        nLeft = res.val['nLeft']
-        nRight = res.val['nRight']
+    if res is not None:
+        nColor = res['nColor']
+        nKey = res['nKey']
+        nValue = res['nValue']
+        nLeft = res['nLeft']
+        nRight = res['nRight']
         _cv = compare(key, nKey)
 
         res = patternMatch(_cv,
             Type(LT))
 
-        if res.match('Just'):
+        if res is not None:
             return balance(nColor, nKey, nValue, (insertHelp(key, value, nLeft)), nRight)
 
 
         res = patternMatch(_cv,
             Type(EQ))
 
-        if res.match('Just'):
+        if res is not None:
             return RBNode_elm_builtin(nColor, nKey, value, nLeft, nRight)
 
 
         res = patternMatch(_cv,
             Type(GT))
 
-        if res.match('Just'):
+        if res is not None:
             return balance(nColor, nKey, nValue, nLeft, (insertHelp(key, value, nRight)))
 
 
@@ -227,11 +227,11 @@ def balance(color, key, value, left, right):
         (Var, 'rLeft'),
         (Var, 'rRight'))
 
-    if res.match('Just'):
-        rK = res.val['rK']
-        rV = res.val['rV']
-        rLeft = res.val['rLeft']
-        rRight = res.val['rRight']
+    if res is not None:
+        rK = res['rK']
+        rV = res['rV']
+        rLeft = res['rLeft']
+        rRight = res['rRight']
         _cv = left
 
         res = patternMatch(_cv,
@@ -242,11 +242,11 @@ def balance(color, key, value, left, right):
             (Var, 'lLeft'),
             (Var, 'lRight'))
 
-        if res.match('Just'):
-            lK = res.val['lK']
-            lV = res.val['lV']
-            lLeft = res.val['lLeft']
-            lRight = res.val['lRight']
+        if res is not None:
+            lK = res['lK']
+            lV = res['lV']
+            lLeft = res['lLeft']
+            lRight = res['lRight']
             return RBNode_elm_builtin(Red, key, value, (RBNode_elm_builtin(Black, lK, lV, lLeft, lRight)), (RBNode_elm_builtin(Black, rK, rV, rLeft, rRight)))
 
 
@@ -269,10 +269,10 @@ def balance(color, key, value, left, right):
             (Var, 'llRight')]),
         (Var, 'lRight'))
 
-    if res.match('Just'):
-        lK = res.val['lK']
-        lV = res.val['lV']
-        lRight = res.val['lRight']
+    if res is not None:
+        lK = res['lK']
+        lV = res['lV']
+        lRight = res['lRight']
         return RBNode_elm_builtin(Red, lK, lV, (RBNode_elm_builtin(Black, llK, llV, llLeft, llRight)), (RBNode_elm_builtin(Black, key, value, lRight, right)))
 
 
@@ -290,11 +290,11 @@ def remove(key, dict):
         (Var, 'l'),
         (Var, 'r'))
 
-    if res.match('Just'):
-        k = res.val['k']
-        v = res.val['v']
-        l = res.val['l']
-        r = res.val['r']
+    if res is not None:
+        k = res['k']
+        v = res['v']
+        l = res['l']
+        r = res['r']
         return RBNode_elm_builtin(Black, k, v, l, r)
 
 
@@ -308,7 +308,7 @@ def removeHelp(targetKey, dict):
     res = patternMatch(_cv,
         Type(RBEmpty_elm_builtin))
 
-    if res.match('Just'):
+    if res is not None:
         return RBEmpty_elm_builtin
 
 
@@ -320,12 +320,12 @@ def removeHelp(targetKey, dict):
         (Var, 'left'),
         (Var, 'right'))
 
-    if res.match('Just'):
-        color = res.val['color']
-        key = res.val['key']
-        value = res.val['value']
-        left = res.val['left']
-        right = res.val['right']
+    if res is not None:
+        color = res['color']
+        key = res['key']
+        value = res['value']
+        left = res['left']
+        right = res['right']
         if targetKey < key:
             _cv = left
 
@@ -337,8 +337,8 @@ def removeHelp(targetKey, dict):
                 (Var, 'lLeft'),
                 Any)
 
-            if res.match('Just'):
-                lLeft = res.val['lLeft']
+            if res is not None:
+                lLeft = res['lLeft']
                 _cv = lLeft
 
                 res = patternMatch(_cv,
@@ -349,7 +349,7 @@ def removeHelp(targetKey, dict):
                     Any,
                     Any)
 
-                if res.match('Just'):
+                if res is not None:
                     return RBNode_elm_builtin(color, key, value, (removeHelp(targetKey, left)), right)
 
 
@@ -363,19 +363,19 @@ def removeHelp(targetKey, dict):
                     (Var, 'nLeft'),
                     (Var, 'nRight'))
 
-                if res.match('Just'):
-                    nColor = res.val['nColor']
-                    nKey = res.val['nKey']
-                    nValue = res.val['nValue']
-                    nLeft = res.val['nLeft']
-                    nRight = res.val['nRight']
+                if res is not None:
+                    nColor = res['nColor']
+                    nKey = res['nKey']
+                    nValue = res['nValue']
+                    nLeft = res['nLeft']
+                    nRight = res['nRight']
                     return balance(nColor, nKey, nValue, (removeHelp(targetKey, nLeft)), nRight)
 
 
                 res = patternMatch(_cv,
                     Type(RBEmpty_elm_builtin))
 
-                if res.match('Just'):
+                if res is not None:
                     return RBEmpty_elm_builtin
 
 
@@ -395,11 +395,11 @@ def removeHelpPrepEQGT(targetKey, dict, color, key, value, left, right):
         (Var, 'lLeft'),
         (Var, 'lRight'))
 
-    if res.match('Just'):
-        lK = res.val['lK']
-        lV = res.val['lV']
-        lLeft = res.val['lLeft']
-        lRight = res.val['lRight']
+    if res is not None:
+        lK = res['lK']
+        lV = res['lV']
+        lLeft = res['lLeft']
+        lRight = res['lRight']
         return RBNode_elm_builtin(color, lK, lV, lLeft, (RBNode_elm_builtin(Red, key, value, lRight, right)))
 
 
@@ -419,7 +419,7 @@ def removeHelpPrepEQGT(targetKey, dict, color, key, value, left, right):
             Any]),
         Any)
 
-    if res.match('Just'):
+    if res is not None:
         return moveRedRight(dict)
 
 
@@ -431,7 +431,7 @@ def removeHelpPrepEQGT(targetKey, dict, color, key, value, left, right):
         (Val, RBEmpty_elm_builtin),
         Any)
 
-    if res.match('Just'):
+    if res is not None:
         return moveRedRight(dict)
 
 
@@ -449,12 +449,12 @@ def removeHelpEQGT(targetKey, dict):
         (Var, 'left'),
         (Var, 'right'))
 
-    if res.match('Just'):
-        color = res.val['color']
-        key = res.val['key']
-        value = res.val['value']
-        left = res.val['left']
-        right = res.val['right']
+    if res is not None:
+        color = res['color']
+        key = res['key']
+        value = res['value']
+        left = res['left']
+        right = res['right']
         if targetKey == key:
             _cv = getMin(right)
 
@@ -466,16 +466,16 @@ def removeHelpEQGT(targetKey, dict):
                 Any,
                 Any)
 
-            if res.match('Just'):
-                minKey = res.val['minKey']
-                minValue = res.val['minValue']
+            if res is not None:
+                minKey = res['minKey']
+                minValue = res['minValue']
                 return balance(color, minKey, minValue, left, (removeMin(right)))
 
 
             res = patternMatch(_cv,
                 Type(RBEmpty_elm_builtin))
 
-            if res.match('Just'):
+            if res is not None:
                 return RBEmpty_elm_builtin
         else:
             return balance(color, key, value, left, (removeHelp(targetKey, right)))
@@ -484,7 +484,7 @@ def removeHelpEQGT(targetKey, dict):
     res = patternMatch(_cv,
         Type(RBEmpty_elm_builtin))
 
-    if res.match('Just'):
+    if res is not None:
         return RBEmpty_elm_builtin
 
 
@@ -505,7 +505,7 @@ def getMin(dict):
             Any, left)),
         Any)
 
-    if res.match('Just'):
+    if res is not None:
         return getMin(left)
 
 
@@ -529,17 +529,17 @@ def removeMin(dict):
             Any, left)),
         (Var, 'right'))
 
-    if res.match('Just'):
-        color = res.val['color']
-        key = res.val['key']
-        value = res.val['value']
-        right = res.val['right']
+    if res is not None:
+        color = res['color']
+        key = res['key']
+        value = res['value']
+        right = res['right']
         _cv = lColor
 
         res = patternMatch(_cv,
             Type(Black))
 
-        if res.match('Just'):
+        if res is not None:
             _cv = lLeft
 
             res = patternMatch(_cv,
@@ -550,7 +550,7 @@ def removeMin(dict):
                 Any,
                 Any)
 
-            if res.match('Just'):
+            if res is not None:
                 return RBNode_elm_builtin(color, key, value, (removeMin(left)), right)
 
 
@@ -564,19 +564,19 @@ def removeMin(dict):
                 (Var, 'nLeft'),
                 (Var, 'nRight'))
 
-            if res.match('Just'):
-                nColor = res.val['nColor']
-                nKey = res.val['nKey']
-                nValue = res.val['nValue']
-                nLeft = res.val['nLeft']
-                nRight = res.val['nRight']
+            if res is not None:
+                nColor = res['nColor']
+                nKey = res['nKey']
+                nValue = res['nValue']
+                nLeft = res['nLeft']
+                nRight = res['nRight']
                 return balance(nColor, nKey, nValue, (removeMin(nLeft)), nRight)
 
 
             res = patternMatch(_cv,
                 Type(RBEmpty_elm_builtin))
 
-            if res.match('Just'):
+            if res is not None:
                 return RBEmpty_elm_builtin
 
 
@@ -615,10 +615,10 @@ def moveRedLeft(dict):
                 (Var, 'rlR'), rLeft)),
             (Var, 'rRight')]))
 
-    if res.match('Just'):
-        clr = res.val['clr']
-        k = res.val['k']
-        v = res.val['v']
+    if res is not None:
+        clr = res['clr']
+        k = res['k']
+        v = res['v']
         return RBNode_elm_builtin(Red, rlK, rlV, (RBNode_elm_builtin(Black, k, v, (RBNode_elm_builtin(Red, lK, lV, lLeft, lRight)), rlL)), (RBNode_elm_builtin(Black, rK, rV, rlR, rRight)))
 
 
@@ -642,23 +642,23 @@ def moveRedLeft(dict):
             (Var, 'rLeft'),
             (Var, 'rRight')]))
 
-    if res.match('Just'):
-        clr = res.val['clr']
-        k = res.val['k']
-        v = res.val['v']
+    if res is not None:
+        clr = res['clr']
+        k = res['k']
+        v = res['v']
         _cv = clr
 
         res = patternMatch(_cv,
             Type(Black))
 
-        if res.match('Just'):
+        if res is not None:
             return RBNode_elm_builtin(Black, k, v, (RBNode_elm_builtin(Red, lK, lV, lLeft, lRight)), (RBNode_elm_builtin(Red, rK, rV, rLeft, rRight)))
 
 
         res = patternMatch(_cv,
             Type(Red))
 
-        if res.match('Just'):
+        if res is not None:
             return RBNode_elm_builtin(Black, k, v, (RBNode_elm_builtin(Red, lK, lV, lLeft, lRight)), (RBNode_elm_builtin(Red, rK, rV, rLeft, rRight)))
 
 
@@ -672,15 +672,15 @@ def update(targetKey, alter, dictionary):
         Type(Just),
         (Var, 'value'))
 
-    if res.match('Just'):
-        value = res.val['value']
+    if res is not None:
+        value = res['value']
         return insert(targetKey, value, dictionary)
 
 
     res = patternMatch(_cv,
         Type(Nothing))
 
-    if res.match('Just'):
+    if res is not None:
         return remove(targetKey, dictionary)
 
 
@@ -712,7 +712,7 @@ def map(func, dict):
     res = patternMatch(_cv,
         Type(RBEmpty_elm_builtin))
 
-    if res.match('Just'):
+    if res is not None:
         return RBEmpty_elm_builtin
 
 
@@ -724,12 +724,12 @@ def map(func, dict):
         (Var, 'left'),
         (Var, 'right'))
 
-    if res.match('Just'):
-        color = res.val['color']
-        key = res.val['key']
-        value = res.val['value']
-        left = res.val['left']
-        right = res.val['right']
+    if res is not None:
+        color = res['color']
+        key = res['key']
+        value = res['value']
+        left = res['left']
+        right = res['right']
         return RBNode_elm_builtin(color, key, (func(key, value)), (map(func, left)), (map(func, right)))
 
 
@@ -739,7 +739,7 @@ def foldl(func, acc, dict):
     res = patternMatch(_cv,
         Type(RBEmpty_elm_builtin))
 
-    if res.match('Just'):
+    if res is not None:
         return acc
 
 
@@ -751,11 +751,11 @@ def foldl(func, acc, dict):
         (Var, 'left'),
         (Var, 'right'))
 
-    if res.match('Just'):
-        key = res.val['key']
-        value = res.val['value']
-        left = res.val['left']
-        right = res.val['right']
+    if res is not None:
+        key = res['key']
+        value = res['value']
+        left = res['left']
+        right = res['right']
         return foldl(func, (func(key, value, (foldl(func, acc, left)))), right)
 
 
@@ -765,7 +765,7 @@ def foldr(func, acc, t):
     res = patternMatch(_cv,
         Type(RBEmpty_elm_builtin))
 
-    if res.match('Just'):
+    if res is not None:
         return acc
 
 
@@ -777,11 +777,11 @@ def foldr(func, acc, t):
         (Var, 'left'),
         (Var, 'right'))
 
-    if res.match('Just'):
-        key = res.val['key']
-        value = res.val['value']
-        left = res.val['left']
-        right = res.val['right']
+    if res is not None:
+        key = res['key']
+        value = res['value']
+        left = res['left']
+        right = res['right']
         return foldr(func, (func(key, value, (foldr(func, acc, right)))), left)
 
 
@@ -846,13 +846,13 @@ def merge(leftStep, bothStep, rightStep, leftDict, rightDict, initialResult):
 
         res = patternMatch(_cv,List.toElm([]))
 
-        if res.match('Just'):
+        if res is not None:
             return (list, rightStep(rKey, rValue, result))
 
 
         res = patternMatch(_cv,Cons(((Var, 'lKey'), (Var, 'lValue')), (Var, 'rest')))
 
-        if res.match('Just'):
+        if res is not None:
             if lKey < rKey:
                 return stepState(rKey, rValue, (rest, leftStep(lKey, lValue, result)))
             else:
@@ -904,10 +904,10 @@ def moveRedRight(dict):
             (Var, 'rLeft'),
             (Var, 'rRight')]))
 
-    if res.match('Just'):
-        clr = res.val['clr']
-        k = res.val['k']
-        v = res.val['v']
+    if res is not None:
+        clr = res['clr']
+        k = res['k']
+        v = res['v']
         return RBNode_elm_builtin(Red, lK, lV, (RBNode_elm_builtin(Black, llK, llV, llLeft, llRight)), (RBNode_elm_builtin(Black, k, v, lRight, (RBNode_elm_builtin(Red, rK, rV, rLeft, rRight)))))
 
 
@@ -931,23 +931,23 @@ def moveRedRight(dict):
             (Var, 'rLeft'),
             (Var, 'rRight')]))
 
-    if res.match('Just'):
-        clr = res.val['clr']
-        k = res.val['k']
-        v = res.val['v']
+    if res is not None:
+        clr = res['clr']
+        k = res['k']
+        v = res['v']
         _cv = clr
 
         res = patternMatch(_cv,
             Type(Black))
 
-        if res.match('Just'):
+        if res is not None:
             return RBNode_elm_builtin(Black, k, v, (RBNode_elm_builtin(Red, lK, lV, lLeft, lRight)), (RBNode_elm_builtin(Red, rK, rV, rLeft, rRight)))
 
 
         res = patternMatch(_cv,
             Type(Red))
 
-        if res.match('Just'):
+        if res is not None:
             return RBNode_elm_builtin(Black, k, v, (RBNode_elm_builtin(Red, lK, lV, lLeft, lRight)), (RBNode_elm_builtin(Red, rK, rV, rLeft, rRight)))
 
 

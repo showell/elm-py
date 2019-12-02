@@ -14,8 +14,8 @@ from Maybe import (
         Nothing
         )
 
-def assertNothing(v):
-    assertEqual(v, Nothing)
+def assertNone(v):
+    assert v is None
 
 Any = MatchParam.Any
 Val = MatchParam.Val
@@ -41,56 +41,54 @@ def test():
     x = (Var, 'x')
     y = (Var, 'y')
 
-    jd = Just(dict())
-
     # exact, precise matches
-    assertEqual(jd, patternMatch(zero, Type(Zero)))
-    assertEqual(jd, patternMatch(one, Type(OneDigit), v1))
-    assertEqual(jd, patternMatch(twelve, Type(TwoDigit), v1, v2))
+    assertEqual(True, patternMatch(zero, Type(Zero)))
+    assertEqual(True, patternMatch(one, Type(OneDigit), v1))
+    assertEqual(True, patternMatch(twelve, Type(TwoDigit), v1, v2))
 
     # bad vtypes
-    assertNothing(patternMatch(one, Type(Zero)))
-    assertNothing(patternMatch(twelve, Type(OneDigit), v1))
-    assertNothing(patternMatch(zero, Type(TwoDigit), v1, v2))
+    assertNone(patternMatch(one, Type(Zero)))
+    assertNone(patternMatch(twelve, Type(OneDigit), v1))
+    assertNone(patternMatch(zero, Type(TwoDigit), v1, v2))
 
     # good vtypes but wrong values
-    assertNothing(patternMatch(one, Type(OneDigit), v4))
-    assertNothing(patternMatch(twelve, Type(TwoDigit), v1, v3))
+    assertNone(patternMatch(one, Type(OneDigit), v4))
+    assertNone(patternMatch(twelve, Type(TwoDigit), v1, v3))
 
     # easy matches with Any
-    assertEqual(jd, patternMatch(one, Type(OneDigit), Any))
-    assertEqual(jd, patternMatch(twelve, Type(TwoDigit), Any, Any))
+    assertEqual(True, patternMatch(one, Type(OneDigit), Any))
+    assertEqual(True, patternMatch(twelve, Type(TwoDigit), Any, Any))
 
     # partial matches with Any
-    assertEqual(jd, patternMatch(twelve, Type(TwoDigit), v1, Any))
-    assertEqual(jd, patternMatch(twelve, Type(TwoDigit), Any, v2))
+    assertEqual(True, patternMatch(twelve, Type(TwoDigit), v1, Any))
+    assertEqual(True, patternMatch(twelve, Type(TwoDigit), Any, v2))
 
     # mismatches with Any
-    assertNothing(patternMatch(twelve, Type(TwoDigit), v4, Any))
-    assertNothing(patternMatch(twelve, Type(TwoDigit), Any, v4))
+    assertNone(patternMatch(twelve, Type(TwoDigit), v4, Any))
+    assertNone(patternMatch(twelve, Type(TwoDigit), Any, v4))
 
     # capture matches
     assertEqual(patternMatch(one, Type(OneDigit), x),
-            Just(dict(x=1)))
+            dict(x=1))
 
     assertEqual(patternMatch(twelve, Type(TwoDigit), x, y),
-            Just(dict(x=1, y=2)))
+            dict(x=1, y=2))
 
     # partial capture matches
     assertEqual(patternMatch(twelve, Type(TwoDigit), x, Any),
-            Just(dict(x=1)))
+            dict(x=1))
 
     assertEqual(patternMatch(twelve, Type(TwoDigit), x, v2),
-            Just(dict(x=1)))
+            dict(x=1))
 
     assertEqual(patternMatch(twelve, Type(TwoDigit), Any, y),
-            Just(dict(y=2)))
+            dict(y=2))
 
     assertEqual(patternMatch(twelve, Type(TwoDigit), v1, y),
-            Just(dict(y=2)))
+            dict(y=2))
 
     # more failures
-    assertNothing(patternMatch(twelve, Type(TwoDigit), x, v4))
-    assertNothing(patternMatch(twelve, Type(TwoDigit), v4, x))
-    assertNothing(patternMatch(zero, Type(TwoDigit), x, y))
+    assertNone(patternMatch(twelve, Type(TwoDigit), x, v4))
+    assertNone(patternMatch(twelve, Type(TwoDigit), v4, x))
+    assertNone(patternMatch(zero, Type(TwoDigit), x, y))
 test()

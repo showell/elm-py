@@ -30,11 +30,12 @@ def benchmark(n):
     elapsed = time.time() - t
     print('done inserting')
     print(elapsed, elapsed / n)
-    # print('size', Dict.size(dct))
+    print('size', Dict.size(dct))
 
 counts = [
     100,
-    1000
+    1000,
+    10000,
     ]
 
 for n in counts:
