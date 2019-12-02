@@ -17,6 +17,7 @@ Any = MatchParam.Any
 Val = MatchParam.Val
 Var = MatchParam.Var
 Type = MatchParam.Type
+Nested = MatchParam.Nested
 
 
 NColor = CustomType("NColor", "Red", "Black")
@@ -259,13 +260,13 @@ def balance(color, key, value, left, right):
         Val(Red),
         Var('lK'),
         Var('lV'),
-        (
+        Nested([
             Type(RBNode_elm_builtin),
             Val(Red),
             Var('llK'),
             Var('llV'),
             Var('llLeft'),
-            Var('llRight')),
+            Var('llRight')]),
         Var('lRight'))
 
     if res.match('Just'):
@@ -409,13 +410,13 @@ def removeHelpPrepEQGT(targetKey, dict, color, key, value, left, right):
         Val(Black),
         Any,
         Any,
-        (
+        Nested([
             Type(RBNode_elm_builtin),
             Val(Black),
             Any,
             Any,
             Any,
-            Any),
+            Any]),
         Any)
 
     if res.match('Just'):
@@ -593,14 +594,14 @@ def moveRedLeft(dict):
         Var('clr'),
         Var('k'),
         Var('v'),
-        (
+        Nested([
             Type(RBNode_elm_builtin),
             Var('lClr'),
             Var('lK'),
             Var('lV'),
             Var('lLeft'),
-            Var('lRight')),
-        (
+            Var('lRight')]),
+        Nested([
             Type(RBNode_elm_builtin),
             Var('rClr'),
             Var('rK'),
@@ -612,7 +613,7 @@ def moveRedLeft(dict):
                 Var('rlV'),
                 Var('rlL'),
                 Var('rlR'), rLeft)),
-            Var('rRight')))
+            Var('rRight')]))
 
     if res.match('Just'):
         clr = res.val['clr']
@@ -626,20 +627,20 @@ def moveRedLeft(dict):
         Var('clr'),
         Var('k'),
         Var('v'),
-        (
+        Nested([
             Type(RBNode_elm_builtin),
             Var('lClr'),
             Var('lK'),
             Var('lV'),
             Var('lLeft'),
-            Var('lRight')),
-        (
+            Var('lRight')]),
+        Nested([
             Type(RBNode_elm_builtin),
             Var('rClr'),
             Var('rK'),
             Var('rV'),
             Var('rLeft'),
-            Var('rRight')))
+            Var('rRight')]))
 
     if res.match('Just'):
         clr = res.val['clr']
@@ -882,26 +883,26 @@ def moveRedRight(dict):
         Var('clr'),
         Var('k'),
         Var('v'),
-        (
+        Nested([
             Type(RBNode_elm_builtin),
             Var('lClr'),
             Var('lK'),
             Var('lV'),
-            (
+            Nested([
                 Type(RBNode_elm_builtin),
                 Val(Red),
                 Var('llK'),
                 Var('llV'),
                 Var('llLeft'),
-                Var('llRight')),
-            Var('lRight')),
-        (
+                Var('llRight')]),
+            Var('lRight')]),
+        Nested([
             Type(RBNode_elm_builtin),
             Var('rClr'),
             Var('rK'),
             Var('rV'),
             Var('rLeft'),
-            Var('rRight')))
+            Var('rRight')]))
 
     if res.match('Just'):
         clr = res.val['clr']
@@ -915,20 +916,20 @@ def moveRedRight(dict):
         Var('clr'),
         Var('k'),
         Var('v'),
-        (
+        Nested([
             Type(RBNode_elm_builtin),
             Var('lClr'),
             Var('lK'),
             Var('lV'),
             Var('lLeft'),
-            Var('lRight')),
-        (
+            Var('lRight')]),
+        Nested([
             Type(RBNode_elm_builtin),
             Var('rClr'),
             Var('rK'),
             Var('rV'),
             Var('rLeft'),
-            Var('rRight')))
+            Var('rRight')]))
 
     if res.match('Just'):
         clr = res.val['clr']

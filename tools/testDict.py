@@ -18,7 +18,6 @@ print('keys', keys)
 print('size', Dict.size(dct))
 print('empty', Dict.isEmpty(dct))
 
-"""
 dct = Dict.empty()
 
 for i in range(1000):
@@ -26,4 +25,3 @@ for i in range(1000):
 
 
 print(list(Dict.toList(dct)))
-"""

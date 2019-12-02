@@ -68,6 +68,7 @@ MatchParam = CustomType('MatchParam',
         Val=1,
         Var=1,
         Type=1,
+        Nested=1,
         )
 
 def patternMatch(val, main, *args):
@@ -108,6 +109,11 @@ def patternMatch(val, main, *args):
                     return Nothing
             elif arg.match('Var'):
                 dct[arg.val] = vals[i]
+            elif arg.match('Nested'):
+                res = patternMatch(vals[i], *arg.val)
+                if res is Nothing:
+                    return Nothing
+                dct.update(res.val)
             else:
                 if not arg.match('Any'):
                     raise Exception('illegal pattern match')

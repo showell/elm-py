@@ -8,4 +8,7 @@ emit:
     misc:
         distinguish Type at front vs. nested
 
+    cleanup:
+        add annotations
+        yapf
 

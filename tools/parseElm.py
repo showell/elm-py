@@ -42,6 +42,9 @@ def capturePatternExpr(state):
 def captureCallPiece(state):
     return doCaptureCallPiece(state)
 
+def captureCustomTypePattern(state):
+    return doCaptureCustomTypePattern(state)
+
 def captureParen(fCapture):
     return captureStuff(
         skip(pChar('(')),
@@ -426,6 +429,15 @@ capturePatternAs = \
             )
         )
 
+## nested: SomeType _ (SomeOtherType x y) _
+captureNestedPattern = \
+    transform(
+        types.PatternNested,
+        captureStuff(
+            captureParen(captureCustomTypePattern),
+            )
+        )
+
 ## custom type: SomeType _ x y _
 
 captureCustomTypeVal = \
@@ -436,7 +448,7 @@ captureCustomTypeVal = \
         ),
         )
 
-captureCustomTypePattern = \
+doCaptureCustomTypePattern = \
     transform(
         types.CustomTypePattern,
         captureStuff(
@@ -446,6 +458,7 @@ captureCustomTypePattern = \
             captureZeroOrMore(
                 captureOneOf(
                     capturePatternAs,
+                    captureNestedPattern,
                     captureWildCardPattern,
                     capturePatternVar,
                     capturePatternTuple,
