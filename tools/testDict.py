@@ -33,11 +33,10 @@ def benchmark(n):
         dct = Dict.insert(i, i*10, dct)
     elapsed = time.time() - t
     print('done inserting')
-    print(elapsed, elapsed / n)
+    print('rate', n * 1.0 / elapsed)
     print('size', Dict.size(dct))
 
 counts = [
-    100,
     1000,
     10000,
     ]
