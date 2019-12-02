@@ -173,6 +173,7 @@ captureTypeDef = \
             captureVariantDef,
             captureZeroOrMore(
                 captureStuff(
+                    skipManyCaptures(captureLineComment),
                     skip(pChar('|')),
                     captureVariantDef,
                     )
@@ -620,11 +621,12 @@ def parseCode(code):
         raise Exception('could not parse')
 
     state = res.state
-    topAst, mainAst = res.ast
 
     if state.incomplete():
         printState(state)
         raise Exception('incomplete!')
+
+    topAst, mainAst = res.ast
 
     print('TOP\n\n')
     for ast in topAst:
