@@ -1,8 +1,11 @@
 import Dict
+import Maybe
 import random
 import time
 from Kernel import toPy
 import  cProfile
+
+Just = Maybe.Just
 
 print('singleton')
 dct = Dict.singleton(5, 50)
@@ -38,8 +41,6 @@ def benchmark(n):
     elapsed = time.time() - t
     print('rate', int(n * 1.0 / elapsed))
 
-    assert(Dict.size(dct) == n)
-
     print('membership')
     t = time.time()
     for i in lst:
@@ -55,6 +56,18 @@ def benchmark(n):
     elapsed = time.time() - t
     print('rate', int(n * 1.0 / elapsed))
 
+
+    print('update')
+    t = time.time()
+    double = lambda m: Just(m.val * 2)
+
+    for i in lst:
+        dct = Dict.update(i, double, dct)
+    elapsed = time.time() - t
+    print('rate', int(n * 1.0 / elapsed))
+
+    for i in lst:
+        assert Dict.get(i, dct).val == i * 20
 
     print('remove')
     t = time.time()
