@@ -1,5 +1,7 @@
 import Dict
 
-x = Dict.empty()
+dct = Dict.empty()
+print(dct)
 
-print(x)
+print(Dict.member(5, dct))
+print(Dict.size(dct))

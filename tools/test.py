@@ -1,4 +1,4 @@
-import types
+import elmTypes as types
 import parseElm
 import parse
 

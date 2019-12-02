@@ -1,5 +1,21 @@
+# Dict.py (code generated via elm-py)
 
 from Custom import CustomType
+from Elm import (
+    patternMatch,
+    MatchParam,
+    )
+from Maybe import (
+    Maybe,
+    Nothing,
+    Just,
+    )
+
+Any = MatchParam.Any
+Val = MatchParam.Val
+Var = MatchParam.Var
+Type = MatchParam.Type
+
 
 NColor = CustomType("NColor", "Red", "Black")
 Red = NColor.Red

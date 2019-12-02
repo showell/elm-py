@@ -1,11 +1,27 @@
 import parse
 import parseElm
-import types
+import elmTypes as types
 
 def normalPrelude():
-    return """
+    return """# Dict.py (code generated via elm-py)
+
 from Custom import CustomType
-"""
+from Elm import (
+    patternMatch,
+    MatchParam,
+    )
+from Maybe import (
+    Maybe,
+    Nothing,
+    Just,
+    )
+
+Any = MatchParam.Any
+Val = MatchParam.Val
+Var = MatchParam.Var
+Type = MatchParam.Type
+
+""".lstrip()
 
 def emitCode(code):
     state = parse.State(code)
