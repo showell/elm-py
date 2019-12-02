@@ -428,6 +428,14 @@ capturePatternAs = \
 
 ## custom type: SomeType _ x y _
 
+captureCustomTypeVal = \
+    transform(
+        types.CustomTypeVal,
+        captureOneOf(
+            captureElmType,
+        ),
+        )
+
 captureCustomTypePattern = \
     transform(
         types.CustomTypePattern,
@@ -441,7 +449,7 @@ captureCustomTypePattern = \
                     captureWildCardPattern,
                     capturePatternVar,
                     capturePatternTuple,
-                    captureElmType,
+                    captureCustomTypeVal
                     )
                 )
             )

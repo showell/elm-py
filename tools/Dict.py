@@ -142,7 +142,7 @@ def insert(key, value, dict):
     
     res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
-        Red,
+        Val(Red),
         Var('k'),
         Var('v'),
         Var('l'),
@@ -205,7 +205,7 @@ def balance(color, key, value, left, right):
     
     res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
-        Red,
+        Val(Red),
         Var('rK'),
         Var('rV'),
         Var('rLeft'),
@@ -216,7 +216,7 @@ def balance(color, key, value, left, right):
         
         res = patternMatch(_cv,
             Type(RBNode_elm_builtin),
-            Red,
+            Val(Red),
             Var('lK'),
             Var('lV'),
             Var('lLeft'),
@@ -239,12 +239,12 @@ def balance(color, key, value, left, right):
         
         res = patternMatch(_cv,
             Type(RBNode_elm_builtin),
-            Red,
+            Val(Red),
             Var('lK'),
             Var('lV'),
             (
                 Type(RBNode_elm_builtin),
-                Red,
+                Val(Red),
                 Var('llK'),
                 Var('llV'),
                 Var('llLeft'),
@@ -266,7 +266,7 @@ def remove(key, dict):
     
     res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
-        Red,
+        Val(Red),
         Var('k'),
         Var('v'),
         Var('l'),
@@ -306,7 +306,7 @@ def removeHelp(targetKey, dict):
             
             res = patternMatch(_cv,
                 Type(RBNode_elm_builtin),
-                Black,
+                Val(Black),
                 Any,
                 Any,
                 Var('lLeft'),
@@ -317,7 +317,7 @@ def removeHelp(targetKey, dict):
                 
                 res = patternMatch(_cv,
                     Type(RBNode_elm_builtin),
-                    Red,
+                    Val(Red),
                     Any,
                     Any,
                     Any,
@@ -364,7 +364,7 @@ def removeHelpPrepEQGT(targetKey, dict, color, key, value, left, right):
     
     res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
-        Red,
+        Val(Red),
         Var('lK'),
         Var('lV'),
         Var('lLeft'),
@@ -381,12 +381,12 @@ def removeHelpPrepEQGT(targetKey, dict, color, key, value, left, right):
         
         res = patternMatch(_cv,
             Type(RBNode_elm_builtin),
-            Black,
+            Val(Black),
             Any,
             Any,
             (
                 Type(RBNode_elm_builtin),
-                Black,
+                Val(Black),
                 Any,
                 Any,
                 Any,
@@ -399,10 +399,10 @@ def removeHelpPrepEQGT(targetKey, dict, color, key, value, left, right):
         
         res = patternMatch(_cv,
             Type(RBNode_elm_builtin),
-            Black,
+            Val(Black),
             Any,
             Any,
-            RBEmpty_elm_builtin,
+            Val(RBEmpty_elm_builtin),
             Any)
         
         if res.match('Just'):
@@ -513,7 +513,7 @@ def removeMin(dict):
             
             res = patternMatch(_cv,
                 Type(RBNode_elm_builtin),
-                Red,
+                Val(Red),
                 Any,
                 Any,
                 Any,
@@ -581,7 +581,7 @@ def moveRedLeft(dict):
             Var('rV'),
             (AsVar(
                 Type(RBNode_elm_builtin),
-                Red,
+                Val(Red),
                 Var('rlK'),
                 Var('rlV'),
                 Var('rlL'),
@@ -846,7 +846,7 @@ def moveRedRight(dict):
             Var('lV'),
             (
                 Type(RBNode_elm_builtin),
-                Red,
+                Val(Red),
                 Var('llK'),
                 Var('llV'),
                 Var('llLeft'),

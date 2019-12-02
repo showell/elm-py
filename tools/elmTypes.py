@@ -496,6 +496,16 @@ class If:
             )
         return Block(stmt)
 
+class CustomTypeVal:
+    def __init__(self, ast):
+        self.token = ast
+
+    def __str__(self):
+        return str(self.token)
+
+    def emit(self):
+        return Simple('Val(' + getCode(self.token) + ')')
+
 class PatternType:
     def __init__(self, ast):
         self.token = ast
