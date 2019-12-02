@@ -1,9 +1,12 @@
 import Dict
+import List
 import Maybe
 import random
 import time
 from Kernel import toPy
 import  cProfile
+
+random.seed(44)
 
 Just = Maybe.Just
 
@@ -92,6 +95,8 @@ def benchmark(n):
     for i in lst:
         assert Dict.get(i, dct).val == i * 20
 
+    assert Dict.size(dct) == n
+
     print('remove')
     t = time.time()
     for i in lst:
@@ -102,6 +107,14 @@ def benchmark(n):
     assert Dict.size(dct) == 0
     assert Dict.isEmpty(dct)
 
+    """
+    print('fromList')
+    elmLst = List.toElm([(n, n * 2) for n in lst])
+    t = time.time()
+    dct = Dict.fromList(elmLst)
+    elapsed = time.time() - t
+    printRate(elapsed)
+    """
 
 counts = [
     1000,
