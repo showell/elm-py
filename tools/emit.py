@@ -23,6 +23,7 @@ Val = MatchParam.Val
 Var = MatchParam.Var
 Variant = MatchParam.Variant
 Nested = MatchParam.Nested
+AsVar = MatchParam.AsVar
 
 """.lstrip()
 

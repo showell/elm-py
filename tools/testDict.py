@@ -56,14 +56,15 @@ def benchmark(n):
     print('rate', int(n * 1.0 / elapsed))
 
 
-    """
     print('remove')
     t = time.time()
     for i in lst:
-        Dict.remove(i, dct)
+        dct = Dict.remove(i, dct)
     elapsed = time.time() - t
     print('rate', int(n * 1.0 / elapsed))
-    """
+
+    assert Dict.size(dct) == 0
+    assert Dict.isEmpty(dct)
 
 
 counts = [

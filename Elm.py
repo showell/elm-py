@@ -65,6 +65,7 @@ def rcompose(g, f):
 
 MatchParam = CustomType('MatchParam',
         'Any',
+        'AsVar',
         'Val',
         'Var',
         'Nested',
@@ -76,6 +77,7 @@ Any = MatchParam.Any
 Val = MatchParam.Val
 Var = MatchParam.Var
 Nested = MatchParam.Nested
+AsVar = MatchParam.AsVar
 
 def patternMatch(val, main, *args):
     if type(val) == Custom:
@@ -93,6 +95,8 @@ def patternMatch(val, main, *args):
             return None
 
         if val.arity != len(args):
+            print(val.arity, val)
+            print(len(args), args)
             raise Exception('illegal pattern match')
 
         if val.arity == 0:
@@ -104,9 +108,8 @@ def patternMatch(val, main, *args):
             if arg is Any:
                 continue
 
-            (flavor, val) = arg
-
-            if flavor is Val:
+            if arg[0] is Val:
+                val = arg[1]
                 if val != vals[i]:
                     return None
 
@@ -115,19 +118,29 @@ def patternMatch(val, main, *args):
             if arg is Any:
                 continue
 
-            (flavor, val) = arg
+            if arg[0] is AsVar:
+                (_, varname, val) = arg
+                res = patternMatch(vals[i], *val)
+                if res is None:
+                    return None
+                if dct is None:
+                    dct = dict()
+                dct[varname] = vals[i]
 
-            if flavor is Nested:
+            elif arg[0] is Nested:
+                val = arg[1]
                 res = patternMatch(vals[i], *val)
                 if res is None:
                     return None
                 if dct is None:
                     dct = dict()
                 dct.update(res)
-            elif flavor is Var:
+
+            elif arg[0] is Var:
+                varname = arg[1]
                 if dct is None:
                     dct = dict()
-                dct[val] = vals[i]
+                dct[varname] = vals[i]
 
         if dct is None:
             return True

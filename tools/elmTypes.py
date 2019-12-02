@@ -241,21 +241,6 @@ class PatternCons:
         stmt = 'Cons(' + getCode(self.head) + ', ' + getCode(self.rest) + ')'
         return Simple(stmt)
 
-class PatternAs:
-    def __init__(self, ast):
-        self.expr, self.var = ast
-
-    def __str__(self):
-        return j(
-            'AS',
-            self.expr,
-            self.var,
-            )
-
-    def emit(self):
-        stmt = 'AsVar(' + getCode(self.expr) + ', ' + getCode(self.var) + ')'
-        return Simple(stmt)
-
 class Int:
     def __init__(self, ast):
         self.n = ast
@@ -516,6 +501,26 @@ class PatternType:
 
     def emit(self):
         return Simple('(Variant, ' + self.token + ')')
+
+class PatternAs:
+    def __init__(self, ast):
+        self.expr, self.var = ast
+
+    def __str__(self):
+        return j(
+            'AS',
+            self.expr,
+            self.var,
+            )
+
+    def emit(self):
+        stmt = "(AsVar, '" + getCode(self.var) + "', ("  + getCode(self.expr) + '))'
+        return Simple(stmt)
+
+    def unpack(self):
+        name = str(self.var)
+        stmt = name + " = res['" + name + "']"
+        return stmt
 
 class PatternNested:
     def __init__(self, ast):

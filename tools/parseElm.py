@@ -424,9 +424,11 @@ capturePatternAs = \
     transform(
         types.PatternAs,
         captureStuff(
+            skip(pChar('(')),
             captureParen(capturePatternExpr),
             skip(pKeyword('as')),
             captureExprVar,
+            skip(pChar(')')),
             )
         )
 

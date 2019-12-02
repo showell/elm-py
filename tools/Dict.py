@@ -18,6 +18,7 @@ Val = MatchParam.Val
 Var = MatchParam.Var
 Variant = MatchParam.Variant
 Nested = MatchParam.Nested
+AsVar = MatchParam.AsVar
 
 
 NColor = CustomType("NColor", "Red", "Black")
@@ -431,18 +432,19 @@ def getMin(dict):
         Any,
         (Var, 'minKey'),
         (Var, 'minValue'),
-        (AsVar(
+        (AsVar, 'left', (
             (Variant, RBNode_elm_builtin),
             Any,
             Any,
             Any,
             Any,
-            Any, left)),
+            Any)),
         Any)
 
     if res is not None:
         minKey = res['minKey']
         minValue = res['minValue']
+        left = res['left']
         return getMin(left)
 
 

@@ -410,7 +410,7 @@ def testEmit():
     code = """
         x =
             case foo of
-                Foo a (Bar x y) ->
+                Foo a ((Bar x y) as bar) ->
                     whatever
 
         """
