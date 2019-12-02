@@ -410,6 +410,12 @@ captureComment = \
         captureDocs,
         )
 
+capturePatternType = \
+    transform(
+        types.PatternType,
+        captureTokenUpper(reservedWords)
+        )
+
 captureWildCardPattern = \
     transform(
         types.WildCardPattern,
@@ -421,7 +427,7 @@ captureCustomTypePattern = \
         types.CustomTypePattern,
         captureStuff(
             captureOneOf(
-                captureElmType,
+                capturePatternType,
             ),
             captureZeroOrMore(
                 captureOneOf(

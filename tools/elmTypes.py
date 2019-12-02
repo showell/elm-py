@@ -496,6 +496,16 @@ class If:
             )
         return Block(stmt)
 
+class PatternType:
+    def __init__(self, ast):
+        self.token = ast
+
+    def __str__(self):
+        return self.token
+
+    def emit(self):
+        return Simple('Type(' + self.token + ')')
+
 class PatternVar:
     def __init__(self, ast):
         self.token = ast
@@ -526,7 +536,7 @@ class CustomTypePattern:
         return 'CUSTOM TYPE ' + str(self.token) + ' ' + formatList(self.items, '(', ')')
 
     def emit(self):
-        typeParam = 'Type(' + getCode(self.token) + ')'
+        typeParam = getCode(self.token)
         items = getCodeList(self.items)
         allItems = [typeParam] + items
         code = '\n' + indent(',\n'.join(allItems))
