@@ -1,14 +1,16 @@
 # Dict.py (code generated via elm-py)
 
 from Custom import CustomType
+
+import List
+from List import *
+from Maybe import *
+from Basics import *
+from Order import *
+
 from Elm import (
     patternMatch,
     MatchParam,
-    )
-from Maybe import (
-    Maybe,
-    Nothing,
-    Just,
     )
 
 Any = MatchParam.Any
@@ -48,6 +50,10 @@ def get(targetKey, dict):
         Var('right'))
     
     if res.match('Just'):
+        key = res.val['key']
+        value = res.val['value']
+        left = res.val['left']
+        right = res.val['right']
         _cv = compare(targetKey, key)
         
         res = patternMatch(_cv,
@@ -112,6 +118,8 @@ def sizeHelp(n, dict):
         Var('right'))
     
     if res.match('Just'):
+        left = res.val['left']
+        right = res.val['right']
         return sizeHelp((sizeHelp((n + 1), right)), left)
 
 
@@ -149,6 +157,10 @@ def insert(key, value, dict):
         Var('r'))
     
     if res.match('Just'):
+        k = res.val['k']
+        v = res.val['v']
+        l = res.val['l']
+        r = res.val['r']
         return RBNode_elm_builtin(Black, k, v, l, r)
     
     
@@ -177,6 +189,11 @@ def insertHelp(key, value, dict):
         Var('nRight'))
     
     if res.match('Just'):
+        nColor = res.val['nColor']
+        nKey = res.val['nKey']
+        nValue = res.val['nValue']
+        nLeft = res.val['nLeft']
+        nRight = res.val['nRight']
         _cv = compare(key, nKey)
         
         res = patternMatch(_cv,
@@ -212,6 +229,10 @@ def balance(color, key, value, left, right):
         Var('rRight'))
     
     if res.match('Just'):
+        rK = res.val['rK']
+        rV = res.val['rV']
+        rLeft = res.val['rLeft']
+        rRight = res.val['rRight']
         _cv = left
         
         res = patternMatch(_cv,
@@ -223,6 +244,10 @@ def balance(color, key, value, left, right):
             Var('lRight'))
         
         if res.match('Just'):
+            lK = res.val['lK']
+            lV = res.val['lV']
+            lLeft = res.val['lLeft']
+            lRight = res.val['lRight']
             return RBNode_elm_builtin(Red, key, value, (RBNode_elm_builtin(Black, lK, lV, lLeft, lRight)), (RBNode_elm_builtin(Black, rK, rV, rLeft, rRight)))
         
         
@@ -252,6 +277,9 @@ def balance(color, key, value, left, right):
             Var('lRight'))
         
         if res.match('Just'):
+            lK = res.val['lK']
+            lV = res.val['lV']
+            lRight = res.val['lRight']
             return RBNode_elm_builtin(Red, lK, lV, (RBNode_elm_builtin(Black, llK, llV, llLeft, llRight)), (RBNode_elm_builtin(Black, key, value, lRight, right)))
         
         
@@ -273,6 +301,10 @@ def remove(key, dict):
         Var('r'))
     
     if res.match('Just'):
+        k = res.val['k']
+        v = res.val['v']
+        l = res.val['l']
+        r = res.val['r']
         return RBNode_elm_builtin(Black, k, v, l, r)
     
     
@@ -301,6 +333,11 @@ def removeHelp(targetKey, dict):
         Var('right'))
     
     if res.match('Just'):
+        color = res.val['color']
+        key = res.val['key']
+        value = res.val['value']
+        left = res.val['left']
+        right = res.val['right']
         if targetKey < key:
             _cv = left
             
@@ -313,6 +350,7 @@ def removeHelp(targetKey, dict):
                 Any)
             
             if res.match('Just'):
+                lLeft = res.val['lLeft']
                 _cv = lLeft
                 
                 res = patternMatch(_cv,
@@ -341,6 +379,11 @@ def removeHelp(targetKey, dict):
                         Var('nRight'))
                     
                     if res.match('Just'):
+                        nColor = res.val['nColor']
+                        nKey = res.val['nKey']
+                        nValue = res.val['nValue']
+                        nLeft = res.val['nLeft']
+                        nRight = res.val['nRight']
                         return balance(nColor, nKey, nValue, (removeHelp(targetKey, nLeft)), nRight)
                     
                     
@@ -371,6 +414,10 @@ def removeHelpPrepEQGT(targetKey, dict, color, key, value, left, right):
         Var('lRight'))
     
     if res.match('Just'):
+        lK = res.val['lK']
+        lV = res.val['lV']
+        lLeft = res.val['lLeft']
+        lRight = res.val['lRight']
         return RBNode_elm_builtin(color, lK, lV, lLeft, (RBNode_elm_builtin(Red, key, value, lRight, right)))
     
     
@@ -427,6 +474,11 @@ def removeHelpEQGT(targetKey, dict):
         Var('right'))
     
     if res.match('Just'):
+        color = res.val['color']
+        key = res.val['key']
+        value = res.val['value']
+        left = res.val['left']
+        right = res.val['right']
         if targetKey == key:
             _cv = getMin(right)
             
@@ -439,6 +491,8 @@ def removeHelpEQGT(targetKey, dict):
                 Any)
             
             if res.match('Just'):
+                minKey = res.val['minKey']
+                minValue = res.val['minValue']
                 return balance(color, minKey, minValue, left, (removeMin(right)))
             
             
@@ -503,6 +557,10 @@ def removeMin(dict):
         Var('right'))
     
     if res.match('Just'):
+        color = res.val['color']
+        key = res.val['key']
+        value = res.val['value']
+        right = res.val['right']
         _cv = lColor
         
         res = patternMatch(_cv,
@@ -537,6 +595,11 @@ def removeMin(dict):
                     Var('nRight'))
                 
                 if res.match('Just'):
+                    nColor = res.val['nColor']
+                    nKey = res.val['nKey']
+                    nValue = res.val['nValue']
+                    nLeft = res.val['nLeft']
+                    nRight = res.val['nRight']
                     return balance(nColor, nKey, nValue, (removeMin(nLeft)), nRight)
                 
                 
@@ -589,6 +652,9 @@ def moveRedLeft(dict):
             Var('rRight')))
     
     if res.match('Just'):
+        clr = res.val['clr']
+        k = res.val['k']
+        v = res.val['v']
         return RBNode_elm_builtin(Red, rlK, rlV, (RBNode_elm_builtin(Black, k, v, (RBNode_elm_builtin(Red, lK, lV, lLeft, lRight)), rlL)), (RBNode_elm_builtin(Black, rK, rV, rlR, rRight)))
     
     
@@ -613,6 +679,9 @@ def moveRedLeft(dict):
             Var('rRight')))
     
     if res.match('Just'):
+        clr = res.val['clr']
+        k = res.val['k']
+        v = res.val['v']
         _cv = clr
         
         res = patternMatch(_cv,
@@ -643,6 +712,7 @@ def update(targetKey, alter, dictionary):
         Var('value'))
     
     if res.match('Just'):
+        value = res.val['value']
         return insert(targetKey, value, dictionary)
     
     
@@ -694,6 +764,11 @@ def map(func, dict):
         Var('right'))
     
     if res.match('Just'):
+        color = res.val['color']
+        key = res.val['key']
+        value = res.val['value']
+        left = res.val['left']
+        right = res.val['right']
         return RBNode_elm_builtin(color, key, (func(key, value)), (map(func, left)), (map(func, right)))
 
 
@@ -716,6 +791,10 @@ def foldl(func, acc, dict):
         Var('right'))
     
     if res.match('Just'):
+        key = res.val['key']
+        value = res.val['value']
+        left = res.val['left']
+        right = res.val['right']
         return foldl(func, (func(key, value, (foldl(func, acc, left)))), right)
 
 
@@ -738,6 +817,10 @@ def foldr(func, acc, t):
         Var('right'))
     
     if res.match('Just'):
+        key = res.val['key']
+        value = res.val['value']
+        left = res.val['left']
+        right = res.val['right']
         return foldr(func, (func(key, value, (foldr(func, acc, right)))), left)
 
 
@@ -758,21 +841,21 @@ def keys(dict):
     def _anon1(key, value, keyList):
         return List.cons(key, keyList)
     
-    return foldr(_anon1, [], dict)
+    return foldr(_anon1, List.toElm([]), dict)
 
 
 def values(dict):
     def _anon1(key, value, valueList):
         return List.cons(value, valueList)
     
-    return foldr(_anon1, [], dict)
+    return foldr(_anon1, List.toElm([]), dict)
 
 
 def toList(dict):
     def _anon1(key, value, list):
         return List.cons((key, value), list)
     
-    return foldr(_anon1, [], dict)
+    return foldr(_anon1, List.toElm([]), dict)
 
 
 def fromList(assocs):
@@ -800,7 +883,7 @@ def merge(leftStep, bothStep, rightStep, leftDict, rightDict, initialResult):
         
         _cv = list
         
-        res = patternMatch(_cv,[])
+        res = patternMatch(_cv,List.toElm([]))
         
         if res.match('Just'):
             return (list, rightStep(rKey, rValue, result))
@@ -861,6 +944,9 @@ def moveRedRight(dict):
             Var('rRight')))
     
     if res.match('Just'):
+        clr = res.val['clr']
+        k = res.val['k']
+        v = res.val['v']
         return RBNode_elm_builtin(Red, lK, lV, (RBNode_elm_builtin(Black, llK, llV, llLeft, llRight)), (RBNode_elm_builtin(Black, k, v, lRight, (RBNode_elm_builtin(Red, rK, rV, rLeft, rRight)))))
     
     
@@ -885,6 +971,9 @@ def moveRedRight(dict):
             Var('rRight')))
     
     if res.match('Just'):
+        clr = res.val['clr']
+        k = res.val['k']
+        v = res.val['v']
         _cv = clr
         
         res = patternMatch(_cv,

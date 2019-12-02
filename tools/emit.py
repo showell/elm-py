@@ -6,14 +6,16 @@ def normalPrelude():
     return """# Dict.py (code generated via elm-py)
 
 from Custom import CustomType
+
+import List
+from List import *
+from Maybe import *
+from Basics import *
+from Order import *
+
 from Elm import (
     patternMatch,
     MatchParam,
-    )
-from Maybe import (
-    Maybe,
-    Nothing,
-    Just,
     )
 
 Any = MatchParam.Any

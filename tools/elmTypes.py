@@ -218,11 +218,12 @@ class List:
 
     def emit(self):
         items = getCodeList(self.items)
-        stmt = formatList(
+        lst = formatList(
             items,
             '[',
             ']',
             )
+        stmt = 'List.toElm(' + lst + ')'
         return Simple(stmt)
 
 class PatternCons:
@@ -527,6 +528,11 @@ class PatternVar:
         stmt = "Var('" + self.token + "')"
         return Simple(stmt)
 
+    def unpack(self):
+        name = self.token
+        stmt = name + " = res.val['" + name + "']"
+        return stmt
+
 class CaseOf:
     def __init__(self, ast):
         self.expr = ast
@@ -553,6 +559,13 @@ class CustomTypePattern:
 
         return Simple(code)
 
+    def unpacks(self):
+        stmts = []
+        for item in self.items:
+            if hasattr(item, 'unpack'):
+                stmts.append(item.unpack())
+        return stmts
+
 class PatternDef:
     def __init__(self, ast):
         self.expr = ast
@@ -562,6 +575,12 @@ class PatternDef:
 
     def emit(self):
         return Simple(getCode(self.expr))
+
+    def unpacks(self):
+        if hasattr(self.expr, 'unpacks'):
+            return self.expr.unpacks()
+        else:
+            return []
 
 class OneCase:
     def __init__(self, ast):
@@ -581,7 +600,12 @@ class OneCase:
 
         patternRes = 'res = patternMatch(_cv,' + patternCode + ')\n'
 
+        unpackStmts = self.patternDef.unpacks()
+
         bodyCode = getBlockCode(self.body)
+
+        if unpackStmts:
+            bodyCode = '\n'.join(unpackStmts) + '\n' + bodyCode
 
         return Simple(j(
             patternRes,
