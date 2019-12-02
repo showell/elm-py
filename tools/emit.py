@@ -21,7 +21,7 @@ from Elm import (
 Any = MatchParam.Any
 Val = MatchParam.Val
 Var = MatchParam.Var
-Type = MatchParam.Type
+Variant = MatchParam.Variant
 Nested = MatchParam.Nested
 
 """.lstrip()

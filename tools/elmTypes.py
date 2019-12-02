@@ -529,7 +529,7 @@ class PatternType:
         return self.token
 
     def emit(self):
-        return Simple('Type(' + self.token + ')')
+        return Simple('(Variant, ' + self.token + ')')
 
 class PatternVar:
     def __init__(self, ast):

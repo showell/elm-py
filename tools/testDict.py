@@ -41,6 +41,6 @@ counts = [
 for n in counts:
     benchmark(n)
 
-# cProfile.run('benchmark(1000)', sort='time')
+cProfile.run('benchmark(1000)', sort='time')
 
 # print(list(Dict.toList(dct)))

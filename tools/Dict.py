@@ -16,7 +16,7 @@ from Elm import (
 Any = MatchParam.Any
 Val = MatchParam.Val
 Var = MatchParam.Var
-Type = MatchParam.Type
+Variant = MatchParam.Variant
 Nested = MatchParam.Nested
 
 
@@ -36,14 +36,14 @@ def get(targetKey, dict):
     _cv = dict
 
     res = patternMatch(_cv,
-        Type(RBEmpty_elm_builtin))
+        (Variant, RBEmpty_elm_builtin))
 
     if res is not None:
         return Nothing
 
 
     res = patternMatch(_cv,
-        Type(RBNode_elm_builtin),
+        (Variant, RBNode_elm_builtin),
         Any,
         (Var, 'key'),
         (Var, 'value'),
@@ -58,21 +58,21 @@ def get(targetKey, dict):
         _cv = compare(targetKey, key)
 
         res = patternMatch(_cv,
-            Type(LT))
+            (Variant, LT))
 
         if res is not None:
             return get(targetKey, left)
 
 
         res = patternMatch(_cv,
-            Type(EQ))
+            (Variant, EQ))
 
         if res is not None:
             return Just(value)
 
 
         res = patternMatch(_cv,
-            Type(GT))
+            (Variant, GT))
 
         if res is not None:
             return get(targetKey, right)
@@ -82,7 +82,7 @@ def member(key, dict):
     _cv = get(key, dict)
 
     res = patternMatch(_cv,
-        Type(Just),
+        (Variant, Just),
         Any)
 
     if res is not None:
@@ -90,7 +90,7 @@ def member(key, dict):
 
 
     res = patternMatch(_cv,
-        Type(Nothing))
+        (Variant, Nothing))
 
     if res is not None:
         return False
@@ -104,14 +104,14 @@ def sizeHelp(n, dict):
     _cv = dict
 
     res = patternMatch(_cv,
-        Type(RBEmpty_elm_builtin))
+        (Variant, RBEmpty_elm_builtin))
 
     if res is not None:
         return n
 
 
     res = patternMatch(_cv,
-        Type(RBNode_elm_builtin),
+        (Variant, RBNode_elm_builtin),
         Any,
         Any,
         Any,
@@ -128,14 +128,14 @@ def isEmpty(dict):
     _cv = dict
 
     res = patternMatch(_cv,
-        Type(RBEmpty_elm_builtin))
+        (Variant, RBEmpty_elm_builtin))
 
     if res is not None:
         return True
 
 
     res = patternMatch(_cv,
-        Type(RBNode_elm_builtin),
+        (Variant, RBNode_elm_builtin),
         Any,
         Any,
         Any,
@@ -150,7 +150,7 @@ def insert(key, value, dict):
     _cv = insertHelp(key, value, dict)
 
     res = patternMatch(_cv,
-        Type(RBNode_elm_builtin),
+        (Variant, RBNode_elm_builtin),
         (Val, Red),
         (Var, 'k'),
         (Var, 'v'),
@@ -173,14 +173,14 @@ def insertHelp(key, value, dict):
     _cv = dict
 
     res = patternMatch(_cv,
-        Type(RBEmpty_elm_builtin))
+        (Variant, RBEmpty_elm_builtin))
 
     if res is not None:
         return RBNode_elm_builtin(Red, key, value, RBEmpty_elm_builtin, RBEmpty_elm_builtin)
 
 
     res = patternMatch(_cv,
-        Type(RBNode_elm_builtin),
+        (Variant, RBNode_elm_builtin),
         (Var, 'nColor'),
         (Var, 'nKey'),
         (Var, 'nValue'),
@@ -196,21 +196,21 @@ def insertHelp(key, value, dict):
         _cv = compare(key, nKey)
 
         res = patternMatch(_cv,
-            Type(LT))
+            (Variant, LT))
 
         if res is not None:
             return balance(nColor, nKey, nValue, (insertHelp(key, value, nLeft)), nRight)
 
 
         res = patternMatch(_cv,
-            Type(EQ))
+            (Variant, EQ))
 
         if res is not None:
             return RBNode_elm_builtin(nColor, nKey, value, nLeft, nRight)
 
 
         res = patternMatch(_cv,
-            Type(GT))
+            (Variant, GT))
 
         if res is not None:
             return balance(nColor, nKey, nValue, nLeft, (insertHelp(key, value, nRight)))
@@ -220,7 +220,7 @@ def balance(color, key, value, left, right):
     _cv = right
 
     res = patternMatch(_cv,
-        Type(RBNode_elm_builtin),
+        (Variant, RBNode_elm_builtin),
         (Val, Red),
         (Var, 'rK'),
         (Var, 'rV'),
@@ -235,7 +235,7 @@ def balance(color, key, value, left, right):
         _cv = left
 
         res = patternMatch(_cv,
-            Type(RBNode_elm_builtin),
+            (Variant, RBNode_elm_builtin),
             (Val, Red),
             (Var, 'lK'),
             (Var, 'lV'),
@@ -256,12 +256,12 @@ def balance(color, key, value, left, right):
     _cv = left
 
     res = patternMatch(_cv,
-        Type(RBNode_elm_builtin),
+        (Variant, RBNode_elm_builtin),
         (Val, Red),
         (Var, 'lK'),
         (Var, 'lV'),
         (Nested, [
-            Type(RBNode_elm_builtin),
+            (Variant, RBNode_elm_builtin),
             (Val, Red),
             (Var, 'llK'),
             (Var, 'llV'),
@@ -283,7 +283,7 @@ def remove(key, dict):
     _cv = removeHelp(key, dict)
 
     res = patternMatch(_cv,
-        Type(RBNode_elm_builtin),
+        (Variant, RBNode_elm_builtin),
         (Val, Red),
         (Var, 'k'),
         (Var, 'v'),
@@ -306,14 +306,14 @@ def removeHelp(targetKey, dict):
     _cv = dict
 
     res = patternMatch(_cv,
-        Type(RBEmpty_elm_builtin))
+        (Variant, RBEmpty_elm_builtin))
 
     if res is not None:
         return RBEmpty_elm_builtin
 
 
     res = patternMatch(_cv,
-        Type(RBNode_elm_builtin),
+        (Variant, RBNode_elm_builtin),
         (Var, 'color'),
         (Var, 'key'),
         (Var, 'value'),
@@ -330,7 +330,7 @@ def removeHelp(targetKey, dict):
             _cv = left
 
             res = patternMatch(_cv,
-                Type(RBNode_elm_builtin),
+                (Variant, RBNode_elm_builtin),
                 (Val, Black),
                 Any,
                 Any,
@@ -342,7 +342,7 @@ def removeHelp(targetKey, dict):
                 _cv = lLeft
 
                 res = patternMatch(_cv,
-                    Type(RBNode_elm_builtin),
+                    (Variant, RBNode_elm_builtin),
                     (Val, Red),
                     Any,
                     Any,
@@ -356,7 +356,7 @@ def removeHelp(targetKey, dict):
                 _cv = moveRedLeft(dict)
 
                 res = patternMatch(_cv,
-                    Type(RBNode_elm_builtin),
+                    (Variant, RBNode_elm_builtin),
                     (Var, 'nColor'),
                     (Var, 'nKey'),
                     (Var, 'nValue'),
@@ -373,7 +373,7 @@ def removeHelp(targetKey, dict):
 
 
                 res = patternMatch(_cv,
-                    Type(RBEmpty_elm_builtin))
+                    (Variant, RBEmpty_elm_builtin))
 
                 if res is not None:
                     return RBEmpty_elm_builtin
@@ -388,7 +388,7 @@ def removeHelpPrepEQGT(targetKey, dict, color, key, value, left, right):
     _cv = left
 
     res = patternMatch(_cv,
-        Type(RBNode_elm_builtin),
+        (Variant, RBNode_elm_builtin),
         (Val, Red),
         (Var, 'lK'),
         (Var, 'lV'),
@@ -406,12 +406,12 @@ def removeHelpPrepEQGT(targetKey, dict, color, key, value, left, right):
     _cv = right
 
     res = patternMatch(_cv,
-        Type(RBNode_elm_builtin),
+        (Variant, RBNode_elm_builtin),
         (Val, Black),
         Any,
         Any,
         (Nested, [
-            Type(RBNode_elm_builtin),
+            (Variant, RBNode_elm_builtin),
             (Val, Black),
             Any,
             Any,
@@ -424,7 +424,7 @@ def removeHelpPrepEQGT(targetKey, dict, color, key, value, left, right):
 
 
     res = patternMatch(_cv,
-        Type(RBNode_elm_builtin),
+        (Variant, RBNode_elm_builtin),
         (Val, Black),
         Any,
         Any,
@@ -442,7 +442,7 @@ def removeHelpEQGT(targetKey, dict):
     _cv = dict
 
     res = patternMatch(_cv,
-        Type(RBNode_elm_builtin),
+        (Variant, RBNode_elm_builtin),
         (Var, 'color'),
         (Var, 'key'),
         (Var, 'value'),
@@ -459,7 +459,7 @@ def removeHelpEQGT(targetKey, dict):
             _cv = getMin(right)
 
             res = patternMatch(_cv,
-                Type(RBNode_elm_builtin),
+                (Variant, RBNode_elm_builtin),
                 Any,
                 (Var, 'minKey'),
                 (Var, 'minValue'),
@@ -473,7 +473,7 @@ def removeHelpEQGT(targetKey, dict):
 
 
             res = patternMatch(_cv,
-                Type(RBEmpty_elm_builtin))
+                (Variant, RBEmpty_elm_builtin))
 
             if res is not None:
                 return RBEmpty_elm_builtin
@@ -482,7 +482,7 @@ def removeHelpEQGT(targetKey, dict):
 
 
     res = patternMatch(_cv,
-        Type(RBEmpty_elm_builtin))
+        (Variant, RBEmpty_elm_builtin))
 
     if res is not None:
         return RBEmpty_elm_builtin
@@ -492,12 +492,12 @@ def getMin(dict):
     _cv = dict
 
     res = patternMatch(_cv,
-        Type(RBNode_elm_builtin),
+        (Variant, RBNode_elm_builtin),
         Any,
         Any,
         Any,
         (AsVar(
-            Type(RBNode_elm_builtin),
+            (Variant, RBNode_elm_builtin),
             Any,
             Any,
             Any,
@@ -516,12 +516,12 @@ def removeMin(dict):
     _cv = dict
 
     res = patternMatch(_cv,
-        Type(RBNode_elm_builtin),
+        (Variant, RBNode_elm_builtin),
         (Var, 'color'),
         (Var, 'key'),
         (Var, 'value'),
         (AsVar(
-            Type(RBNode_elm_builtin),
+            (Variant, RBNode_elm_builtin),
             (Var, 'lColor'),
             Any,
             Any,
@@ -537,13 +537,13 @@ def removeMin(dict):
         _cv = lColor
 
         res = patternMatch(_cv,
-            Type(Black))
+            (Variant, Black))
 
         if res is not None:
             _cv = lLeft
 
             res = patternMatch(_cv,
-                Type(RBNode_elm_builtin),
+                (Variant, RBNode_elm_builtin),
                 (Val, Red),
                 Any,
                 Any,
@@ -557,7 +557,7 @@ def removeMin(dict):
             _cv = moveRedLeft(dict)
 
             res = patternMatch(_cv,
-                Type(RBNode_elm_builtin),
+                (Variant, RBNode_elm_builtin),
                 (Var, 'nColor'),
                 (Var, 'nKey'),
                 (Var, 'nValue'),
@@ -574,7 +574,7 @@ def removeMin(dict):
 
 
             res = patternMatch(_cv,
-                Type(RBEmpty_elm_builtin))
+                (Variant, RBEmpty_elm_builtin))
 
             if res is not None:
                 return RBEmpty_elm_builtin
@@ -590,24 +590,24 @@ def moveRedLeft(dict):
     _cv = dict
 
     res = patternMatch(_cv,
-        Type(RBNode_elm_builtin),
+        (Variant, RBNode_elm_builtin),
         (Var, 'clr'),
         (Var, 'k'),
         (Var, 'v'),
         (Nested, [
-            Type(RBNode_elm_builtin),
+            (Variant, RBNode_elm_builtin),
             (Var, 'lClr'),
             (Var, 'lK'),
             (Var, 'lV'),
             (Var, 'lLeft'),
             (Var, 'lRight')]),
         (Nested, [
-            Type(RBNode_elm_builtin),
+            (Variant, RBNode_elm_builtin),
             (Var, 'rClr'),
             (Var, 'rK'),
             (Var, 'rV'),
             (AsVar(
-                Type(RBNode_elm_builtin),
+                (Variant, RBNode_elm_builtin),
                 (Val, Red),
                 (Var, 'rlK'),
                 (Var, 'rlV'),
@@ -623,19 +623,19 @@ def moveRedLeft(dict):
 
 
     res = patternMatch(_cv,
-        Type(RBNode_elm_builtin),
+        (Variant, RBNode_elm_builtin),
         (Var, 'clr'),
         (Var, 'k'),
         (Var, 'v'),
         (Nested, [
-            Type(RBNode_elm_builtin),
+            (Variant, RBNode_elm_builtin),
             (Var, 'lClr'),
             (Var, 'lK'),
             (Var, 'lV'),
             (Var, 'lLeft'),
             (Var, 'lRight')]),
         (Nested, [
-            Type(RBNode_elm_builtin),
+            (Variant, RBNode_elm_builtin),
             (Var, 'rClr'),
             (Var, 'rK'),
             (Var, 'rV'),
@@ -649,14 +649,14 @@ def moveRedLeft(dict):
         _cv = clr
 
         res = patternMatch(_cv,
-            Type(Black))
+            (Variant, Black))
 
         if res is not None:
             return RBNode_elm_builtin(Black, k, v, (RBNode_elm_builtin(Red, lK, lV, lLeft, lRight)), (RBNode_elm_builtin(Red, rK, rV, rLeft, rRight)))
 
 
         res = patternMatch(_cv,
-            Type(Red))
+            (Variant, Red))
 
         if res is not None:
             return RBNode_elm_builtin(Black, k, v, (RBNode_elm_builtin(Red, lK, lV, lLeft, lRight)), (RBNode_elm_builtin(Red, rK, rV, rLeft, rRight)))
@@ -669,7 +669,7 @@ def update(targetKey, alter, dictionary):
     _cv = alter((get(targetKey, dictionary)))
 
     res = patternMatch(_cv,
-        Type(Just),
+        (Variant, Just),
         (Var, 'value'))
 
     if res is not None:
@@ -678,7 +678,7 @@ def update(targetKey, alter, dictionary):
 
 
     res = patternMatch(_cv,
-        Type(Nothing))
+        (Variant, Nothing))
 
     if res is not None:
         return remove(targetKey, dictionary)
@@ -710,14 +710,14 @@ def map(func, dict):
     _cv = dict
 
     res = patternMatch(_cv,
-        Type(RBEmpty_elm_builtin))
+        (Variant, RBEmpty_elm_builtin))
 
     if res is not None:
         return RBEmpty_elm_builtin
 
 
     res = patternMatch(_cv,
-        Type(RBNode_elm_builtin),
+        (Variant, RBNode_elm_builtin),
         (Var, 'color'),
         (Var, 'key'),
         (Var, 'value'),
@@ -737,14 +737,14 @@ def foldl(func, acc, dict):
     _cv = dict
 
     res = patternMatch(_cv,
-        Type(RBEmpty_elm_builtin))
+        (Variant, RBEmpty_elm_builtin))
 
     if res is not None:
         return acc
 
 
     res = patternMatch(_cv,
-        Type(RBNode_elm_builtin),
+        (Variant, RBNode_elm_builtin),
         Any,
         (Var, 'key'),
         (Var, 'value'),
@@ -763,14 +763,14 @@ def foldr(func, acc, t):
     _cv = t
 
     res = patternMatch(_cv,
-        Type(RBEmpty_elm_builtin))
+        (Variant, RBEmpty_elm_builtin))
 
     if res is not None:
         return acc
 
 
     res = patternMatch(_cv,
-        Type(RBNode_elm_builtin),
+        (Variant, RBNode_elm_builtin),
         Any,
         (Var, 'key'),
         (Var, 'value'),
@@ -879,17 +879,17 @@ def moveRedRight(dict):
     _cv = dict
 
     res = patternMatch(_cv,
-        Type(RBNode_elm_builtin),
+        (Variant, RBNode_elm_builtin),
         (Var, 'clr'),
         (Var, 'k'),
         (Var, 'v'),
         (Nested, [
-            Type(RBNode_elm_builtin),
+            (Variant, RBNode_elm_builtin),
             (Var, 'lClr'),
             (Var, 'lK'),
             (Var, 'lV'),
             (Nested, [
-                Type(RBNode_elm_builtin),
+                (Variant, RBNode_elm_builtin),
                 (Val, Red),
                 (Var, 'llK'),
                 (Var, 'llV'),
@@ -897,7 +897,7 @@ def moveRedRight(dict):
                 (Var, 'llRight')]),
             (Var, 'lRight')]),
         (Nested, [
-            Type(RBNode_elm_builtin),
+            (Variant, RBNode_elm_builtin),
             (Var, 'rClr'),
             (Var, 'rK'),
             (Var, 'rV'),
@@ -912,19 +912,19 @@ def moveRedRight(dict):
 
 
     res = patternMatch(_cv,
-        Type(RBNode_elm_builtin),
+        (Variant, RBNode_elm_builtin),
         (Var, 'clr'),
         (Var, 'k'),
         (Var, 'v'),
         (Nested, [
-            Type(RBNode_elm_builtin),
+            (Variant, RBNode_elm_builtin),
             (Var, 'lClr'),
             (Var, 'lK'),
             (Var, 'lV'),
             (Var, 'lLeft'),
             (Var, 'lRight')]),
         (Nested, [
-            Type(RBNode_elm_builtin),
+            (Variant, RBNode_elm_builtin),
             (Var, 'rClr'),
             (Var, 'rK'),
             (Var, 'rV'),
@@ -938,14 +938,14 @@ def moveRedRight(dict):
         _cv = clr
 
         res = patternMatch(_cv,
-            Type(Black))
+            (Variant, Black))
 
         if res is not None:
             return RBNode_elm_builtin(Black, k, v, (RBNode_elm_builtin(Red, lK, lV, lLeft, lRight)), (RBNode_elm_builtin(Red, rK, rV, rLeft, rRight)))
 
 
         res = patternMatch(_cv,
-            Type(Red))
+            (Variant, Red))
 
         if res is not None:
             return RBNode_elm_builtin(Black, k, v, (RBNode_elm_builtin(Red, lK, lV, lLeft, lRight)), (RBNode_elm_builtin(Red, rK, rV, rLeft, rRight)))

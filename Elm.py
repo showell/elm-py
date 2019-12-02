@@ -68,9 +68,10 @@ MatchParam = CustomType('MatchParam',
         'Val',
         'Var',
         'Nested',
-        Type=1,
+        'Variant',
         )
 
+Variant = MatchParam.Variant
 Any = MatchParam.Any
 Val = MatchParam.Val
 Var = MatchParam.Var
@@ -78,10 +79,12 @@ Nested = MatchParam.Nested
 
 def patternMatch(val, main, *args):
     if type(val) == Custom:
-        if not main.match('Type'):
+        (mainType, mainVal) = main
+
+        if mainType is not Variant:
             raise Exception('illegal pattern match')
 
-        variantClass = main.val
+        variantClass = mainVal
 
         if not val.isType(variantClass.typeName):
             return None
