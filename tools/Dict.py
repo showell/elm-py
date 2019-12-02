@@ -32,14 +32,14 @@ def empty():
 def get(targetKey, dict):
     _cv = dict
     
-    res = patternMatch(_cv, 
+    res = patternMatch(_cv,
         Type(RBEmpty_elm_builtin))
     
     if res.match('Just'):
         return Nothing
     
     
-    res = patternMatch(_cv, 
+    res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
         Any,
         Var('key'),
@@ -50,21 +50,21 @@ def get(targetKey, dict):
     if res.match('Just'):
         _cv = compare(targetKey, key)
         
-        res = patternMatch(_cv, 
+        res = patternMatch(_cv,
             Type(LT))
         
         if res.match('Just'):
             return get(targetKey, left)
         
         
-        res = patternMatch(_cv, 
+        res = patternMatch(_cv,
             Type(EQ))
         
         if res.match('Just'):
             return Just(value)
         
         
-        res = patternMatch(_cv, 
+        res = patternMatch(_cv,
             Type(GT))
         
         if res.match('Just'):
@@ -74,7 +74,7 @@ def get(targetKey, dict):
 def member(key, dict):
     _cv = get(key, dict)
     
-    res = patternMatch(_cv, 
+    res = patternMatch(_cv,
         Type(Just),
         Any)
     
@@ -82,7 +82,7 @@ def member(key, dict):
         return True
     
     
-    res = patternMatch(_cv, 
+    res = patternMatch(_cv,
         Type(Nothing))
     
     if res.match('Just'):
@@ -96,14 +96,14 @@ def size(dict):
 def sizeHelp(n, dict):
     _cv = dict
     
-    res = patternMatch(_cv, 
+    res = patternMatch(_cv,
         Type(RBEmpty_elm_builtin))
     
     if res.match('Just'):
         return n
     
     
-    res = patternMatch(_cv, 
+    res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
         Any,
         Any,
@@ -118,14 +118,14 @@ def sizeHelp(n, dict):
 def isEmpty(dict):
     _cv = dict
     
-    res = patternMatch(_cv, 
+    res = patternMatch(_cv,
         Type(RBEmpty_elm_builtin))
     
     if res.match('Just'):
         return True
     
     
-    res = patternMatch(_cv, 
+    res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
         Any,
         Any,
@@ -140,7 +140,7 @@ def isEmpty(dict):
 def insert(key, value, dict):
     _cv = insertHelp(key, value, dict)
     
-    res = patternMatch(_cv, 
+    res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
         
             Type(Red),
@@ -153,7 +153,7 @@ def insert(key, value, dict):
         return RBNode_elm_builtin(Black, k, v, l, r)
     
     
-    res = patternMatch(_cv, Var('x'))
+    res = patternMatch(_cv,Var('x'))
     
     if res.match('Just'):
         return x
@@ -162,14 +162,14 @@ def insert(key, value, dict):
 def insertHelp(key, value, dict):
     _cv = dict
     
-    res = patternMatch(_cv, 
+    res = patternMatch(_cv,
         Type(RBEmpty_elm_builtin))
     
     if res.match('Just'):
         return RBNode_elm_builtin(Red, key, value, RBEmpty_elm_builtin, RBEmpty_elm_builtin)
     
     
-    res = patternMatch(_cv, 
+    res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
         Var('nColor'),
         Var('nKey'),
@@ -180,21 +180,21 @@ def insertHelp(key, value, dict):
     if res.match('Just'):
         _cv = compare(key, nKey)
         
-        res = patternMatch(_cv, 
+        res = patternMatch(_cv,
             Type(LT))
         
         if res.match('Just'):
             return balance(nColor, nKey, nValue, (insertHelp(key, value, nLeft)), nRight)
         
         
-        res = patternMatch(_cv, 
+        res = patternMatch(_cv,
             Type(EQ))
         
         if res.match('Just'):
             return RBNode_elm_builtin(nColor, nKey, value, nLeft, nRight)
         
         
-        res = patternMatch(_cv, 
+        res = patternMatch(_cv,
             Type(GT))
         
         if res.match('Just'):
@@ -204,7 +204,7 @@ def insertHelp(key, value, dict):
 def balance(color, key, value, left, right):
     _cv = right
     
-    res = patternMatch(_cv, 
+    res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
         
             Type(Red),
@@ -216,7 +216,7 @@ def balance(color, key, value, left, right):
     if res.match('Just'):
         _cv = left
         
-        res = patternMatch(_cv, 
+        res = patternMatch(_cv,
             Type(RBNode_elm_builtin),
             
                 Type(Red),
@@ -229,18 +229,18 @@ def balance(color, key, value, left, right):
             return RBNode_elm_builtin(Red, key, value, (RBNode_elm_builtin(Black, lK, lV, lLeft, lRight)), (RBNode_elm_builtin(Black, rK, rV, rLeft, rRight)))
         
         
-        res = patternMatch(_cv, Any)
+        res = patternMatch(_cv,Any)
         
         if res.match('Just'):
             return RBNode_elm_builtin(color, rK, rV, (RBNode_elm_builtin(Red, key, value, left, rLeft)), rRight)
     
     
-    res = patternMatch(_cv, Any)
+    res = patternMatch(_cv,Any)
     
     if res.match('Just'):
         _cv = left
         
-        res = patternMatch(_cv, 
+        res = patternMatch(_cv,
             Type(RBNode_elm_builtin),
             
                 Type(Red),
@@ -260,7 +260,7 @@ def balance(color, key, value, left, right):
             return RBNode_elm_builtin(Red, lK, lV, (RBNode_elm_builtin(Black, llK, llV, llLeft, llRight)), (RBNode_elm_builtin(Black, key, value, lRight, right)))
         
         
-        res = patternMatch(_cv, Any)
+        res = patternMatch(_cv,Any)
         
         if res.match('Just'):
             return RBNode_elm_builtin(color, key, value, left, right)
@@ -269,7 +269,7 @@ def balance(color, key, value, left, right):
 def remove(key, dict):
     _cv = removeHelp(key, dict)
     
-    res = patternMatch(_cv, 
+    res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
         
             Type(Red),
@@ -282,7 +282,7 @@ def remove(key, dict):
         return RBNode_elm_builtin(Black, k, v, l, r)
     
     
-    res = patternMatch(_cv, Var('x'))
+    res = patternMatch(_cv,Var('x'))
     
     if res.match('Just'):
         return x
@@ -291,14 +291,14 @@ def remove(key, dict):
 def removeHelp(targetKey, dict):
     _cv = dict
     
-    res = patternMatch(_cv, 
+    res = patternMatch(_cv,
         Type(RBEmpty_elm_builtin))
     
     if res.match('Just'):
         return RBEmpty_elm_builtin
     
     
-    res = patternMatch(_cv, 
+    res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
         Var('color'),
         Var('key'),
@@ -310,7 +310,7 @@ def removeHelp(targetKey, dict):
         if targetKey < key:
             _cv = left
             
-            res = patternMatch(_cv, 
+            res = patternMatch(_cv,
                 Type(RBNode_elm_builtin),
                 
                     Type(Black),
@@ -322,7 +322,7 @@ def removeHelp(targetKey, dict):
             if res.match('Just'):
                 _cv = lLeft
                 
-                res = patternMatch(_cv, 
+                res = patternMatch(_cv,
                     Type(RBNode_elm_builtin),
                     
                         Type(Red),
@@ -335,12 +335,12 @@ def removeHelp(targetKey, dict):
                     return RBNode_elm_builtin(color, key, value, (removeHelp(targetKey, left)), right)
                 
                 
-                res = patternMatch(_cv, Any)
+                res = patternMatch(_cv,Any)
                 
                 if res.match('Just'):
                     _cv = moveRedLeft(dict)
                     
-                    res = patternMatch(_cv, 
+                    res = patternMatch(_cv,
                         Type(RBNode_elm_builtin),
                         Var('nColor'),
                         Var('nKey'),
@@ -352,14 +352,14 @@ def removeHelp(targetKey, dict):
                         return balance(nColor, nKey, nValue, (removeHelp(targetKey, nLeft)), nRight)
                     
                     
-                    res = patternMatch(_cv, 
+                    res = patternMatch(_cv,
                         Type(RBEmpty_elm_builtin))
                     
                     if res.match('Just'):
                         return RBEmpty_elm_builtin
             
             
-            res = patternMatch(_cv, Any)
+            res = patternMatch(_cv,Any)
             
             if res.match('Just'):
                 return RBNode_elm_builtin(color, key, value, (removeHelp(targetKey, left)), right)
@@ -370,7 +370,7 @@ def removeHelp(targetKey, dict):
 def removeHelpPrepEQGT(targetKey, dict, color, key, value, left, right):
     _cv = left
     
-    res = patternMatch(_cv, 
+    res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
         
             Type(Red),
@@ -383,12 +383,12 @@ def removeHelpPrepEQGT(targetKey, dict, color, key, value, left, right):
         return RBNode_elm_builtin(color, lK, lV, lLeft, (RBNode_elm_builtin(Red, key, value, lRight, right)))
     
     
-    res = patternMatch(_cv, Any)
+    res = patternMatch(_cv,Any)
     
     if res.match('Just'):
         _cv = right
         
-        res = patternMatch(_cv, 
+        res = patternMatch(_cv,
             Type(RBNode_elm_builtin),
             
                 Type(Black),
@@ -408,7 +408,7 @@ def removeHelpPrepEQGT(targetKey, dict, color, key, value, left, right):
             return moveRedRight(dict)
         
         
-        res = patternMatch(_cv, 
+        res = patternMatch(_cv,
             Type(RBNode_elm_builtin),
             
                 Type(Black),
@@ -422,7 +422,7 @@ def removeHelpPrepEQGT(targetKey, dict, color, key, value, left, right):
             return moveRedRight(dict)
         
         
-        res = patternMatch(_cv, Any)
+        res = patternMatch(_cv,Any)
         
         if res.match('Just'):
             return dict
@@ -431,7 +431,7 @@ def removeHelpPrepEQGT(targetKey, dict, color, key, value, left, right):
 def removeHelpEQGT(targetKey, dict):
     _cv = dict
     
-    res = patternMatch(_cv, 
+    res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
         Var('color'),
         Var('key'),
@@ -443,7 +443,7 @@ def removeHelpEQGT(targetKey, dict):
         if targetKey == key:
             _cv = getMin(right)
             
-            res = patternMatch(_cv, 
+            res = patternMatch(_cv,
                 Type(RBNode_elm_builtin),
                 Any,
                 Var('minKey'),
@@ -455,7 +455,7 @@ def removeHelpEQGT(targetKey, dict):
                 return balance(color, minKey, minValue, left, (removeMin(right)))
             
             
-            res = patternMatch(_cv, 
+            res = patternMatch(_cv,
                 Type(RBEmpty_elm_builtin))
             
             if res.match('Just'):
@@ -464,7 +464,7 @@ def removeHelpEQGT(targetKey, dict):
             return balance(color, key, value, left, (removeHelp(targetKey, right)))
     
     
-    res = patternMatch(_cv, 
+    res = patternMatch(_cv,
         Type(RBEmpty_elm_builtin))
     
     if res.match('Just'):
@@ -474,7 +474,7 @@ def removeHelpEQGT(targetKey, dict):
 def getMin(dict):
     _cv = dict
     
-    res = patternMatch(_cv, 
+    res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
         Any,
         Any,
@@ -492,7 +492,7 @@ def getMin(dict):
         return getMin(left)
     
     
-    res = patternMatch(_cv, Any)
+    res = patternMatch(_cv,Any)
     
     if res.match('Just'):
         return dict
@@ -501,7 +501,7 @@ def getMin(dict):
 def removeMin(dict):
     _cv = dict
     
-    res = patternMatch(_cv, 
+    res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
         Var('color'),
         Var('key'),
@@ -518,13 +518,13 @@ def removeMin(dict):
     if res.match('Just'):
         _cv = lColor
         
-        res = patternMatch(_cv, 
+        res = patternMatch(_cv,
             Type(Black))
         
         if res.match('Just'):
             _cv = lLeft
             
-            res = patternMatch(_cv, 
+            res = patternMatch(_cv,
                 Type(RBNode_elm_builtin),
                 
                     Type(Red),
@@ -537,12 +537,12 @@ def removeMin(dict):
                 return RBNode_elm_builtin(color, key, value, (removeMin(left)), right)
             
             
-            res = patternMatch(_cv, Any)
+            res = patternMatch(_cv,Any)
             
             if res.match('Just'):
                 _cv = moveRedLeft(dict)
                 
-                res = patternMatch(_cv, 
+                res = patternMatch(_cv,
                     Type(RBNode_elm_builtin),
                     Var('nColor'),
                     Var('nKey'),
@@ -554,20 +554,20 @@ def removeMin(dict):
                     return balance(nColor, nKey, nValue, (removeMin(nLeft)), nRight)
                 
                 
-                res = patternMatch(_cv, 
+                res = patternMatch(_cv,
                     Type(RBEmpty_elm_builtin))
                 
                 if res.match('Just'):
                     return RBEmpty_elm_builtin
         
         
-        res = patternMatch(_cv, Any)
+        res = patternMatch(_cv,Any)
         
         if res.match('Just'):
             return RBNode_elm_builtin(color, key, value, (removeMin(left)), right)
     
     
-    res = patternMatch(_cv, Any)
+    res = patternMatch(_cv,Any)
     
     if res.match('Just'):
         return RBEmpty_elm_builtin
@@ -576,7 +576,7 @@ def removeMin(dict):
 def moveRedLeft(dict):
     _cv = dict
     
-    res = patternMatch(_cv, 
+    res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
         Var('clr'),
         Var('k'),
@@ -607,7 +607,7 @@ def moveRedLeft(dict):
         return RBNode_elm_builtin(Red, rlK, rlV, (RBNode_elm_builtin(Black, k, v, (RBNode_elm_builtin(Red, lK, lV, lLeft, lRight)), rlL)), (RBNode_elm_builtin(Black, rK, rV, rlR, rRight)))
     
     
-    res = patternMatch(_cv, 
+    res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
         Var('clr'),
         Var('k'),
@@ -630,21 +630,21 @@ def moveRedLeft(dict):
     if res.match('Just'):
         _cv = clr
         
-        res = patternMatch(_cv, 
+        res = patternMatch(_cv,
             Type(Black))
         
         if res.match('Just'):
             return RBNode_elm_builtin(Black, k, v, (RBNode_elm_builtin(Red, lK, lV, lLeft, lRight)), (RBNode_elm_builtin(Red, rK, rV, rLeft, rRight)))
         
         
-        res = patternMatch(_cv, 
+        res = patternMatch(_cv,
             Type(Red))
         
         if res.match('Just'):
             return RBNode_elm_builtin(Black, k, v, (RBNode_elm_builtin(Red, lK, lV, lLeft, lRight)), (RBNode_elm_builtin(Red, rK, rV, rLeft, rRight)))
     
     
-    res = patternMatch(_cv, Any)
+    res = patternMatch(_cv,Any)
     
     if res.match('Just'):
         return dict
@@ -653,7 +653,7 @@ def moveRedLeft(dict):
 def update(targetKey, alter, dictionary):
     _cv = alter((get(targetKey, dictionary)))
     
-    res = patternMatch(_cv, 
+    res = patternMatch(_cv,
         Type(Just),
         Var('value'))
     
@@ -661,7 +661,7 @@ def update(targetKey, alter, dictionary):
         return insert(targetKey, value, dictionary)
     
     
-    res = patternMatch(_cv, 
+    res = patternMatch(_cv,
         Type(Nothing))
     
     if res.match('Just'):
@@ -693,14 +693,14 @@ def diff(t1, t2):
 def map(func, dict):
     _cv = dict
     
-    res = patternMatch(_cv, 
+    res = patternMatch(_cv,
         Type(RBEmpty_elm_builtin))
     
     if res.match('Just'):
         return RBEmpty_elm_builtin
     
     
-    res = patternMatch(_cv, 
+    res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
         Var('color'),
         Var('key'),
@@ -715,14 +715,14 @@ def map(func, dict):
 def foldl(func, acc, dict):
     _cv = dict
     
-    res = patternMatch(_cv, 
+    res = patternMatch(_cv,
         Type(RBEmpty_elm_builtin))
     
     if res.match('Just'):
         return acc
     
     
-    res = patternMatch(_cv, 
+    res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
         Any,
         Var('key'),
@@ -737,14 +737,14 @@ def foldl(func, acc, dict):
 def foldr(func, acc, t):
     _cv = t
     
-    res = patternMatch(_cv, 
+    res = patternMatch(_cv,
         Type(RBEmpty_elm_builtin))
     
     if res.match('Just'):
         return acc
     
     
-    res = patternMatch(_cv, 
+    res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
         Any,
         Var('key'),
@@ -815,13 +815,13 @@ def merge(leftStep, bothStep, rightStep, leftDict, rightDict, initialResult):
         
         _cv = list
         
-        res = patternMatch(_cv, [])
+        res = patternMatch(_cv,[])
         
         if res.match('Just'):
             return (list, rightStep(rKey, rValue, result))
         
         
-        res = patternMatch(_cv, Cons((Var('lKey'), Var('lValue')), Var('rest')))
+        res = patternMatch(_cv,Cons((Var('lKey'), Var('lValue')), Var('rest')))
         
         if res.match('Just'):
             if lKey < rKey:
@@ -849,7 +849,7 @@ def merge(leftStep, bothStep, rightStep, leftDict, rightDict, initialResult):
 def moveRedRight(dict):
     _cv = dict
     
-    res = patternMatch(_cv, 
+    res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
         Var('clr'),
         Var('k'),
@@ -880,7 +880,7 @@ def moveRedRight(dict):
         return RBNode_elm_builtin(Red, lK, lV, (RBNode_elm_builtin(Black, llK, llV, llLeft, llRight)), (RBNode_elm_builtin(Black, k, v, lRight, (RBNode_elm_builtin(Red, rK, rV, rLeft, rRight)))))
     
     
-    res = patternMatch(_cv, 
+    res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
         Var('clr'),
         Var('k'),
@@ -903,21 +903,21 @@ def moveRedRight(dict):
     if res.match('Just'):
         _cv = clr
         
-        res = patternMatch(_cv, 
+        res = patternMatch(_cv,
             Type(Black))
         
         if res.match('Just'):
             return RBNode_elm_builtin(Black, k, v, (RBNode_elm_builtin(Red, lK, lV, lLeft, lRight)), (RBNode_elm_builtin(Red, rK, rV, rLeft, rRight)))
         
         
-        res = patternMatch(_cv, 
+        res = patternMatch(_cv,
             Type(Red))
         
         if res.match('Just'):
             return RBNode_elm_builtin(Black, k, v, (RBNode_elm_builtin(Red, lK, lV, lLeft, lRight)), (RBNode_elm_builtin(Red, rK, rV, rLeft, rRight)))
     
     
-    res = patternMatch(_cv, Any)
+    res = patternMatch(_cv,Any)
     
     if res.match('Just'):
         return dict

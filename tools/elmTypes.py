@@ -559,7 +559,7 @@ class OneCase:
     def emit(self):
         patternCode = getCode(self.patternDef)
 
-        patternRes = 'res = patternMatch(_cv, ' + patternCode + ')\n'
+        patternRes = 'res = patternMatch(_cv,' + patternCode + ')\n'
 
         bodyCode = getBlockCode(self.body)
 
