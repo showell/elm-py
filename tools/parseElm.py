@@ -215,17 +215,6 @@ captureTupleVar = \
             )
         )
 
-capturePatternTuple = \
-    transform(
-        types.Tuple,
-        captureSeq(
-            '(',
-            ',',
-            ')',
-            capturePatternExpr,
-            )
-        )
-
 captureExprList = \
     transform(
         types.List,
@@ -398,6 +387,17 @@ captureExprCons = \
 
 # helpers
 
+capturePatternTuple = \
+    transform(
+        types.Tuple,
+        captureSeq(
+            '(',
+            ',',
+            ')',
+            capturePatternExpr,
+            )
+        )
+
 capturePatternVar = \
     transform(
         types.PatternVar,
@@ -437,7 +437,11 @@ captureCustomTypePattern = \
             ),
             captureZeroOrMore(
                 captureOneOf(
-                    capturePatternExpr,
+                    capturePatternAs,
+                    captureWildCardPattern,
+                    capturePatternVar,
+                    capturePatternTuple,
+                    captureElmType,
                     )
                 )
             )
