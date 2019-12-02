@@ -45,10 +45,10 @@ def get(targetKey, dict):
     res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
         Any,
-        Var('key'),
-        Var('value'),
-        Var('left'),
-        Var('right'))
+        (Var, 'key'),
+        (Var, 'value'),
+        (Var, 'left'),
+        (Var, 'right'))
 
     if res.match('Just'):
         key = res.val['key']
@@ -115,8 +115,8 @@ def sizeHelp(n, dict):
         Any,
         Any,
         Any,
-        Var('left'),
-        Var('right'))
+        (Var, 'left'),
+        (Var, 'right'))
 
     if res.match('Just'):
         left = res.val['left']
@@ -151,11 +151,11 @@ def insert(key, value, dict):
 
     res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
-        Val(Red),
-        Var('k'),
-        Var('v'),
-        Var('l'),
-        Var('r'))
+        (Val, Red),
+        (Var, 'k'),
+        (Var, 'v'),
+        (Var, 'l'),
+        (Var, 'r'))
 
     if res.match('Just'):
         k = res.val['k']
@@ -181,11 +181,11 @@ def insertHelp(key, value, dict):
 
     res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
-        Var('nColor'),
-        Var('nKey'),
-        Var('nValue'),
-        Var('nLeft'),
-        Var('nRight'))
+        (Var, 'nColor'),
+        (Var, 'nKey'),
+        (Var, 'nValue'),
+        (Var, 'nLeft'),
+        (Var, 'nRight'))
 
     if res.match('Just'):
         nColor = res.val['nColor']
@@ -221,11 +221,11 @@ def balance(color, key, value, left, right):
 
     res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
-        Val(Red),
-        Var('rK'),
-        Var('rV'),
-        Var('rLeft'),
-        Var('rRight'))
+        (Val, Red),
+        (Var, 'rK'),
+        (Var, 'rV'),
+        (Var, 'rLeft'),
+        (Var, 'rRight'))
 
     if res.match('Just'):
         rK = res.val['rK']
@@ -236,11 +236,11 @@ def balance(color, key, value, left, right):
 
         res = patternMatch(_cv,
             Type(RBNode_elm_builtin),
-            Val(Red),
-            Var('lK'),
-            Var('lV'),
-            Var('lLeft'),
-            Var('lRight'))
+            (Val, Red),
+            (Var, 'lK'),
+            (Var, 'lV'),
+            (Var, 'lLeft'),
+            (Var, 'lRight'))
 
         if res.match('Just'):
             lK = res.val['lK']
@@ -257,17 +257,17 @@ def balance(color, key, value, left, right):
 
     res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
-        Val(Red),
-        Var('lK'),
-        Var('lV'),
-        Nested([
+        (Val, Red),
+        (Var, 'lK'),
+        (Var, 'lV'),
+        (Nested, [
             Type(RBNode_elm_builtin),
-            Val(Red),
-            Var('llK'),
-            Var('llV'),
-            Var('llLeft'),
-            Var('llRight')]),
-        Var('lRight'))
+            (Val, Red),
+            (Var, 'llK'),
+            (Var, 'llV'),
+            (Var, 'llLeft'),
+            (Var, 'llRight')]),
+        (Var, 'lRight'))
 
     if res.match('Just'):
         lK = res.val['lK']
@@ -284,11 +284,11 @@ def remove(key, dict):
 
     res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
-        Val(Red),
-        Var('k'),
-        Var('v'),
-        Var('l'),
-        Var('r'))
+        (Val, Red),
+        (Var, 'k'),
+        (Var, 'v'),
+        (Var, 'l'),
+        (Var, 'r'))
 
     if res.match('Just'):
         k = res.val['k']
@@ -314,11 +314,11 @@ def removeHelp(targetKey, dict):
 
     res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
-        Var('color'),
-        Var('key'),
-        Var('value'),
-        Var('left'),
-        Var('right'))
+        (Var, 'color'),
+        (Var, 'key'),
+        (Var, 'value'),
+        (Var, 'left'),
+        (Var, 'right'))
 
     if res.match('Just'):
         color = res.val['color']
@@ -331,10 +331,10 @@ def removeHelp(targetKey, dict):
 
             res = patternMatch(_cv,
                 Type(RBNode_elm_builtin),
-                Val(Black),
+                (Val, Black),
                 Any,
                 Any,
-                Var('lLeft'),
+                (Var, 'lLeft'),
                 Any)
 
             if res.match('Just'):
@@ -343,7 +343,7 @@ def removeHelp(targetKey, dict):
 
                 res = patternMatch(_cv,
                     Type(RBNode_elm_builtin),
-                    Val(Red),
+                    (Val, Red),
                     Any,
                     Any,
                     Any,
@@ -357,11 +357,11 @@ def removeHelp(targetKey, dict):
 
                 res = patternMatch(_cv,
                     Type(RBNode_elm_builtin),
-                    Var('nColor'),
-                    Var('nKey'),
-                    Var('nValue'),
-                    Var('nLeft'),
-                    Var('nRight'))
+                    (Var, 'nColor'),
+                    (Var, 'nKey'),
+                    (Var, 'nValue'),
+                    (Var, 'nLeft'),
+                    (Var, 'nRight'))
 
                 if res.match('Just'):
                     nColor = res.val['nColor']
@@ -389,11 +389,11 @@ def removeHelpPrepEQGT(targetKey, dict, color, key, value, left, right):
 
     res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
-        Val(Red),
-        Var('lK'),
-        Var('lV'),
-        Var('lLeft'),
-        Var('lRight'))
+        (Val, Red),
+        (Var, 'lK'),
+        (Var, 'lV'),
+        (Var, 'lLeft'),
+        (Var, 'lRight'))
 
     if res.match('Just'):
         lK = res.val['lK']
@@ -407,12 +407,12 @@ def removeHelpPrepEQGT(targetKey, dict, color, key, value, left, right):
 
     res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
-        Val(Black),
+        (Val, Black),
         Any,
         Any,
-        Nested([
+        (Nested, [
             Type(RBNode_elm_builtin),
-            Val(Black),
+            (Val, Black),
             Any,
             Any,
             Any,
@@ -425,10 +425,10 @@ def removeHelpPrepEQGT(targetKey, dict, color, key, value, left, right):
 
     res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
-        Val(Black),
+        (Val, Black),
         Any,
         Any,
-        Val(RBEmpty_elm_builtin),
+        (Val, RBEmpty_elm_builtin),
         Any)
 
     if res.match('Just'):
@@ -443,11 +443,11 @@ def removeHelpEQGT(targetKey, dict):
 
     res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
-        Var('color'),
-        Var('key'),
-        Var('value'),
-        Var('left'),
-        Var('right'))
+        (Var, 'color'),
+        (Var, 'key'),
+        (Var, 'value'),
+        (Var, 'left'),
+        (Var, 'right'))
 
     if res.match('Just'):
         color = res.val['color']
@@ -461,8 +461,8 @@ def removeHelpEQGT(targetKey, dict):
             res = patternMatch(_cv,
                 Type(RBNode_elm_builtin),
                 Any,
-                Var('minKey'),
-                Var('minValue'),
+                (Var, 'minKey'),
+                (Var, 'minValue'),
                 Any,
                 Any)
 
@@ -517,17 +517,17 @@ def removeMin(dict):
 
     res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
-        Var('color'),
-        Var('key'),
-        Var('value'),
+        (Var, 'color'),
+        (Var, 'key'),
+        (Var, 'value'),
         (AsVar(
             Type(RBNode_elm_builtin),
-            Var('lColor'),
+            (Var, 'lColor'),
             Any,
             Any,
-            Var('lLeft'),
+            (Var, 'lLeft'),
             Any, left)),
-        Var('right'))
+        (Var, 'right'))
 
     if res.match('Just'):
         color = res.val['color']
@@ -544,7 +544,7 @@ def removeMin(dict):
 
             res = patternMatch(_cv,
                 Type(RBNode_elm_builtin),
-                Val(Red),
+                (Val, Red),
                 Any,
                 Any,
                 Any,
@@ -558,11 +558,11 @@ def removeMin(dict):
 
             res = patternMatch(_cv,
                 Type(RBNode_elm_builtin),
-                Var('nColor'),
-                Var('nKey'),
-                Var('nValue'),
-                Var('nLeft'),
-                Var('nRight'))
+                (Var, 'nColor'),
+                (Var, 'nKey'),
+                (Var, 'nValue'),
+                (Var, 'nLeft'),
+                (Var, 'nRight'))
 
             if res.match('Just'):
                 nColor = res.val['nColor']
@@ -591,29 +591,29 @@ def moveRedLeft(dict):
 
     res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
-        Var('clr'),
-        Var('k'),
-        Var('v'),
-        Nested([
+        (Var, 'clr'),
+        (Var, 'k'),
+        (Var, 'v'),
+        (Nested, [
             Type(RBNode_elm_builtin),
-            Var('lClr'),
-            Var('lK'),
-            Var('lV'),
-            Var('lLeft'),
-            Var('lRight')]),
-        Nested([
+            (Var, 'lClr'),
+            (Var, 'lK'),
+            (Var, 'lV'),
+            (Var, 'lLeft'),
+            (Var, 'lRight')]),
+        (Nested, [
             Type(RBNode_elm_builtin),
-            Var('rClr'),
-            Var('rK'),
-            Var('rV'),
+            (Var, 'rClr'),
+            (Var, 'rK'),
+            (Var, 'rV'),
             (AsVar(
                 Type(RBNode_elm_builtin),
-                Val(Red),
-                Var('rlK'),
-                Var('rlV'),
-                Var('rlL'),
-                Var('rlR'), rLeft)),
-            Var('rRight')]))
+                (Val, Red),
+                (Var, 'rlK'),
+                (Var, 'rlV'),
+                (Var, 'rlL'),
+                (Var, 'rlR'), rLeft)),
+            (Var, 'rRight')]))
 
     if res.match('Just'):
         clr = res.val['clr']
@@ -624,23 +624,23 @@ def moveRedLeft(dict):
 
     res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
-        Var('clr'),
-        Var('k'),
-        Var('v'),
-        Nested([
+        (Var, 'clr'),
+        (Var, 'k'),
+        (Var, 'v'),
+        (Nested, [
             Type(RBNode_elm_builtin),
-            Var('lClr'),
-            Var('lK'),
-            Var('lV'),
-            Var('lLeft'),
-            Var('lRight')]),
-        Nested([
+            (Var, 'lClr'),
+            (Var, 'lK'),
+            (Var, 'lV'),
+            (Var, 'lLeft'),
+            (Var, 'lRight')]),
+        (Nested, [
             Type(RBNode_elm_builtin),
-            Var('rClr'),
-            Var('rK'),
-            Var('rV'),
-            Var('rLeft'),
-            Var('rRight')]))
+            (Var, 'rClr'),
+            (Var, 'rK'),
+            (Var, 'rV'),
+            (Var, 'rLeft'),
+            (Var, 'rRight')]))
 
     if res.match('Just'):
         clr = res.val['clr']
@@ -670,7 +670,7 @@ def update(targetKey, alter, dictionary):
 
     res = patternMatch(_cv,
         Type(Just),
-        Var('value'))
+        (Var, 'value'))
 
     if res.match('Just'):
         value = res.val['value']
@@ -718,11 +718,11 @@ def map(func, dict):
 
     res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
-        Var('color'),
-        Var('key'),
-        Var('value'),
-        Var('left'),
-        Var('right'))
+        (Var, 'color'),
+        (Var, 'key'),
+        (Var, 'value'),
+        (Var, 'left'),
+        (Var, 'right'))
 
     if res.match('Just'):
         color = res.val['color']
@@ -746,10 +746,10 @@ def foldl(func, acc, dict):
     res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
         Any,
-        Var('key'),
-        Var('value'),
-        Var('left'),
-        Var('right'))
+        (Var, 'key'),
+        (Var, 'value'),
+        (Var, 'left'),
+        (Var, 'right'))
 
     if res.match('Just'):
         key = res.val['key']
@@ -772,10 +772,10 @@ def foldr(func, acc, t):
     res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
         Any,
-        Var('key'),
-        Var('value'),
-        Var('left'),
-        Var('right'))
+        (Var, 'key'),
+        (Var, 'value'),
+        (Var, 'left'),
+        (Var, 'right'))
 
     if res.match('Just'):
         key = res.val['key']
@@ -850,7 +850,7 @@ def merge(leftStep, bothStep, rightStep, leftDict, rightDict, initialResult):
             return (list, rightStep(rKey, rValue, result))
 
 
-        res = patternMatch(_cv,Cons((Var('lKey'), Var('lValue')), Var('rest')))
+        res = patternMatch(_cv,Cons(((Var, 'lKey'), (Var, 'lValue')), (Var, 'rest')))
 
         if res.match('Just'):
             if lKey < rKey:
@@ -880,29 +880,29 @@ def moveRedRight(dict):
 
     res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
-        Var('clr'),
-        Var('k'),
-        Var('v'),
-        Nested([
+        (Var, 'clr'),
+        (Var, 'k'),
+        (Var, 'v'),
+        (Nested, [
             Type(RBNode_elm_builtin),
-            Var('lClr'),
-            Var('lK'),
-            Var('lV'),
-            Nested([
+            (Var, 'lClr'),
+            (Var, 'lK'),
+            (Var, 'lV'),
+            (Nested, [
                 Type(RBNode_elm_builtin),
-                Val(Red),
-                Var('llK'),
-                Var('llV'),
-                Var('llLeft'),
-                Var('llRight')]),
-            Var('lRight')]),
-        Nested([
+                (Val, Red),
+                (Var, 'llK'),
+                (Var, 'llV'),
+                (Var, 'llLeft'),
+                (Var, 'llRight')]),
+            (Var, 'lRight')]),
+        (Nested, [
             Type(RBNode_elm_builtin),
-            Var('rClr'),
-            Var('rK'),
-            Var('rV'),
-            Var('rLeft'),
-            Var('rRight')]))
+            (Var, 'rClr'),
+            (Var, 'rK'),
+            (Var, 'rV'),
+            (Var, 'rLeft'),
+            (Var, 'rRight')]))
 
     if res.match('Just'):
         clr = res.val['clr']
@@ -913,23 +913,23 @@ def moveRedRight(dict):
 
     res = patternMatch(_cv,
         Type(RBNode_elm_builtin),
-        Var('clr'),
-        Var('k'),
-        Var('v'),
-        Nested([
+        (Var, 'clr'),
+        (Var, 'k'),
+        (Var, 'v'),
+        (Nested, [
             Type(RBNode_elm_builtin),
-            Var('lClr'),
-            Var('lK'),
-            Var('lV'),
-            Var('lLeft'),
-            Var('lRight')]),
-        Nested([
+            (Var, 'lClr'),
+            (Var, 'lK'),
+            (Var, 'lV'),
+            (Var, 'lLeft'),
+            (Var, 'lRight')]),
+        (Nested, [
             Type(RBNode_elm_builtin),
-            Var('rClr'),
-            Var('rK'),
-            Var('rV'),
-            Var('rLeft'),
-            Var('rRight')]))
+            (Var, 'rClr'),
+            (Var, 'rK'),
+            (Var, 'rV'),
+            (Var, 'rLeft'),
+            (Var, 'rRight')]))
 
     if res.match('Just'):
         clr = res.val['clr']

@@ -65,11 +65,16 @@ def rcompose(g, f):
 
 MatchParam = CustomType('MatchParam',
         'Any',
-        Val=1,
-        Var=1,
+        'Val',
+        'Var',
+        'Nested',
         Type=1,
-        Nested=1,
         )
+
+Any = MatchParam.Any
+Val = MatchParam.Val
+Var = MatchParam.Var
+Nested = MatchParam.Nested
 
 def patternMatch(val, main, *args):
     if type(val) == Custom:
@@ -93,16 +98,18 @@ def patternMatch(val, main, *args):
         dct = dict()
         vals = val.vals
         for i, arg in enumerate(args):
-            if arg.match('Any'):
+            if arg is Any:
                 continue
 
-            if arg.match('Val'):
-                if arg.val != vals[i]:
+            (flavor, val) = arg
+
+            if flavor is Val:
+                if val != vals[i]:
                     return Nothing
-            elif arg.match('Var'):
-                dct[arg.val] = vals[i]
-            elif arg.match('Nested'):
-                res = patternMatch(vals[i], *arg.val)
+            elif flavor is Var:
+                dct[val] = vals[i]
+            elif flavor is Nested:
+                res = patternMatch(vals[i], *val)
                 if res is Nothing:
                     return Nothing
                 dct.update(res.val)

@@ -33,13 +33,13 @@ def test():
     one = Number.OneDigit(1)
     twelve = Number.TwoDigit(1, 2)
 
-    v1 = Val(1)
-    v2 = Val(2)
-    v3 = Val(3)
-    v4 = Val(4)
+    v1 = (Val, 1)
+    v2 = (Val, 2)
+    v3 = (Val, 3)
+    v4 = (Val, 4)
 
-    x = Var('x')
-    y = Var('y')
+    x = (Var, 'x')
+    y = (Var, 'y')
 
     jd = Just(dict())
 

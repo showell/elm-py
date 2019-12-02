@@ -252,7 +252,7 @@ class PatternNested:
             )
 
     def emit(self):
-        stmt = 'Nested([' + getCode(self.expr) + '])'
+        stmt = '(Nested, [' + getCode(self.expr) + '])'
         return Simple(stmt)
 
 class PatternAs:
@@ -519,7 +519,7 @@ class CustomTypeVal:
         return str(self.token)
 
     def emit(self):
-        return Simple('Val(' + getCode(self.token) + ')')
+        return Simple('(Val, ' + getCode(self.token) + ')')
 
 class PatternType:
     def __init__(self, ast):
@@ -539,7 +539,7 @@ class PatternVar:
         return self.token
 
     def emit(self):
-        stmt = "Var('" + self.token + "')"
+        stmt = "(Var, '" + self.token + "')"
         return Simple(stmt)
 
     def unpack(self):
