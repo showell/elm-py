@@ -72,17 +72,6 @@ MatchParam = CustomType('MatchParam',
         )
 
 def patternMatch(val, main, *args):
-    def check(arg):
-        if type(arg) != Custom:
-            raise Exception('illegal pattern match')
-
-        if arg.typeName != 'MatchParam':
-            raise Exception('illegal pattern match')
-
-    check(main)
-    for arg in args:
-        check(arg)
-
     if type(val) == Custom:
         if not main.match('Type'):
             raise Exception('illegal pattern match')
