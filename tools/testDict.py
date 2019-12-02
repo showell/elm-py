@@ -1,4 +1,5 @@
 import Dict
+import random
 import time
 from Kernel import toPy
 import  cProfile
@@ -23,9 +24,12 @@ print('empty', Dict.isEmpty(dct))
 print('\n\ninsert many...')
 
 def benchmark(n):
+    lst = list(range(n))
+    random.shuffle(lst)
+
     dct = Dict.empty()
     t = time.time()
-    for i in reversed(range(n)):
+    for i in lst:
         dct = Dict.insert(i, i*10, dct)
     elapsed = time.time() - t
     print('done inserting')
@@ -36,12 +40,11 @@ counts = [
     100,
     1000,
     10000,
-    100000,
     ]
 
 for n in counts:
     benchmark(n)
 
-cProfile.run('benchmark(10000)', sort='time')
+cProfile.run('benchmark(1000)', sort='time')
 
 # print(list(Dict.toList(dct)))
