@@ -104,6 +104,9 @@ def patternMatch(val, main, *args):
         dct = dict()
         vals = val.vals
         for i, arg in enumerate(args):
+            if arg.match('Any'):
+                continue
+
             if arg.match('Val'):
                 if arg.val != vals[i]:
                     return Nothing
@@ -115,8 +118,7 @@ def patternMatch(val, main, *args):
                     return Nothing
                 dct.update(res.val)
             else:
-                if not arg.match('Any'):
-                    raise Exception('illegal pattern match')
+                raise Exception('illegal pattern match')
 
         return Just(dct)
 
