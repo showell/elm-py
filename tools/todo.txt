@@ -3,10 +3,6 @@ emit:
         (need to get actual import working)
         move GT to Basics? or just do prelude to match Elm semantically?
 
-    fix Simple/Block in OneCase
-
-    fix indent to strip empty lines
-
     keep trying to simplify pattern parsing
 
     misc:

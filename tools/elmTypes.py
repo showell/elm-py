@@ -609,10 +609,10 @@ class OneCase:
         bodyCode = getBlockCode(self.body)
 
         if self.patternDef.isWildCard():
-            return Simple(bodyCode)
+            return Block(bodyCode)
 
         if self.patternDef.isVar():
-            return Simple(j(
+            return Block(j(
                 self.patternDef.unpack(),
                 bodyCode,
                 ))
@@ -626,7 +626,7 @@ class OneCase:
         if unpackStmts:
             bodyCode = '\n'.join(unpackStmts) + '\n' + bodyCode
 
-        return Simple(j(
+        return Block(j(
             patternRes,
             "if res.match('Just'):",
             indent(bodyCode)
@@ -646,8 +646,11 @@ class Case:
     def emit(self):
         predCode = getCode(self.pred)
 
-        stmts = getCodeList(self.cases)
-        body = '\n\n\n'.join(stmts)
+        items = [
+            getBlockCode(ast)
+            for ast in self.cases]
+
+        body = '\n\n\n'.join(items)
 
         return Block(j(
             '_cv = ' + predCode + '\n',
