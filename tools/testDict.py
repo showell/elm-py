@@ -4,6 +4,10 @@ import time
 from Kernel import toPy
 import  cProfile
 
+print('singleton')
+dct = Dict.singleton(5, 50)
+assert Dict.get(5, dct).val == 50
+
 print('empty')
 dct = Dict.empty()
 print(toPy(dct))
@@ -21,9 +25,9 @@ print('keys', keys)
 print('size', Dict.size(dct))
 print('empty', Dict.isEmpty(dct))
 
-print('\n\ninsert many...')
 
 def benchmark(n):
+    print('\n\ninsert many...')
     lst = list(range(n))
     random.shuffle(lst)
 
@@ -32,18 +36,44 @@ def benchmark(n):
     for i in lst:
         dct = Dict.insert(i, i*10, dct)
     elapsed = time.time() - t
-    print('done inserting')
-    print('rate', n * 1.0 / elapsed)
-    print('size', Dict.size(dct))
+    print('rate', int(n * 1.0 / elapsed))
+
+    assert(Dict.size(dct) == n)
+
+    print('membership')
+    t = time.time()
+    for i in lst:
+        assert Dict.member(i, dct)
+    elapsed = time.time() - t
+    print('rate', int(n * 1.0 / elapsed))
+
+
+    print('get')
+    t = time.time()
+    for i in lst:
+        assert Dict.get(i, dct).val == i * 10
+    elapsed = time.time() - t
+    print('rate', int(n * 1.0 / elapsed))
+
+
+    """
+    print('remove')
+    t = time.time()
+    for i in lst:
+        Dict.remove(i, dct)
+    elapsed = time.time() - t
+    print('rate', int(n * 1.0 / elapsed))
+    """
+
 
 counts = [
     1000,
-    10000,
+    # 10000,
     ]
 
 for n in counts:
     benchmark(n)
 
-cProfile.run('benchmark(1000)', sort='time')
+# cProfile.run('benchmark(1000)', sort='time')
 
 # print(list(Dict.toList(dct)))
