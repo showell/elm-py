@@ -4,6 +4,14 @@ emit:
             left = res.val['left']
             right = res.val['right']
 
+        need to wrap [] with toElm or use List.empty
+
+        from Order import GT, LT, EQ
+        from Basics import compare
+        import List
+
+        (need to get actual import working)
+        move GT to Basics? or just do prelude to match Elm semantically?
 
     misc:
         distinguish Type at front vs. nested
