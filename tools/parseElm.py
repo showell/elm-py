@@ -190,55 +190,6 @@ captureIf = \
             )
         )
 
-captureCaseOf = \
-    transform(
-        types.CaseOf,
-        captureStuff(
-            skip(pKeyword('case')),
-            captureExpr,
-            skip(pKeyword('of')),
-            )
-        )
-
-capturePatternVar = \
-    transform(
-        types.PatternVar,
-        captureTokenLower(reservedWords)
-        )
-
-capturePatternDef = \
-    transform(
-        types.PatternDef,
-        captureStuff(
-            capturePatternExpr,
-            skip(pKeyword('->')),
-            )
-        )
-
-captureOneCase = \
-    transform(
-        types.OneCase,
-        captureStuff(
-            capturePatternDef,
-            twoPass(
-                parseMyLevel,
-                captureExpr,
-                ),
-            ),
-        )
-
-captureCase = \
-    transform(
-        types.Case,
-        captureStuff(
-            captureCaseOf,
-            twoPass(
-                parseMyLevel,
-                captureOneOrMore(captureOneCase),
-                )
-            )
-        )
-
 captureParenExpr = \
     captureParen(captureExpr)
 
@@ -410,6 +361,49 @@ captureComment = \
         captureDocs,
         )
 
+# I should be smarter about binary operators.
+# See https://www.crockford.com/javascript/tdop/tdop.html
+# (he implements a Pratt parser, which wouldn't be terribly
+# difficult to adapt here...I am just being lazy)
+#
+# This only captures simple `foo < ...` expressions.
+
+captureSimpleExpr = \
+    captureOneOf(
+        captureExprVar,
+        captureExprTuple,
+    )
+
+captureBinOp = \
+    transform(
+        types.BinOp,
+        captureStuff(
+            captureSimpleExpr,
+            captureElmOperator,
+            captureExpr,
+            )
+        )
+
+captureExprCons = \
+    transform(
+        types.ExprCons,
+        captureStuff(
+            captureSimpleExpr,
+            captureOperator(['::']),
+            captureExpr,
+            )
+        )
+
+# CASE/PATTERN STUFF
+
+# helpers
+
+capturePatternVar = \
+    transform(
+        types.PatternVar,
+        captureTokenLower(reservedWords)
+        )
+
 capturePatternType = \
     transform(
         types.PatternType,
@@ -421,6 +415,18 @@ captureWildCardPattern = \
         types.WildCardPattern,
         captureOperator(['_'])
         )
+
+capturePatternAs = \
+    transform(
+        types.PatternAs,
+        captureStuff(
+            captureParen(capturePatternExpr),
+            skip(pKeyword('as')),
+            captureExprVar,
+            )
+        )
+
+## custom type: SomeType _ x y _
 
 captureCustomTypePattern = \
     transform(
@@ -436,6 +442,8 @@ captureCustomTypePattern = \
                 )
             )
         )
+
+## list stuff: [], head :: rest
 
 capturePatternListBrackets = \
     transform(
@@ -471,15 +479,8 @@ capturePatternList = \
         capturePatternListBrackets,
         )
 
-capturePatternAs = \
-    transform(
-        types.PatternAs,
-        captureStuff(
-            captureParen(capturePatternExpr),
-            skip(pKeyword('as')),
-            captureExprVar,
-            )
-        )
+
+## general expression stuff
 
 doCapturePatternExpr = \
     captureStuff(
@@ -494,38 +495,54 @@ doCapturePatternExpr = \
             )
         )
 
-# I should be smarter about binary operators.
-# See https://www.crockford.com/javascript/tdop/tdop.html
-# (he implements a Pratt parser, which wouldn't be terribly
-# difficult to adapt here...I am just being lazy)
-#
-# This only captures simple `foo < ...` expressions.
+## pattern matches:  Just _ ->
 
-captureSimpleExpr = \
-    captureOneOf(
-        captureExprVar,
-        captureExprTuple,
-    )
-
-captureBinOp = \
+capturePatternDef = \
     transform(
-        types.BinOp,
+        types.PatternDef,
         captureStuff(
-            captureSimpleExpr,
-            captureElmOperator,
-            captureExpr,
+            capturePatternExpr,
+            skip(pKeyword('->')),
             )
         )
 
-captureExprCons = \
+captureOneCase = \
     transform(
-        types.ExprCons,
+        types.OneCase,
         captureStuff(
-            captureSimpleExpr,
-            captureOperator(['::']),
+            capturePatternDef,
+            twoPass(
+                parseMyLevel,
+                captureExpr,
+                ),
+            ),
+        )
+
+## case foo of
+
+captureCaseOf = \
+    transform(
+        types.CaseOf,
+        captureStuff(
+            skip(pKeyword('case')),
             captureExpr,
+            skip(pKeyword('of')),
             )
         )
+
+captureCase = \
+    transform(
+        types.Case,
+        captureStuff(
+            captureCaseOf,
+            twoPass(
+                parseMyLevel,
+                captureOneOrMore(captureOneCase),
+                )
+            )
+        )
+
+# EXPRESSIONS
 
 doCaptureExpr = \
     captureStuff(
@@ -542,6 +559,8 @@ doCaptureExpr = \
             captureLambda,
             )
         )
+
+# TOP LEVEL STRUCTURE
 
 captureTopOfFile = \
     captureOneOrMore(
