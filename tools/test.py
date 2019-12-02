@@ -384,10 +384,28 @@ def testEmit():
             case foo of
                 Coords x y ->
                     (x, y)
+
+                _ ->
+                    foo
+
         """
     state = parse.State(code)
     res = parseElm.captureBinding(state)
-    print(types.getFinalCode(res.ast))
+    print(types.getBlockCode(res.ast))
+
+    code = """
+        x =
+            case foo of
+                Coords x y ->
+                    (x, y)
+
+                x ->
+                    foo
+
+        """
+    state = parse.State(code)
+    res = parseElm.captureBinding(state)
+    print(types.getBlockCode(res.ast))
 
 
 testIndents()

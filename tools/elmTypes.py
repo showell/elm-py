@@ -164,7 +164,7 @@ def fixParams(params):
 
 def indent(s):
     return '\n'.join(
-            '    ' + line
+            '    ' + line if line.strip() else ''
             for line in str(s).split('\n'))
 
 def j(*lst):
@@ -582,6 +582,16 @@ class PatternDef:
         else:
             return []
 
+    def unpack(self):
+        name = str(self.expr)
+        return name + ' = _cv'
+
+    def isWildCard(self):
+        return type(self.expr) == WildCardPattern
+
+    def isVar(self):
+        return type(self.expr) == PatternVar
+
 class OneCase:
     def __init__(self, ast):
         self.patternDef = ast[0]
@@ -596,13 +606,22 @@ class OneCase:
             ])
 
     def emit(self):
+        bodyCode = getBlockCode(self.body)
+
+        if self.patternDef.isWildCard():
+            return Simple(bodyCode)
+
+        if self.patternDef.isVar():
+            return Simple(j(
+                self.patternDef.unpack(),
+                bodyCode,
+                ))
+
         patternCode = getCode(self.patternDef)
 
         patternRes = 'res = patternMatch(_cv,' + patternCode + ')\n'
 
         unpackStmts = self.patternDef.unpacks()
-
-        bodyCode = getBlockCode(self.body)
 
         if unpackStmts:
             bodyCode = '\n'.join(unpackStmts) + '\n' + bodyCode
