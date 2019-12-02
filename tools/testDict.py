@@ -29,7 +29,16 @@ print('size', Dict.size(dct))
 print('empty', Dict.isEmpty(dct))
 
 
+
 def benchmark(n):
+    def printRate(elapsed):
+        if elapsed == 0:
+            print('elapsed = 0')
+            return
+        print('rate', int(n * 1.0 / elapsed))
+        print('\n')
+
+
     print('\n\ninsert many...')
     lst = list(range(n))
     random.shuffle(lst)
@@ -39,14 +48,14 @@ def benchmark(n):
     for i in lst:
         dct = Dict.insert(i, i*10, dct)
     elapsed = time.time() - t
-    print('rate', int(n * 1.0 / elapsed))
+    printRate(elapsed)
 
     print('membership')
     t = time.time()
     for i in lst:
         assert Dict.member(i, dct)
     elapsed = time.time() - t
-    print('rate', int(n * 1.0 / elapsed))
+    printRate(elapsed)
 
 
     print('get')
@@ -54,7 +63,21 @@ def benchmark(n):
     for i in lst:
         assert Dict.get(i, dct).val == i * 10
     elapsed = time.time() - t
-    print('rate', int(n * 1.0 / elapsed))
+    printRate(elapsed)
+
+    print('keys')
+    t = time.time()
+    keys = Dict.keys(dct)
+    elapsed = time.time() - t
+    printRate(elapsed)
+    assert list(keys) == sorted(lst)
+
+    print('values')
+    t = time.time()
+    values = Dict.values(dct)
+    elapsed = time.time() - t
+    printRate(elapsed)
+    assert list(values) == sorted(10 * i for i in lst)
 
 
     print('update')
@@ -64,7 +87,7 @@ def benchmark(n):
     for i in lst:
         dct = Dict.update(i, double, dct)
     elapsed = time.time() - t
-    print('rate', int(n * 1.0 / elapsed))
+    printRate(elapsed)
 
     for i in lst:
         assert Dict.get(i, dct).val == i * 20
@@ -74,7 +97,7 @@ def benchmark(n):
     for i in lst:
         dct = Dict.remove(i, dct)
     elapsed = time.time() - t
-    print('rate', int(n * 1.0 / elapsed))
+    printRate(elapsed)
 
     assert Dict.size(dct) == 0
     assert Dict.isEmpty(dct)
