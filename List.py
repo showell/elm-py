@@ -18,7 +18,6 @@ immutable.
 """
 
 toElm = lk.toElm
-empty = lk.empty
 cons = lk.cons
 uncons = lk.uncons
 
@@ -27,17 +26,20 @@ range_ = range
 map_ = map
 filter_ = filter
 
+# empty is a value!
+empty = lk.empty()
+
 def singleton(x):
-    return cons(x, empty())
+    return cons(x, empty)
 
 def repeat(n, x):
-    out = empty()
+    out = empty
     for i in range_(n):
         out = cons(x, out)
     return out
 
 def range(lo, hi):
-    out = empty()
+    out = empty
     n = hi
     for n in range_(hi, lo-1, -1):
         out = cons(n, out)
@@ -80,7 +82,7 @@ def length(lst):
     return i
 
 def reverse(lst):
-    return foldl(cons, empty(), lst)
+    return foldl(cons, empty, lst)
 
 def member(x, xs):
     return any(lambda b: Kernel.eq(x, b), xs)
@@ -131,18 +133,18 @@ def append(xs, ys):
         return foldr(cons, ys, xs)
 
 def concat(lsts):
-    return foldr(append, empty(), lsts)
+    return foldr(append, empty, lsts)
 
 def concatMap(f, lst):
     return concat(map(f, lst))
 
 def intersperse(sep, xs):
     if lk.isEmpty(xs):
-        return empty()
+        return empty
     else:
         (hd, tl) = uncons(xs)
         step = lambda x, rest: cons(sep, cons(x, rest))
-        spersed = foldr(step, empty(), tl)
+        spersed = foldr(step, empty, tl)
         return cons(hd, spersed)
 
 @Elm.wrap(None, None, None, toElm)
@@ -214,7 +216,7 @@ def drop(n, xs):
 
     for i in range_(n):
         if lk.isEmpty(xs):
-            return empty()
+            return empty
         (_, xs) = uncons(xs)
 
     return xs
@@ -228,7 +230,7 @@ def partition(pred, lst):
         else:
             return (trues, cons(x, falses))
 
-    return foldr(step, (empty(), empty()), lst)
+    return foldr(step, (empty, empty), lst)
 
 def unzip(pairs):
 
@@ -237,4 +239,4 @@ def unzip(pairs):
         (xs, ys) = lsts
         return (cons(x, xs), cons(y, ys))
 
-    return foldr(step, (empty(), empty()), pairs)
+    return foldr(step, (empty, empty), pairs)

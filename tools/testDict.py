@@ -151,7 +151,7 @@ def benchmark(n):
     accum = lambda k, v, accLst: List.cons((v, k), accLst)
     print('foldr')
     t = perf_counter()
-    outLst = Dict.foldr(accum, List.empty(), dct)
+    outLst = Dict.foldr(accum, List.empty, dct)
     elapsed = perf_counter() - t
     printRate(elapsed)
     assert list(outLst) == [(n*3, n) for n in sorted(lst)]
@@ -215,7 +215,7 @@ def testSetStuff():
         lambda k, v, lst: List.cons((v, k), lst),
         dct1,
         dct2,
-        List.empty())
+        List.empty)
     print(outList)
     """
 

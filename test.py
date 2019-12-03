@@ -52,7 +52,7 @@ lst3Clone = toElm([0, 1, 2])
 s123 = toElm(["1", "2", "3"])
 
 numLst = toElm([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
-empty = List.empty()
+empty = List.empty
 mod10 = lambda x: x % 10
 
 def testListBasics():
@@ -62,7 +62,7 @@ def testListBasics():
             )
 
     assertEqual(
-            List.empty() == empty,
+            List.empty == empty,
             True
             )
 
@@ -77,7 +77,7 @@ def testListBasics():
             )
 
     assertEqual(
-            Kernel.eq(List.empty(), empty),
+            Kernel.eq(List.empty, empty),
             True
             )
 

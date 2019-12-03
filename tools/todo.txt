@@ -2,8 +2,6 @@ emit:
     merge:
         list pattern matching
 
-    fix List.empty() -> List.empty
-
     add depth function
 
     try to debug update/remove:
