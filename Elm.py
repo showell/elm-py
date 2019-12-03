@@ -87,6 +87,10 @@ PList = MatchParam.PList
 PCons = MatchParam.PCons
 
 def patternMatch(val, main, *args):
+    if type(val) == tuple:
+        print(val)
+        raise Exception('not supporting tuples')
+
     if type(val) == Custom:
         return patternMatchCustom(val, main, *args)
 
@@ -183,6 +187,13 @@ def patternMatchCustom(val, main, *args):
             if dct is None:
                 dct = dict()
             dct[varname] = vals[i]
+
+        elif arg[0] is Val:
+            continue
+
+        else:
+            print(arg)
+            raise Exception('unsupported pattern match')
 
     if dct is None:
         return True
