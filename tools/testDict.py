@@ -107,14 +107,21 @@ def benchmark(n):
     assert Dict.size(dct) == 0
     assert Dict.isEmpty(dct)
 
-    """
     print('fromList')
     elmLst = List.toElm([(n, n * 2) for n in lst])
     t = time.time()
     dct = Dict.fromList(elmLst)
     elapsed = time.time() - t
     printRate(elapsed)
-    """
+
+    assert Dict.size(dct) == n
+
+    print('keys')
+    t = time.time()
+    keys = Dict.keys(dct)
+    elapsed = time.time() - t
+    printRate(elapsed)
+    assert list(keys) == sorted(lst)
 
 counts = [
     1000,
