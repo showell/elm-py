@@ -57,6 +57,26 @@ def testLists():
         ((Var, 't1'), (Var, 't2')),
         (Var, 'r')
         )
+    assertEqual(res['t1'], 1)
+    assertEqual(res['t2'], 10)
+    assertEqual(list(res['r']), [(2, 20)])
+
+    res = patternMatch(
+        tupList,
+        PCons,
+        ((Val, 5), (Var, 't2')),
+        (Var, 'r')
+        )
+    assertEqual(None, res)
+
+    res = patternMatch(
+        tupList,
+        PCons,
+        (Any, Any),
+        (Var, 'r'),
+        )
+    assertEqual(res, dict(r=[(2, 20)]))
+
 
 def testCustomTypes():
     Number = CustomType('Number', 'Zero', OneDigit=1, TwoDigit=2)

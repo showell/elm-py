@@ -178,6 +178,8 @@ def patternMatchVals(vals, *args):
                 *arg)
             if res is None:
                 return
+            if res is True:
+                continue
             if dct is None:
                 dct = dict()
             dct.update(res)
@@ -187,6 +189,8 @@ def patternMatchVals(vals, *args):
             res = patternMatch(vals[i], *val)
             if res is None:
                 return None
+            if res is True:
+                continue
             if dct is None:
                 dct = dict()
             dct[varname] = vals[i]
@@ -196,6 +200,8 @@ def patternMatchVals(vals, *args):
             res = patternMatch(vals[i], *val)
             if res is None:
                 return None
+            if res is True:
+                continue
             if dct is None:
                 dct = dict()
             dct.update(res)
