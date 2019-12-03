@@ -2,7 +2,7 @@ import Dict
 import List
 import Maybe
 import random
-import time
+from time import perf_counter
 from Kernel import toPy
 import  cProfile
 
@@ -31,7 +31,9 @@ print('keys', keys)
 print('size', Dict.size(dct))
 print('empty', Dict.isEmpty(dct))
 
-
+add = lambda k, v: k + v
+add3 = lambda a, b, c: a + b + c
+double = lambda m: Just(m.val * 2)
 
 def benchmark(n):
     def printRate(elapsed):
@@ -47,49 +49,48 @@ def benchmark(n):
     random.shuffle(lst)
 
     dct = Dict.empty
-    t = time.time()
+    t = perf_counter()
     for i in lst:
         dct = Dict.insert(i, i*10, dct)
-    elapsed = time.time() - t
+    elapsed = perf_counter() - t
     printRate(elapsed)
 
     print('membership')
-    t = time.time()
+    t = perf_counter()
     for i in lst:
         assert Dict.member(i, dct)
-    elapsed = time.time() - t
+    elapsed = perf_counter() - t
     printRate(elapsed)
 
 
     print('get')
-    t = time.time()
+    t = perf_counter()
     for i in lst:
         assert Dict.get(i, dct).val == i * 10
-    elapsed = time.time() - t
+    elapsed = perf_counter() - t
     printRate(elapsed)
 
     print('keys')
-    t = time.time()
+    t = perf_counter()
     keys = Dict.keys(dct)
-    elapsed = time.time() - t
+    elapsed = perf_counter() - t
     printRate(elapsed)
     assert list(keys) == sorted(lst)
 
     print('values')
-    t = time.time()
+    t = perf_counter()
     values = Dict.values(dct)
-    elapsed = time.time() - t
+    elapsed = perf_counter() - t
     printRate(elapsed)
     assert list(values) == sorted(10 * i for i in lst)
 
 
     print('update')
-    t = time.time()
-    double = lambda m: Just(m.val * 2)
+    t = perf_counter()
 
     for i in lst:
         dct = Dict.update(i, double, dct)
-    elapsed = time.time() - t
+    elapsed = perf_counter() - t
     printRate(elapsed)
 
     for i in lst:
@@ -98,10 +99,10 @@ def benchmark(n):
     assert Dict.size(dct) == n
 
     print('remove')
-    t = time.time()
+    t = perf_counter()
     for i in lst:
         dct = Dict.remove(i, dct)
-    elapsed = time.time() - t
+    elapsed = perf_counter() - t
     printRate(elapsed)
 
     assert Dict.size(dct) == 0
@@ -110,36 +111,49 @@ def benchmark(n):
     print('fromList')
     tups = [(n, n * 2) for n in lst]
     elmLst = List.toElm(tups)
-    t = time.time()
+    t = perf_counter()
     dct = Dict.fromList(elmLst)
-    elapsed = time.time() - t
+    elapsed = perf_counter() - t
     printRate(elapsed)
 
     assert Dict.size(dct) == n
 
     print('keys')
-    t = time.time()
+    t = perf_counter()
     keys = Dict.keys(dct)
-    elapsed = time.time() - t
+    elapsed = perf_counter() - t
     printRate(elapsed)
     assert list(keys) == sorted(lst)
 
     print('toList')
-    t = time.time()
+    t = perf_counter()
     outLst = Dict.toList(dct)
-    elapsed = time.time() - t
+    elapsed = perf_counter() - t
     printRate(elapsed)
     assert list(outLst) == sorted(tups)
 
     print('map')
-    add = lambda k, v: k + v
-    t = time.time()
+    t = perf_counter()
     dct = Dict.map(add, dct)
-    elapsed = time.time() - t
+    elapsed = perf_counter() - t
     printRate(elapsed)
     assert list(Dict.values(dct)) == [
         3*i for i in sorted(lst)]
 
+    print('foldl')
+    t = perf_counter()
+    bigSum = Dict.foldl(add3, 0, dct)
+    elapsed = perf_counter() - t
+    printRate(elapsed)
+    assert bigSum == 4 * n * (n-1) / 2
+
+    accum = lambda k, v, accLst: List.cons((v, k), accLst)
+    print('foldr')
+    t = perf_counter()
+    outLst = Dict.foldr(accum, List.empty(), dct)
+    elapsed = perf_counter() - t
+    printRate(elapsed)
+    assert list(outLst) == [(n*3, n) for n in sorted(lst)]
 
 counts = [
     1000,

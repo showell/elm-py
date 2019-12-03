@@ -1,6 +1,5 @@
 emit:
-    empty:
-        need to parse value assignments better
+    fix List.empty() -> List.empty
 
     import cleanup:
         (need to get actual import working)
