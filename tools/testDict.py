@@ -207,6 +207,19 @@ def testSetStuff():
     print('diff')
     assert list(Dict.keys(Dict.diff(dct1, dct2))) == [1,2]
 
+    """
+    print('merge')
+    outList = Dict.merge(
+        lambda k, v, lst: List.cons((k, v), lst),
+        lambda k, v1, v2, lst: List.cons((k, v1, v2), lst),
+        lambda k, v, lst: List.cons((v, k), lst),
+        dct1,
+        dct2,
+        List.empty())
+    print(outList)
+    """
+
+
 testBasics()
 runBenchmarks()
 testSetStuff()
