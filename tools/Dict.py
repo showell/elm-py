@@ -1100,13 +1100,17 @@ def merge(leftStep, bothStep, rightStep, leftDict, rightDict, initialResult):
 
         _cv = list
 
-        res = patternMatch(_cv,List.toElm([]))
+        res = patternMatch(_cv,
+            (PList, [])
+        )
 
         if res is not None:
             return (list, rightStep(rKey, rValue, result))
 
 
-        res = patternMatch(_cv,(Cons, ((Var, 'lKey'), (Var, 'lValue')), (Var, 'rest')))
+        res = patternMatch(_cv,
+            (PCons, ((Var, 'lKey'), (Var, 'lValue')), (Var, 'rest'))
+        )
 
         if res is not None:
             if lKey < rKey:

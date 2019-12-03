@@ -632,6 +632,27 @@ class FunctionAssign:
 
 # Pattern-related stuff
 
+## list patterns
+class PatternList:
+    def __init__(self, ast):
+        self.items = ast
+
+    def __str__(self):
+        return 'LIST ' + formatList(self.items, '(', ')')
+
+    def emit(self):
+        if len(self.items) > 0:
+            raise Exception('only emitting empty lists for now')
+
+        items = getCodeList(self.items)
+        lst = formatList(
+            items,
+            '[',
+            ']',
+            )
+        stmt = '\n' + indent('(PList, ' + lst + ')') + '\n'
+        return Simple(stmt)
+
 class PatternCons:
     def __init__(self, ast):
         self.head, op, self.rest = ast
@@ -644,8 +665,13 @@ class PatternCons:
             )
 
     def emit(self):
-        stmt = '(Cons, ' + getCode(self.head) + ', ' + getCode(self.rest) + ')'
+        head = getCode(self.head)
+        rest = getCode(self.rest)
+
+        stmt = '\n' + indent('(PCons, ' + head + ', ' + rest + ')') + '\n'
         return Simple(stmt)
+
+## wildcard pattern
 
 class WildCardPattern:
     def __init__(self, ast):
@@ -656,6 +682,8 @@ class WildCardPattern:
 
     def emit(self):
         return Simple('Any')
+
+# custom type patterns
 
 class VariantDef:
     def __init__(self, ast):

@@ -512,7 +512,7 @@ doCaptureCustomTypePattern = \
 
 capturePatternListBrackets = \
     transform(
-        types.List,
+        types.PatternList,
         captureSeq(
             '[',
             ',',
