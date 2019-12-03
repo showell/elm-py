@@ -555,7 +555,7 @@ class TupleAssign:
             ')\n',
             ))
 
-class NormalAssign:
+class FunctionAssign:
     def __init__(self, ast):
         self.def_ = ast[0]
         self.expr = ast[1]

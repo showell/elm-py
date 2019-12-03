@@ -269,9 +269,9 @@ captureDef = \
             )
         )
 
-captureNormalAssign = \
+captureFunctionAssign = \
     transform(
-        types.NormalAssign,
+        types.FunctionAssign,
         captureStuff(
             captureDef,
             twoPass(
@@ -283,7 +283,7 @@ captureNormalAssign = \
 
 captureBinding = \
     captureOneOf(
-        captureNormalAssign,
+        captureFunctionAssign,
         captureTupleAssign,
     )
 
