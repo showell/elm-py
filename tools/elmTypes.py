@@ -668,7 +668,7 @@ class PatternCons:
         head = getCode(self.head)
         rest = getCode(self.rest)
 
-        stmt = '\n' + indent('(PCons, ' + head + ', ' + rest + ')') + '\n'
+        stmt = '\n' + indent('(PCons, (' + head + ', ' + rest + '))') + '\n'
         return Simple(stmt)
 
 ## wildcard pattern

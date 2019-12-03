@@ -1109,7 +1109,7 @@ def merge(leftStep, bothStep, rightStep, leftDict, rightDict, initialResult):
 
 
         res = patternMatch(_cv,
-            (PCons, ((Var, 'lKey'), (Var, 'lValue')), (Var, 'rest'))
+            (PCons, (((Var, 'lKey'), (Var, 'lValue')), (Var, 'rest')))
         )
 
         if res is not None:

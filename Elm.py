@@ -64,6 +64,8 @@ def lcompose(g, f):
 def rcompose(g, f):
     return lambda x: f(g(x))
 
+FakeList = CustomType('FakeList', Cons=2)
+
 MatchParam = CustomType('MatchParam',
         'Any',
         'AsVar',
@@ -93,10 +95,8 @@ def patternMatch(val, main, *args):
 
     raise Exception('unsupported pattern match')
 
-def patternMatchList(val, main, *args):
-    (mainType, mainVal) = main
-
-    if mainType is PList:
+def patternMatchList(val, flavor, *args):
+    if flavor is PList:
         if len(args) != 0:
             raise Exception('only supporting [] for now')
 
@@ -104,6 +104,20 @@ def patternMatchList(val, main, *args):
             return True
 
         return
+
+    if flavor is PCons:
+        if len(args) != 2:
+            raise Exception('wrong number of args for :: match')
+
+        if ListKernel.isEmpty(val):
+            return
+
+        (head, rest) = ListKernel.uncons(val)
+
+        return patternMatchCustom(
+            FakeList.Cons(head, rest),
+            (Variant, FakeList.Cons),
+            *args)
 
     raise Exception('unsupported pattern match')
 

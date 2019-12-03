@@ -29,8 +29,25 @@ def testLists():
     lst1 = List.toElm([1])
     lst2 = List.toElm([1, 2, 3])
 
-    assertEqual(True, patternMatch(lst0, (PList, [])))
-    assertEqual(None, patternMatch(lst1, (PList, [])))
+    assertEqual(True, patternMatch(lst0, PList))
+    assertEqual(None, patternMatch(lst1, PList))
+
+    assertEqual(None, patternMatch(lst0, PCons, Any, Any))
+    assertEqual(True, patternMatch(lst1, PCons, Any, Any))
+    assertEqual(True, patternMatch(lst2, PCons, Any, Any))
+
+    # good vals
+    assertEqual(True, patternMatch(lst1, PCons, (Val, 1), Any))
+    assertEqual(True, patternMatch(lst2, PCons, (Val, 1), Any))
+
+    # bad vals
+    assertEqual(None, patternMatch(lst1, PCons, (Val, 5), Any))
+    assertEqual(None, patternMatch(lst2, PCons, (Val, 5), Any))
+
+    # capture
+    res = patternMatch(lst2, PCons, (Var, 'h'), (Var, 'r'))
+    assertEqual(res['h'], 1)
+    assertEqual(list(res['r']), [2, 3])
 
 def testCustomTypes():
     Number = CustomType('Number', 'Zero', OneDigit=1, TwoDigit=2)
