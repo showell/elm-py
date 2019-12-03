@@ -155,6 +155,26 @@ def benchmark(n):
     printRate(elapsed)
     assert list(outLst) == [(n*3, n) for n in sorted(lst)]
 
+    evenKey = lambda k, v: k % 2 == 0
+    print('filter')
+    t = perf_counter()
+    filterDct = Dict.filter(evenKey, dct)
+    elapsed = perf_counter() - t
+    printRate(elapsed)
+    outLst = Dict.toList(filterDct)
+    assert list(outLst) == [(n, n*3) for n in sorted(lst) if n % 2 == 0]
+
+    evenKey = lambda k, v: k % 2 == 0
+    print('partition')
+    t = perf_counter()
+    (goodDict, badDict) = Dict.partition(evenKey, dct)
+    elapsed = perf_counter() - t
+    printRate(elapsed)
+    goodList = Dict.toList(goodDict)
+    badList = Dict.toList(badDict)
+    assert list(goodList) == [(n, n*3) for n in sorted(lst) if n % 2 == 0]
+    assert list(badList) == [(n, n*3) for n in sorted(lst) if n % 2 != 0]
+
 counts = [
     1000,
     # 10000,

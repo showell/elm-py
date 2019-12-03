@@ -1,6 +1,8 @@
 emit:
     fix List.empty() -> List.empty
 
+    add depth function
+
     import cleanup:
         (need to get actual import working)
         move GT to Basics? or just do prelude to match Elm semantically?
