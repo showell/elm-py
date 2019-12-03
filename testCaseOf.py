@@ -28,6 +28,7 @@ def testLists():
     lst0 = List.empty
     lst1 = List.toElm([1])
     lst2 = List.toElm([1, 2, 3])
+    tupList = List.toElm([(1, 10), (2, 20)])
 
     assertEqual(True, patternMatch(lst0, PList))
     assertEqual(None, patternMatch(lst1, PList))
@@ -48,6 +49,14 @@ def testLists():
     res = patternMatch(lst2, PCons, (Var, 'h'), (Var, 'r'))
     assertEqual(res['h'], 1)
     assertEqual(list(res['r']), [2, 3])
+
+    # tups
+    res = patternMatch(
+        tupList,
+        PCons,
+        ((Var, 't1'), (Var, 't2')),
+        (Var, 'r')
+        )
 
 def testCustomTypes():
     Number = CustomType('Number', 'Zero', OneDigit=1, TwoDigit=2)

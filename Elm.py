@@ -125,6 +125,11 @@ def patternMatchList(val, flavor, *args):
 
     raise Exception('unsupported pattern match')
 
+def patternMatchTuple(tup, *args):
+    if len(tup) != len(args):
+        raise Exception('wrong arity')
+
+    return patternMatchVals(tup, *args)
 
 def patternMatchCustom(val, main, *args):
     (mainType, mainVal) = main
@@ -148,8 +153,11 @@ def patternMatchCustom(val, main, *args):
     if val.arity == 0:
         return True
 
-    # In first loop, try to exit early
     vals = val.vals
+    return patternMatchVals(vals, *args)
+
+def patternMatchVals(vals, *args):
+    # In first loop, try to exit early
     for i, arg in enumerate(args):
         if arg is Any:
             continue
@@ -164,7 +172,17 @@ def patternMatchCustom(val, main, *args):
         if arg is Any:
             continue
 
-        if arg[0] is AsVar:
+        if type(vals[i]) == tuple:
+            res = patternMatchTuple(
+                vals[i],
+                *arg)
+            if res is None:
+                return
+            if dct is None:
+                dct = dict()
+            dct.update(res)
+
+        elif arg[0] is AsVar:
             (_, varname, val) = arg
             res = patternMatch(vals[i], *val)
             if res is None:
