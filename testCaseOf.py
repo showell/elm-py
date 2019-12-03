@@ -28,7 +28,7 @@ Zero = Number.Zero
 OneDigit = Number.OneDigit
 TwoDigit = Number.TwoDigit
 
-def test():
+def testCustomTypes():
     zero = Number.Zero
     one = Number.OneDigit(1)
     twelve = Number.TwoDigit(1, 2)
@@ -91,4 +91,5 @@ def test():
     assertNone(patternMatch(twelve, (Variant, TwoDigit), x, v4))
     assertNone(patternMatch(twelve, (Variant, TwoDigit), v4, x))
     assertNone(patternMatch(zero, (Variant, TwoDigit), x, y))
-test()
+
+testCustomTypes()

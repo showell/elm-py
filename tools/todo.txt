@@ -1,14 +1,16 @@
 emit:
-    finish dict tests
+    merge:
+        list pattern matching
 
     fix List.empty() -> List.empty
 
     add depth function
 
-    test list patterns
-
     try to debug update/remove:
         upgrade Python first?
+
+    ANNOUNCE:
+        possibly clean up dirs first?
 
     import cleanup:
         (need to get actual import working)
