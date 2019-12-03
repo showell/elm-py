@@ -5,6 +5,8 @@ emit:
 
     add depth function
 
+    test list patterns
+
     try to debug update/remove:
         upgrade Python first?
 

@@ -185,7 +185,30 @@ def runBenchmarks():
     for n in counts:
         benchmark(n)
 
+def testSetStuff():
+    dct1 = Dict.fromList(List.toElm([
+        (1, 10),
+        (2, 20),
+        (3, 30),
+    ]))
+
+    dct2 = Dict.fromList(List.toElm([
+        (3, 30),
+        (4, 40),
+        (5, 50),
+    ]))
+
+    print('union')
+    assert list(Dict.keys(Dict.union(dct1, dct2))) == [1,2,3,4,5]
+
+    print('intersect')
+    assert list(Dict.keys(Dict.intersect(dct1, dct2))) == [3]
+
+    print('diff')
+    assert list(Dict.keys(Dict.diff(dct1, dct2))) == [1,2]
+
 testBasics()
 runBenchmarks()
+testSetStuff()
 
 # cProfile.run('benchmark(1000)', sort='time')
