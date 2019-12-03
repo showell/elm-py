@@ -202,160 +202,7 @@ def emitTuple(asts):
     stmt = formatList(items, '(', ')')
     return Simple(stmt)
 
-class Comment:
-    def __init__(self, ast):
-        self.ast = ast
-
-    def __str__(self):
-        return 'COMMENT: ' + self.ast
-
-class List:
-    def __init__(self, ast):
-        self.items = ast
-
-    def __str__(self):
-        return 'LIST ' + formatList(self.items, '(', ')')
-
-    def emit(self):
-        items = getCodeList(self.items)
-        lst = formatList(
-            items,
-            '[',
-            ']',
-            )
-        stmt = 'List.toElm(' + lst + ')'
-        return Simple(stmt)
-
-class PatternCons:
-    def __init__(self, ast):
-        self.head, op, self.rest = ast
-
-    def __str__(self):
-        return j(
-            'PATTERN CONS',
-            self.head,
-            self.rest,
-            )
-
-    def emit(self):
-        stmt = 'Cons(' + getCode(self.head) + ', ' + getCode(self.rest) + ')'
-        return Simple(stmt)
-
-class Int:
-    def __init__(self, ast):
-        self.n = ast
-
-    def __str__(self):
-        return str(self.n)
-
-    def emit(self):
-        return Simple(str(self.n))
-
-class WildCardVar:
-    def __init__(self, ast):
-        assert(ast == '_')
-
-    def __str__(self):
-        return '_'
-
-    def emit(self):
-        return Simple('_')
-
-class WildCardPattern:
-    def __init__(self, ast):
-        assert(ast == '_')
-
-    def __str__(self):
-        return 'ANY'
-
-    def emit(self):
-        return Simple('Any')
-
-class ExprCons:
-    def __init__(self, ast):
-        self.expr1, op, self.expr2 = ast
-        assert(op == '::')
-
-    def __str__(self):
-        return j(
-            'CONS',
-            str(self.expr1),
-            str(self.expr2),
-            )
-
-    def emit(self):
-        expr1 = getCode(self.expr1)
-        expr2 = getCode(self.expr2)
-
-        stmt = 'List.cons(' + expr1 + ', ' + expr2 + ')'
-
-        return Simple(stmt)
-
-class BinOp:
-    def __init__(self, ast):
-        self.expr1, self.op, self.expr2 = ast
-
-    def __str__(self):
-        return j(
-            str(self.expr1),
-            str(self.op),
-            str(self.expr2),
-            )
-
-    def emit(self):
-        expr1 = getCode(self.expr1)
-        expr2 = getCode(self.expr2)
-
-        stmt = expr1 + ' ' + self.op + ' ' + expr2
-
-        return Simple(stmt)
-
-class ExprVar:
-    def __init__(self, ast):
-        self.token = ast
-
-    def __str__(self):
-        return self.token
-
-    def emit(self):
-        return Simple(self.token)
-
-class Token:
-    def __init__(self, ast):
-        self.token = ast
-
-    def __str__(self):
-        return self.token
-
-    def emit(self):
-        return Simple(self.token)
-
-class Tuple:
-    def __init__(self, ast):
-        self.items = ast
-
-    def __str__(self):
-        return 'TUP ' + formatList(self.items, '(', ')')
-
-    def emit(self):
-        return emitTuple(self.items)
-
-class TupleVar:
-    def __init__(self, ast):
-        self.items = ast
-
-    def __str__(self):
-        return 'TUPVAR ' + formatList(self.items, '(', ')')
-
-    def emit(self):
-        return emitTuple(self.items)
-
-class Unit:
-    def __init__(self, ast):
-        assert len(ast) == 0
-
-    def __str__(self):
-        return 'UNIT'
+# Top of file stuff
 
 class Module:
     def __init__(self, ast):
@@ -374,23 +221,6 @@ class Import:
         return j(
             'IMPORT',
             self.ast)
-
-class Annotation:
-    def __init__(self, ast):
-        self.ast = ast
-
-    def __str__(self):
-        return j(
-            'ANNOTATION',
-            self.ast)
-
-class VariantDef:
-    def __init__(self, ast):
-        self.variantName = ast[0]
-        self.n = len(ast[1])
-
-    def __str__(self):
-        return 'VARIANT: ' + str(self.variantName) + ' ' + str(self.n)
 
 class TypeDef:
     def __init__(self, ast):
@@ -434,6 +264,75 @@ class TypeDef:
 
         return Simple(stmt)
 
+# Comments/docs/etc.
+
+class Annotation:
+    def __init__(self, ast):
+        self.ast = ast
+
+    def __str__(self):
+        return j(
+            'ANNOTATION',
+            self.ast)
+
+class Comment:
+    def __init__(self, ast):
+        self.ast = ast
+
+    def __str__(self):
+        return 'COMMENT: ' + self.ast
+
+# Simple types
+
+class ExprVar:
+    def __init__(self, ast):
+        self.token = ast
+
+    def __str__(self):
+        return self.token
+
+    def emit(self):
+        return Simple(self.token)
+
+class Token:
+    def __init__(self, ast):
+        self.token = ast
+
+    def __str__(self):
+        return self.token
+
+    def emit(self):
+        return Simple(self.token)
+
+class Int:
+    def __init__(self, ast):
+        self.n = ast
+
+    def __str__(self):
+        return str(self.n)
+
+    def emit(self):
+        return Simple(str(self.n))
+
+class WildCardVar:
+    def __init__(self, ast):
+        assert(ast == '_')
+
+    def __str__(self):
+        return '_'
+
+    def emit(self):
+        return Simple('_')
+
+class Unit:
+    def __init__(self, ast):
+        assert len(ast) == 0
+
+    def __str__(self):
+        return 'UNIT'
+
+# Function calls
+
 class Call:
     def __init__(self, ast):
         self.items = ast
@@ -453,6 +352,88 @@ class Call:
 
         else:
             return Simple(commas(items))
+
+# Lists/tuples
+
+class ExprCons:
+    def __init__(self, ast):
+        self.expr1, op, self.expr2 = ast
+        assert(op == '::')
+
+    def __str__(self):
+        return j(
+            'CONS',
+            str(self.expr1),
+            str(self.expr2),
+            )
+
+    def emit(self):
+        expr1 = getCode(self.expr1)
+        expr2 = getCode(self.expr2)
+
+        stmt = 'List.cons(' + expr1 + ', ' + expr2 + ')'
+
+        return Simple(stmt)
+
+class List:
+    def __init__(self, ast):
+        self.items = ast
+
+    def __str__(self):
+        return 'LIST ' + formatList(self.items, '(', ')')
+
+    def emit(self):
+        items = getCodeList(self.items)
+        lst = formatList(
+            items,
+            '[',
+            ']',
+            )
+        stmt = 'List.toElm(' + lst + ')'
+        return Simple(stmt)
+
+class Tuple:
+    def __init__(self, ast):
+        self.items = ast
+
+    def __str__(self):
+        return 'TUP ' + formatList(self.items, '(', ')')
+
+    def emit(self):
+        return emitTuple(self.items)
+
+class TupleVar:
+    def __init__(self, ast):
+        self.items = ast
+
+    def __str__(self):
+        return 'TUPVAR ' + formatList(self.items, '(', ')')
+
+    def emit(self):
+        return emitTuple(self.items)
+
+# Binary operator
+
+class BinOp:
+    def __init__(self, ast):
+        self.expr1, self.op, self.expr2 = ast
+
+    def __str__(self):
+        return j(
+            str(self.expr1),
+            str(self.op),
+            str(self.expr2),
+            )
+
+    def emit(self):
+        expr1 = getCode(self.expr1)
+        expr2 = getCode(self.expr2)
+
+        stmt = expr1 + ' ' + self.op + ' ' + expr2
+
+        return Simple(stmt)
+
+# If/else
 
 class If:
     def __init__(self, ast):
@@ -481,6 +462,158 @@ class If:
             indent(elseCode),
             )
         return Block(stmt)
+
+# Lambda definitions
+
+class Lambda:
+    def __init__(self, ast):
+        self.params = ast[0]
+        self.expr = ast[1]
+
+    def __str__(self):
+        return oneLine(
+            str(self.params),
+            '->',
+            str(self.expr)
+            )
+
+    def emit(self):
+        paramCode = getCode(self.params)
+        bodyCode = getBlockCode(self.expr)
+
+        stmt = j(
+            fixParams(paramCode),
+            indent(bodyCode)
+            )
+        return Anon(stmt)
+
+# Functions definitions
+
+class Params:
+    def __init__(self, ast):
+        self.params = ast
+
+    def __str__(self):
+        return ', '.join(str(p) for p in self.params)
+
+    def emit(self):
+        params = ', '.join(getCodeList(self.params))
+        return Simple(params)
+
+class Def:
+    def __init__(self, ast):
+        self.ast = ast
+
+    def __str__(self):
+        return 'Def ASSIGN ' + str(self.ast)
+
+    def emit(self):
+        return self.ast.emit()
+
+class FunctionDef:
+    def __init__(self, ast):
+        self.var = ast[0]
+        self.params = ast[1]
+
+    def __str__(self):
+        return j(
+            'ASSIGN',
+            indent(self.var),
+            indent(self.params),
+            )
+
+    def emit(self):
+        fname = getCode(self.var)
+        params = getCode(self.params)
+
+        stmt = 'def ' + fname + fixParams(params)
+
+        return Simple(stmt)
+
+# Assignments
+
+class TupleAssign:
+    def __init__(self, ast):
+        self.def_ = ast[0]
+        self.expr = ast[1]
+
+    def __str__(self):
+        return j(
+            'TUP ASSIGN',
+            self.def_,
+            'EXPR',
+            indent(self.expr))
+
+    def emit(self):
+        defCode = getCode(self.def_)
+
+        bodyCode = getCode(self.expr)
+
+        return Simple(j(
+            defCode + ' = (',
+            indent(bodyCode),
+            ')\n',
+            ))
+
+class NormalAssign:
+    def __init__(self, ast):
+        self.def_ = ast[0]
+        self.expr = ast[1]
+
+    def __str__(self):
+        return j(
+            self.def_,
+            'EXPR',
+            indent(self.expr))
+
+    def emit(self):
+        if type(self.def_) == TupleVar:
+            raise Exception('tuple binding')
+
+        defCode = getCode(self.def_)
+        bodyCode = getBlockCode(self.expr)
+
+        return Simple(j(
+            defCode,
+            indent(bodyCode),
+            '\n',
+            ))
+
+
+# Pattern-related stuff
+
+class PatternCons:
+    def __init__(self, ast):
+        self.head, op, self.rest = ast
+
+    def __str__(self):
+        return j(
+            'PATTERN CONS',
+            self.head,
+            self.rest,
+            )
+
+    def emit(self):
+        stmt = 'Cons(' + getCode(self.head) + ', ' + getCode(self.rest) + ')'
+        return Simple(stmt)
+
+class WildCardPattern:
+    def __init__(self, ast):
+        assert(ast == '_')
+
+    def __str__(self):
+        return 'ANY'
+
+    def emit(self):
+        return Simple('Any')
+
+class VariantDef:
+    def __init__(self, ast):
+        self.variantName = ast[0]
+        self.n = len(ast[1])
+
+    def __str__(self):
+        return 'VARIANT: ' + str(self.variantName) + ' ' + str(self.n)
 
 class CustomTypeVal:
     def __init__(self, ast):
@@ -682,116 +815,7 @@ class Case:
             body
             ))
 
-class Params:
-    def __init__(self, ast):
-        self.params = ast
-
-    def __str__(self):
-        return ', '.join(str(p) for p in self.params)
-
-    def emit(self):
-        params = ', '.join(getCodeList(self.params))
-        return Simple(params)
-
-class Def:
-    def __init__(self, ast):
-        self.ast = ast
-
-    def __str__(self):
-        return 'Def ASSIGN ' + str(self.ast)
-
-    def emit(self):
-        return self.ast.emit()
-
-class FunctionDef:
-    def __init__(self, ast):
-        self.var = ast[0]
-        self.params = ast[1]
-
-    def __str__(self):
-        return j(
-            'ASSIGN',
-            indent(self.var),
-            indent(self.params),
-            )
-
-    def emit(self):
-        fname = getCode(self.var)
-        params = getCode(self.params)
-
-        stmt = 'def ' + fname + fixParams(params)
-
-        return Simple(stmt)
-
-class TupleAssign:
-    def __init__(self, ast):
-        self.def_ = ast[0]
-        self.expr = ast[1]
-
-    def __str__(self):
-        return j(
-            'TUP ASSIGN',
-            self.def_,
-            'EXPR',
-            indent(self.expr))
-
-    def emit(self):
-        defCode = getCode(self.def_)
-
-        bodyCode = getCode(self.expr)
-
-        return Simple(j(
-            defCode + ' = (',
-            indent(bodyCode),
-            ')\n',
-            ))
-
-class NormalAssign:
-    def __init__(self, ast):
-        self.def_ = ast[0]
-        self.expr = ast[1]
-
-    def __str__(self):
-        return j(
-            self.def_,
-            'EXPR',
-            indent(self.expr))
-
-    def emit(self):
-        if type(self.def_) == TupleVar:
-            raise Exception('tuple binding')
-
-        defCode = getCode(self.def_)
-        bodyCode = getBlockCode(self.expr)
-
-        return Simple(j(
-            defCode,
-            indent(bodyCode),
-            '\n',
-            ))
-
-class Lambda:
-    def __init__(self, ast):
-        self.params = ast[0]
-        self.expr = ast[1]
-
-    def __str__(self):
-        return oneLine(
-            str(self.params),
-            '->',
-            str(self.expr)
-            )
-
-    def emit(self):
-        paramCode = getCode(self.params)
-        bodyCode = getBlockCode(self.expr)
-
-        stmt = j(
-            fixParams(paramCode),
-            indent(bodyCode)
-            )
-        return Anon(stmt)
-
+# Let
 
 class Let:
     def __init__(self, ast):
