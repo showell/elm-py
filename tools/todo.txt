@@ -1,6 +1,8 @@
 emit:
     merge:
-        list pattern matching
+        emit vars:
+            get a PatternTuple type
+            use test.py to debug easily
 
     add depth function
 
