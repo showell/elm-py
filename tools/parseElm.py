@@ -520,7 +520,7 @@ capturePatternList = \
         )
 
 
-## general expression stuff
+## general pattern expression stuff
 
 doCapturePatternExpr = \
     captureStuff(
