@@ -1,5 +1,6 @@
 import functools
 from inspect import signature
+import ListKernel
 from Maybe import (
         Nothing,
         Just
@@ -87,7 +88,25 @@ def patternMatch(val, main, *args):
     if type(val) == Custom:
         return patternMatchCustom(val, main, *args)
 
+    if ListKernel.isList(val):
+        return patternMatchList(val, main, *args)
+
     raise Exception('unsupported pattern match')
+
+def patternMatchList(val, main, *args):
+    (mainType, mainVal) = main
+
+    if mainType is PList:
+        if len(args) != 0:
+            raise Exception('only supporting [] for now')
+
+        if ListKernel.isEmpty(val):
+            return True
+
+        return
+
+    raise Exception('unsupported pattern match')
+
 
 def patternMatchCustom(val, main, *args):
     (mainType, mainVal) = main

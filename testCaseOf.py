@@ -3,16 +3,16 @@ from testHelper import (
         assertTrue,
     )
 
+from Custom import CustomType
 from Elm import (
         patternMatch,
         MatchParam,
         )
-
-from Custom import CustomType
 from Maybe import (
         Just,
         Nothing
         )
+import List
 
 def assertNone(v):
     assert v is None
@@ -21,14 +21,24 @@ Any = MatchParam.Any
 Val = MatchParam.Val
 Var = MatchParam.Var
 Variant = MatchParam.Variant
+PCons = MatchParam.PCons
+PList = MatchParam.PList
 
-Number = CustomType('Number', 'Zero', OneDigit=1, TwoDigit=2)
+def testLists():
+    lst0 = List.empty
+    lst1 = List.toElm([1])
+    lst2 = List.toElm([1, 2, 3])
 
-Zero = Number.Zero
-OneDigit = Number.OneDigit
-TwoDigit = Number.TwoDigit
+    assertEqual(True, patternMatch(lst0, (PList, [])))
+    assertEqual(None, patternMatch(lst1, (PList, [])))
 
 def testCustomTypes():
+    Number = CustomType('Number', 'Zero', OneDigit=1, TwoDigit=2)
+
+    Zero = Number.Zero
+    OneDigit = Number.OneDigit
+    TwoDigit = Number.TwoDigit
+
     zero = Number.Zero
     one = Number.OneDigit(1)
     twelve = Number.TwoDigit(1, 2)
@@ -93,3 +103,4 @@ def testCustomTypes():
     assertNone(patternMatch(zero, (Variant, TwoDigit), x, y))
 
 testCustomTypes()
+testLists()
