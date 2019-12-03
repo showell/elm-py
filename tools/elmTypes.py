@@ -644,7 +644,7 @@ class PatternCons:
             )
 
     def emit(self):
-        stmt = 'Cons(' + getCode(self.head) + ', ' + getCode(self.rest) + ')'
+        stmt = '(Cons, ' + getCode(self.head) + ', ' + getCode(self.rest) + ')'
         return Simple(stmt)
 
 class WildCardPattern:
