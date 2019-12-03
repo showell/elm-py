@@ -131,6 +131,15 @@ def benchmark(n):
     printRate(elapsed)
     assert list(outLst) == sorted(tups)
 
+    print('map')
+    add = lambda k, v: k + v
+    t = time.time()
+    dct = Dict.map(add, dct)
+    elapsed = time.time() - t
+    printRate(elapsed)
+    assert list(Dict.values(dct)) == [
+        3*i for i in sorted(lst)]
+
 
 counts = [
     1000,
