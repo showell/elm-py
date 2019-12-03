@@ -54,6 +54,48 @@ def captureParen(fCapture):
 
 reservedWords = [ 'case', 'of', 'let', 'if', 'then', 'else', '->']
 
+# Docs/comments
+
+captureDocs = \
+    transform(
+        types.Comment,
+        captureRange(
+            '{-|',
+            '-}',
+            ),
+        )
+
+captureLineComment = \
+    transform(
+        types.Comment,
+        captureStuff(
+            skip(pKeyword('--')),
+            captureLine,
+            )
+        )
+
+captureComment = \
+    captureOneOf(
+        captureLineComment,
+        captureDocs,
+        )
+
+# top of file stuff
+
+captureModule = \
+    transform(
+        types.Module,
+        captureKeywordBlock('module')
+        )
+
+captureImport = \
+    transform(
+        types.Import,
+        captureKeywordBlock('import')
+        )
+
+# Simple types
+
 captureElmType = \
     transform(
         types.Token,
@@ -72,12 +114,6 @@ captureElmToken = \
         captureTokenLower(reservedWords)
         )
 
-captureElmOperator = \
-    captureOperator(
-        ['<', '>', '<=', '>=', '==',
-            '+', '-', '*', '/']
-        )
-
 captureElmInt = \
     transform(
         types.Int,
@@ -90,25 +126,6 @@ captureWildCardVar = \
         captureOperator(['_'])
         )
 
-captureDocs = \
-    transform(
-        types.Comment,
-        captureRange(
-            '{-|',
-            '-}',
-            ),
-        )
-
-
-captureLineComment = \
-    transform(
-        types.Comment,
-        captureStuff(
-            skip(pKeyword('--')),
-            captureLine,
-            )
-        )
-
 captureUnit = \
     transform(
         types.Unit,
@@ -118,17 +135,193 @@ captureUnit = \
             )
         )
 
-captureModule = \
+# tuples/lists (in expressions)
+
+captureParenExpr = \
+    captureParen(captureExpr)
+
+captureExprTuple = \
     transform(
-        types.Module,
-        captureKeywordBlock('module')
+        types.Tuple,
+        captureSeq(
+            '(',
+            ',',
+            ')',
+            captureExpr,
+            )
         )
 
-captureImport = \
+captureExprList = \
     transform(
-        types.Import,
-        captureKeywordBlock('import')
+        types.List,
+        captureSeq(
+            '[',
+            ',',
+            ']',
+            captureExpr,
+            )
         )
+
+# operators
+
+captureElmOperator = \
+    captureOperator(
+        ['<', '>', '<=', '>=', '==',
+            '+', '-', '*', '/']
+        )
+
+# I should be smarter about binary operators.
+# See https://www.crockford.com/javascript/tdop/tdop.html
+# (he implements a Pratt parser, which wouldn't be terribly
+# difficult to adapt here...I am just being lazy)
+#
+# This only captures simple `foo < ...` expressions.
+
+captureSimpleExpr = \
+    captureOneOf(
+        captureExprVar,
+        captureExprTuple,
+    )
+
+captureBinOp = \
+    transform(
+        types.BinOp,
+        captureStuff(
+            captureSimpleExpr,
+            captureElmOperator,
+            captureExpr,
+            )
+        )
+
+# tuple assignments
+
+captureTupleVar = \
+    transform(
+        types.TupleVar,
+        captureSeq(
+            '(',
+            ',',
+            ')',
+            captureExprVar
+            )
+        )
+
+captureTupleAssign = \
+    transform(
+        types.TupleAssign,
+        captureStuff(
+            captureTupleVar,
+            skip(pChar('=')),
+            twoPass(
+                parseMyLevel,
+                captureExpr
+                ),
+            )
+        )
+
+# function definitions
+
+captureParams = \
+    transform(
+        types.Params,
+        captureZeroOrMore(
+            captureOneOf(
+                captureUnit,
+                captureExprVar,
+                captureWildCardVar,
+                captureExprTuple,
+                )
+            )
+        )
+
+captureFunctionDef = \
+    transform(
+        types.FunctionDef,
+        captureStuff(
+            captureExprVar,
+            captureParams,
+            )
+        )
+
+captureDef = \
+    transform(
+        types.Def,
+        captureStuff(
+            captureFunctionDef,
+            skip(pChar('=')),
+            )
+        )
+
+captureNormalAssign = \
+    transform(
+        types.NormalAssign,
+        captureStuff(
+            captureDef,
+            twoPass(
+                parseMyLevel,
+                captureExpr
+                ),
+            ),
+        )
+
+captureBinding = \
+    captureOneOf(
+        captureNormalAssign,
+        captureTupleAssign,
+    )
+
+
+# lambdas
+
+captureLambda = \
+    transform(
+        types.Lambda,
+        captureStuff(
+            skip(pChar('\\')),
+            captureUntilKeyword(
+                '->',
+                captureParams
+                ),
+            captureExpr,
+            )
+        )
+
+# function calls
+
+doCaptureCallPiece = \
+    captureOneOf(
+        captureParen(captureCallPiece),
+        captureLambda,
+        captureExprTuple,
+        captureExprList,
+        captureExprVar,
+        captureElmInt,
+        captureElmType,
+        )
+
+captureCall = \
+    transform(
+        types.Call,
+        captureOneOrMore(captureCallPiece),
+        )
+
+# annotations
+
+captureAnnotation = \
+    transform(
+        types.Annotation,
+        captureStuff(
+            onlyIf(
+                captureStuff(
+                    captureElmToken,
+                    skip(pKeyword(':')),
+                    ),
+                captureBlock,
+                ),
+            ),
+        )
+
+# type definitions
 
 doCaptureTypeSpec = \
     captureOneOf(
@@ -181,116 +374,8 @@ captureTypeDef = \
             )
         )
 
-captureIf = \
-    transform(
-        types.If,
-        captureStuff(
-            skip(pKeyword('if')),
-            captureExpr,
-            skip(pKeyword('then')),
-            captureExpr,
-            skip(pKeyword('else')),
-            captureExpr
-            )
-        )
 
-captureParenExpr = \
-    captureParen(captureExpr)
-
-captureExprTuple = \
-    transform(
-        types.Tuple,
-        captureSeq(
-            '(',
-            ',',
-            ')',
-            captureExpr,
-            )
-        )
-
-captureTupleVar = \
-    transform(
-        types.TupleVar,
-        captureSeq(
-            '(',
-            ',',
-            ')',
-            captureExprVar
-            )
-        )
-
-captureExprList = \
-    transform(
-        types.List,
-        captureSeq(
-            '[',
-            ',',
-            ']',
-            captureExpr,
-            )
-        )
-
-captureParams = \
-    transform(
-        types.Params,
-        captureZeroOrMore(
-            captureOneOf(
-                captureUnit,
-                captureExprVar,
-                captureWildCardVar,
-                captureExprTuple,
-                )
-            )
-        )
-
-captureFunctionDef = \
-    transform(
-        types.FunctionDef,
-        captureStuff(
-            captureExprVar,
-            captureParams,
-            )
-        )
-
-captureTupleAssign = \
-    transform(
-        types.TupleAssign,
-        captureStuff(
-            captureTupleVar,
-            skip(pChar('=')),
-            twoPass(
-                parseMyLevel,
-                captureExpr
-                ),
-            )
-        )
-
-captureDef = \
-    transform(
-        types.Def,
-        captureStuff(
-            captureFunctionDef,
-            skip(pChar('=')),
-            )
-        )
-
-captureNormalAssign = \
-    transform(
-        types.NormalAssign,
-        captureStuff(
-            captureDef,
-            twoPass(
-                parseMyLevel,
-                captureExpr
-                ),
-            ),
-        )
-
-captureBinding = \
-    captureOneOf(
-        captureNormalAssign,
-        captureTupleAssign,
-    )
+# Lets
 
 captureLetBindings = \
     captureOneOrMore(captureBinding)
@@ -301,79 +386,6 @@ captureLet = \
         captureStuff(
             captureSubBlock('let', captureLetBindings),
             captureSubBlock('in', captureExpr),
-            )
-        )
-
-captureAnnotation = \
-    transform(
-        types.Annotation,
-        captureStuff(
-            onlyIf(
-                captureStuff(
-                    captureElmToken,
-                    skip(pKeyword(':')),
-                    ),
-                captureBlock,
-                ),
-            ),
-        )
-
-captureLambda = \
-    transform(
-        types.Lambda,
-        captureStuff(
-            skip(pChar('\\')),
-            captureUntilKeyword(
-                '->',
-                captureParams
-                ),
-            captureExpr,
-            )
-        )
-
-doCaptureCallPiece = \
-    captureOneOf(
-        captureParen(captureCallPiece),
-        captureLambda,
-        captureExprTuple,
-        captureExprList,
-        captureExprVar,
-        captureElmInt,
-        captureElmType,
-        )
-
-captureCall = \
-    transform(
-        types.Call,
-        captureOneOrMore(captureCallPiece),
-        )
-
-captureComment = \
-    captureOneOf(
-        captureLineComment,
-        captureDocs,
-        )
-
-# I should be smarter about binary operators.
-# See https://www.crockford.com/javascript/tdop/tdop.html
-# (he implements a Pratt parser, which wouldn't be terribly
-# difficult to adapt here...I am just being lazy)
-#
-# This only captures simple `foo < ...` expressions.
-
-captureSimpleExpr = \
-    captureOneOf(
-        captureExprVar,
-        captureExprTuple,
-    )
-
-captureBinOp = \
-    transform(
-        types.BinOp,
-        captureStuff(
-            captureSimpleExpr,
-            captureElmOperator,
-            captureExpr,
             )
         )
 
@@ -567,6 +579,21 @@ captureCase = \
                 parseMyLevel,
                 captureOneOrMore(captureOneCase),
                 )
+            )
+        )
+
+# if/then
+
+captureIf = \
+    transform(
+        types.If,
+        captureStuff(
+            skip(pKeyword('if')),
+            captureExpr,
+            skip(pKeyword('then')),
+            captureExpr,
+            skip(pKeyword('else')),
+            captureExpr
             )
         )
 
