@@ -21,6 +21,7 @@ Any = MatchParam.Any
 Val = MatchParam.Val
 Var = MatchParam.Var
 Variant = MatchParam.Variant
+AsVar = MatchParam.AsVar
 PCons = MatchParam.PCons
 PList = MatchParam.PList
 
@@ -147,6 +148,26 @@ def testCustomTypes():
     assertNone(patternMatch(twelve, (Variant, TwoDigit), x, v4))
     assertNone(patternMatch(twelve, (Variant, TwoDigit), v4, x))
     assertNone(patternMatch(zero, (Variant, TwoDigit), x, y))
+
+    Tree = CustomType('Tree', 'Empty', Node=3)
+    rrNode = Tree.Node(3, Tree.Empty, Tree.Empty)
+    rNode = Tree.Node(2, Tree.Empty, rrNode)
+    tNode = Tree.Node(1, Tree.Empty, rNode)
+
+    res = patternMatch(
+        tNode,
+        (Variant, Tree.Node),
+        (Var, 'n'),
+        Any,
+        (AsVar, 'rChild', (
+            (Variant, Tree.Node),
+            Any,
+            Any,
+            Any),
+            )
+        )
+    assertEqual(res['n'], 1)
+    assertEqual(res['rChild'], rNode)
 
 testCustomTypes()
 testLists()
