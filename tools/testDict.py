@@ -10,30 +10,31 @@ random.seed(44)
 
 Just = Maybe.Just
 
-print('singleton')
-dct = Dict.singleton(5, 50)
-assert Dict.get(5, dct).val == 50
-
-print('empty')
-dct = Dict.empty
-print(toPy(dct))
-print('member', Dict.member(5, dct))
-print('get', Dict.get(5, dct))
-print('size', Dict.size(dct))
-print('empty', Dict.isEmpty(dct))
-
-print('\n\ninsert one...')
-dct = Dict.insert(5, 50, dct)
-print('member', Dict.member(5, dct))
-print('get', Dict.get(5, dct))
-keys = Dict.keys(dct)
-print('keys', keys)
-print('size', Dict.size(dct))
-print('empty', Dict.isEmpty(dct))
-
 add = lambda k, v: k + v
 add3 = lambda a, b, c: a + b + c
 double = lambda m: Just(m.val * 2)
+
+def testBasics():
+    print('singleton')
+    dct = Dict.singleton(5, 50)
+    assert Dict.get(5, dct).val == 50
+
+    print('empty')
+    dct = Dict.empty
+    print(toPy(dct))
+    print('member', Dict.member(5, dct))
+    print('get', Dict.get(5, dct))
+    print('size', Dict.size(dct))
+    print('empty', Dict.isEmpty(dct))
+
+    print('\n\ninsert one...')
+    dct = Dict.insert(5, 50, dct)
+    print('member', Dict.member(5, dct))
+    print('get', Dict.get(5, dct))
+    keys = Dict.keys(dct)
+    print('keys', keys)
+    print('size', Dict.size(dct))
+    print('empty', Dict.isEmpty(dct))
 
 def benchmark(n):
     def printRate(elapsed):
@@ -175,14 +176,16 @@ def benchmark(n):
     assert list(goodList) == [(n, n*3) for n in sorted(lst) if n % 2 == 0]
     assert list(badList) == [(n, n*3) for n in sorted(lst) if n % 2 != 0]
 
-counts = [
-    1000,
-    # 10000,
-    ]
+def runBenchmarks():
+    counts = [
+        1000,
+        # 10000,
+        ]
 
-for n in counts:
-    benchmark(n)
+    for n in counts:
+        benchmark(n)
+
+testBasics()
+runBenchmarks()
 
 # cProfile.run('benchmark(1000)', sort='time')
-
-# print(list(Dict.toList(dct)))

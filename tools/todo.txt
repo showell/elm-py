@@ -1,7 +1,12 @@
 emit:
+    finish dict tests
+
     fix List.empty() -> List.empty
 
     add depth function
+
+    try to debug update/remove:
+        upgrade Python first?
 
     import cleanup:
         (need to get actual import working)
