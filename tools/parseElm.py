@@ -45,6 +45,9 @@ def captureCallPiece(state):
 def captureCustomTypePattern(state):
     return doCaptureCustomTypePattern(state)
 
+def captureSimpleExpr(state):
+    return doCaptureSimpleExpr(state)
+
 def captureParen(fCapture):
     return captureStuff(
         skip(pChar('(')),
@@ -135,10 +138,7 @@ captureUnit = \
             )
         )
 
-# tuples/lists (in expressions)
-
-captureParenExpr = \
-    captureParen(captureExpr)
+# tuples (in expressions)
 
 captureExprTuple = \
     transform(
@@ -151,6 +151,8 @@ captureExprTuple = \
             )
         )
 
+# lists (in expressions)
+
 captureExprList = \
     transform(
         types.List,
@@ -161,6 +163,27 @@ captureExprList = \
             captureExpr,
             )
         )
+
+captureExprCons = \
+    transform(
+        types.ExprCons,
+        captureStuff(
+            captureSimpleExpr,
+            captureOperator(['::']),
+            captureExpr,
+            )
+        )
+
+# expression helpers
+
+captureParenExpr = \
+    captureParen(captureExpr)
+
+doCaptureSimpleExpr = \
+    captureOneOf(
+        captureExprVar,
+        captureExprTuple,
+    )
 
 # operators
 
@@ -176,12 +199,6 @@ captureElmOperator = \
 # difficult to adapt here...I am just being lazy)
 #
 # This only captures simple `foo < ...` expressions.
-
-captureSimpleExpr = \
-    captureOneOf(
-        captureExprVar,
-        captureExprTuple,
-    )
 
 captureBinOp = \
     transform(
@@ -386,16 +403,6 @@ captureLet = \
         captureStuff(
             captureSubBlock('let', captureLetBindings),
             captureSubBlock('in', captureExpr),
-            )
-        )
-
-captureExprCons = \
-    transform(
-        types.ExprCons,
-        captureStuff(
-            captureSimpleExpr,
-            captureOperator(['::']),
-            captureExpr,
             )
         )
 
