@@ -30,10 +30,8 @@ RBEmpty_elm_builtin = Dict.RBEmpty_elm_builtin
 RBBlackMissing_elm_builtin = Dict.RBBlackMissing_elm_builtin
 RBNode_elm_builtin = Dict.RBNode_elm_builtin
 
-def empty():
-    return RBEmpty_elm_builtin
-
-
+empty = \
+    RBEmpty_elm_builtin
 def singleton(key, value):
     return RBNode_elm_builtin(Black, key, value, RBEmpty_elm_builtin, RBEmpty_elm_builtin)
 

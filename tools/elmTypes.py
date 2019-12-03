@@ -86,15 +86,22 @@ We have to desugar some stuff:
 """
 
 
-PythonCode = CustomType('PythonCode', Simple =1, Block=1, Anon=1)
+PythonCode = CustomType('PythonCode', Simple =1, Block=1, Anon=1, AssignBlock=1)
 Simple = PythonCode.Simple
 Block = PythonCode.Block
+AssignBlock = PythonCode.AssignBlock
 Anon = PythonCode.Anon
 
 def getFinalCode(ast):
     code = ast.emit()
 
     if code.match('Simple'):
+        return code.val
+
+    if code.match('Block'):
+        return code.val
+
+    if code.match('AssignBlock'):
         return code.val
 
     raise Exception('not supported yet')
@@ -121,8 +128,19 @@ def getCode(ast):
 
     raise Exception('not supported yet')
 
+def getAssignBlock(ast):
+    code = ast.emit()
+
+    if code.match('AssignBlock'):
+        return code.val
+
+    raise Exception('not supported yet')
+
 def getCodeList(asts):
     return [getCode(ast) for ast in asts]
+
+def getAssignBlocks(asts):
+    return [getAssignBlock(ast) for ast in asts]
 
 def processItems(asts):
     preludes = []
@@ -532,6 +550,38 @@ class FunctionDef:
 
 # Assignments
 
+class ValueAssign:
+    def __init__(self, ast):
+        self.vname = ast[0]
+        self.expr = ast[1]
+
+    def __str__(self):
+        return oneLine(
+            str(self.vname),
+            '=',
+            indent(str(self.expr))
+            )
+
+    def emit(self):
+        vname = getCode(self.vname)
+        bodyCode = getBlockCode(self.expr)
+
+        prelude, items = processItems([self.expr])
+        item = items[0]
+
+        if prelude:
+            stmt = j(
+                prelude,
+                vname + ' = ' + item
+                )
+        else:
+            stmt = j(
+                vname + ' = \\',
+                indent(item)
+                )
+
+        return AssignBlock(stmt)
+
 class TupleAssign:
     def __init__(self, ast):
         self.def_ = ast[0]
@@ -549,7 +599,7 @@ class TupleAssign:
 
         bodyCode = getCode(self.expr)
 
-        return Simple(j(
+        return AssignBlock(j(
             defCode + ' = (',
             indent(bodyCode),
             ')\n',
@@ -573,7 +623,7 @@ class FunctionAssign:
         defCode = getCode(self.def_)
         bodyCode = getBlockCode(self.expr)
 
-        return Simple(j(
+        return AssignBlock(j(
             defCode,
             indent(bodyCode),
             '\n',
@@ -830,7 +880,7 @@ class Let:
             indent(str(self.expr)))
 
     def emit(self):
-        bindings = getCodeList(self.bindings)
+        bindings = getAssignBlocks(self.bindings)
 
         stmt = j(
             jj(bindings),

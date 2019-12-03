@@ -70,11 +70,6 @@ def testParse():
             | String b
         """)
 
-    succeed(parseElm.captureDef,
-        """
-        x =
-        """)
-
     succeed(parseElm.captureBinding,
         """
         x =
@@ -350,7 +345,7 @@ def testBlocks():
 def testEmit():
     print("\n\n\n---- EMIT ---\n\n")
     code = """
-        f =
+        v =
             \\x -> if x then a else b
         """
     state = parse.State(code)
@@ -358,7 +353,7 @@ def testEmit():
     print(types.getFinalCode(res.ast))
 
     code = """
-        g =
+        v =
             foo (\\x -> if x then a else b) z
         """
     state = parse.State(code)
@@ -391,7 +386,7 @@ def testEmit():
         """
     state = parse.State(code)
     res = parseElm.captureBinding(state)
-    print(types.getBlockCode(res.ast))
+    print(types.getFinalCode(res.ast))
 
     code = """
         x =
@@ -405,7 +400,7 @@ def testEmit():
         """
     state = parse.State(code)
     res = parseElm.captureBinding(state)
-    print(types.getBlockCode(res.ast))
+    print(types.getFinalCode(res.ast))
 
     code = """
         x =
@@ -416,7 +411,7 @@ def testEmit():
         """
     state = parse.State(code)
     res = parseElm.captureBinding(state)
-    print(types.getBlockCode(res.ast))
+    print(types.getFinalCode(res.ast))
 
 
 testIndents()

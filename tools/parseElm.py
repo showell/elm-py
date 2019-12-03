@@ -210,6 +210,21 @@ captureBinOp = \
             )
         )
 
+# value assignments
+
+captureValueAssign = \
+    transform(
+        types.ValueAssign,
+        captureStuff(
+            captureExprVar,
+            skip(pChar('=')),
+            twoPass(
+                parseMyLevel,
+                captureExpr
+                ),
+            )
+        )
+
 # tuple assignments
 
 captureTupleVar = \
@@ -241,7 +256,7 @@ captureTupleAssign = \
 captureParams = \
     transform(
         types.Params,
-        captureZeroOrMore(
+        captureOneOrMore(
             captureOneOf(
                 captureUnit,
                 captureExprVar,
@@ -281,8 +296,11 @@ captureFunctionAssign = \
             ),
         )
 
+# general bindings
+
 captureBinding = \
     captureOneOf(
+        captureValueAssign,
         captureFunctionAssign,
         captureTupleAssign,
     )

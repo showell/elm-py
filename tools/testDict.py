@@ -15,7 +15,7 @@ dct = Dict.singleton(5, 50)
 assert Dict.get(5, dct).val == 50
 
 print('empty')
-dct = Dict.empty()
+dct = Dict.empty
 print(toPy(dct))
 print('member', Dict.member(5, dct))
 print('get', Dict.get(5, dct))
@@ -46,7 +46,7 @@ def benchmark(n):
     lst = list(range(n))
     random.shuffle(lst)
 
-    dct = Dict.empty()
+    dct = Dict.empty
     t = time.time()
     for i in lst:
         dct = Dict.insert(i, i*10, dct)
