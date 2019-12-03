@@ -108,7 +108,8 @@ def benchmark(n):
     assert Dict.isEmpty(dct)
 
     print('fromList')
-    elmLst = List.toElm([(n, n * 2) for n in lst])
+    tups = [(n, n * 2) for n in lst]
+    elmLst = List.toElm(tups)
     t = time.time()
     dct = Dict.fromList(elmLst)
     elapsed = time.time() - t
@@ -122,6 +123,14 @@ def benchmark(n):
     elapsed = time.time() - t
     printRate(elapsed)
     assert list(keys) == sorted(lst)
+
+    print('toList')
+    t = time.time()
+    outLst = Dict.toList(dct)
+    elapsed = time.time() - t
+    printRate(elapsed)
+    assert list(outLst) == sorted(tups)
+
 
 counts = [
     1000,
