@@ -644,13 +644,7 @@ class PatternList:
         if len(self.items) > 0:
             raise Exception('only emitting empty lists for now')
 
-        items = getCodeList(self.items)
-        lst = formatList(
-            items,
-            '[',
-            ']',
-            )
-        stmt = '\n' + indent('(PList, ' + lst + ')') + '\n'
+        stmt = '\n' + indent('PList') + '\n'
         return Simple(stmt)
 
 class PatternCons:
@@ -668,7 +662,7 @@ class PatternCons:
         head = getCode(self.head)
         rest = getCode(self.rest)
 
-        stmt = '\n' + indent('(PCons, (' + head + ', ' + rest + '))') + '\n'
+        stmt = '\n' + indent('PCons, ' + head + ', ' + rest) + '\n'
         return Simple(stmt)
 
 ## wildcard pattern

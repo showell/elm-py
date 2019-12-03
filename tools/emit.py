@@ -24,6 +24,8 @@ Var = MatchParam.Var
 Variant = MatchParam.Variant
 Nested = MatchParam.Nested
 AsVar = MatchParam.AsVar
+PList = MatchParam.PList
+PCons = MatchParam.PCons
 
 """.lstrip()
 
