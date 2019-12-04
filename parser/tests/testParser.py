@@ -116,11 +116,6 @@ def testParse():
 
             """)
 
-    succeed(ElmParser.captureCaseOf,
-        """
-        case fred of
-            """)
-
     succeed(ElmParser.captureCase,
         """
         case fred of

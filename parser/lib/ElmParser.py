@@ -596,23 +596,15 @@ captureOneCase = \
             ),
         )
 
-## case foo of
-
-captureCaseOf = \
-    transform(
-        types.CaseOf,
-        captureStuff(
-            skip(pKeyword('case')),
-            captureExpr,
-            skip(pKeyword('of')),
-            )
-        )
+## case foo of ... -> ... -> ...
 
 captureCase = \
     transform(
         types.Case,
         captureStuff(
-            captureCaseOf,
+            skip(pKeyword('case')),
+            captureExpr,
+            skip(pKeyword('of')),
             twoPass(
                 parseMyLevel,
                 captureOneOrMore(captureOneCase),

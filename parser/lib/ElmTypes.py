@@ -819,16 +819,6 @@ class PatternVar:
         stmt = name + " = res['" + name + "']"
         return stmt
 
-class CaseOf:
-    def __init__(self, ast):
-        self.expr = ast
-
-    def __str__(self):
-        return 'CASE OF: ' + str(self.expr)
-
-    def emit(self):
-        return Simple(getCode(self.expr))
-
 class CustomTypePattern:
     def __init__(self, ast):
         self.token = ast[0]
