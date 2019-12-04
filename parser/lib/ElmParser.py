@@ -516,12 +516,9 @@ doCaptureCustomTypePattern = \
             ),
             captureZeroOrMore(
                 captureOneOf(
-                    capturePatternAs,
                     captureNestedPattern,
-                    captureWildCardPattern,
-                    capturePatternVar,
-                    capturePatternTuple,
-                    captureCustomTypeVal
+                    captureCustomTypeVal,
+                    capturePatternExpr,
                     )
                 )
             )
