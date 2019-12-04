@@ -430,7 +430,7 @@ captureLet = \
 
 capturePatternTuple = \
     transform(
-        types.Tuple,
+        types.PatternTuple,
         captureSeq(
             '(',
             ',',
@@ -508,7 +508,7 @@ doCaptureCustomTypePattern = \
             )
         )
 
-## list stuff: [], head :: rest
+## list pattern stuff: [], head :: rest
 
 capturePatternListBrackets = \
     transform(

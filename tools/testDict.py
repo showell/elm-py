@@ -193,9 +193,9 @@ def testSetStuff():
     ]))
 
     dct2 = Dict.fromList(List.toElm([
-        (3, 30),
-        (4, 40),
-        (5, 50),
+        (3, 300),
+        (4, 400),
+        (5, 500),
     ]))
 
     print('union')
@@ -207,7 +207,6 @@ def testSetStuff():
     print('diff')
     assert list(Dict.keys(Dict.diff(dct1, dct2))) == [1,2]
 
-    """
     print('merge')
     outList = Dict.merge(
         lambda k, v, lst: List.cons((k, v), lst),
@@ -216,8 +215,7 @@ def testSetStuff():
         dct1,
         dct2,
         List.empty)
-    print(outList)
-    """
+    assert list(outList) == [ (500, 5), (400, 4), (3, 30, 300), (2, 20), (1, 10) ]
 
 testBasics()
 runBenchmarks()

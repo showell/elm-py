@@ -1115,6 +1115,9 @@ def merge(leftStep, bothStep, rightStep, leftDict, rightDict, initialResult):
         )
 
         if res is not None:
+            lKey = res['lKey']
+            lValue = res['lValue']
+            rest = res['rest']
             if lKey < rKey:
                 return stepState(rKey, rValue, (rest, leftStep(lKey, lValue, result)))
             else:

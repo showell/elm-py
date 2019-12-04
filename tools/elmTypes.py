@@ -632,6 +632,27 @@ class FunctionAssign:
 
 # Pattern-related stuff
 
+# tuple patterns
+
+class PatternTuple:
+    def __init__(self, ast):
+        self.items = ast
+
+    def __str__(self):
+        return 'PATTERN TUP ' + formatList(self.items, '(', ')')
+
+    def emit(self):
+        return emitTuple(self.items)
+
+    def unpacks(self):
+        stmts = []
+        for item in self.items:
+            if hasattr(item, 'unpack'):
+                stmts.append(item.unpack())
+            if hasattr(item, 'unpacks'):
+                stmts.extend(item.unpacks())
+        return stmts
+
 ## list patterns
 class PatternList:
     def __init__(self, ast):
@@ -664,6 +685,15 @@ class PatternCons:
 
         stmt = '\n' + indent('PCons, ' + head + ', ' + rest) + '\n'
         return Simple(stmt)
+
+    def unpacks(self):
+        stmts = []
+        for item in (self.head, self.rest):
+            if hasattr(item, 'unpack'):
+                stmts.append(item.unpack())
+            if hasattr(item, 'unpacks'):
+                stmts.extend(item.unpacks())
+        return stmts
 
 ## wildcard pattern
 
