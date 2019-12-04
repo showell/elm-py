@@ -1,3 +1,12 @@
+## Quick links:
+
+- [Dict.elm](https://github.com/showell/elm-py/blob/master/parser/elm/Dict.elm)
+- [transpiler](https://github.com/showell/elm-py/blob/master/parser/emitDictPy.py)
+- [Dict.py](https://github.com/showell/elm-py/blob/master/src/Dict.py)
+
+
+## What is this?
+
 This directory contains code that transpiles Elm code into
 Python code.
 
@@ -31,7 +40,7 @@ matching in Python.  Also, Elm itself uses kernel code written
 in JS, so you have to port the kernel pieces.  Finally, there
 are some core pieces that can be optimized in Python, such as
 lists (and in some cases this overlaps with code that is kernel
-code in the Elm ecosystem).o
+code in the Elm ecosystem).
 
 ## Transpiling
 
