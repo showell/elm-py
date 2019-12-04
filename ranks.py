@@ -7,7 +7,7 @@ import Tuple
 # here we do it explicitly.
 List.indexedMap = F(List.indexedMap)
 List.sortBy = F(List.sortBy)
-List.map_ = F(List.map_)
+List.map = F(List.map)
 
 @wrap(toElm, toPy)
 def ranks(lst):
@@ -15,10 +15,10 @@ def ranks(lst):
             lst, [
                 (List.indexedMap) (Tuple.pair),
                 (List.sortBy) (Tuple.second),
-                (List.map_) (Tuple.first),
+                (List.map) (Tuple.first),
                 (List.indexedMap) (Tuple.pair),
                 (List.sortBy) (Tuple.second),
-                (List.map_) (Tuple.first),
+                (List.map) (Tuple.first),
             ])
 
 print(ranks([77, 0, 66, 22, 55, 99, 44, 33, 11, 88]))
