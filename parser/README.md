@@ -1,3 +1,5 @@
+2019-12-04
+
 ## Quick links:
 
 - [Dict.elm](https://github.com/showell/elm-py/blob/master/parser/elm/Dict.elm)
@@ -78,9 +80,11 @@ automatically transpile the imports for `Dict.py`--they are hard coded, but that
 may change soon.
 
 So where do List.py and Maybe.py and friend come from?  They can be found in
-the [src](https://github.com/showell/elm-py/tree/master/src) directory.  They
-were mostly hand coded line-for-line ports of the corresponding Elm libraries
-(with some tweaks to be more Pythonic in places).
+the [src](https://github.com/showell/elm-py/tree/master/src) directory.  The
+modules in `src` were mostly hand coded line-for-line ports of the
+corresponding Elm libraries (with some tweaks to be more Pythonic in places).
+The exception to that rule is of course, `Dict.py`, which was automatically
+transpiled from the original Elm source code.
 
 Another crucial fact about `Dict.py` is that is heavily uses pattern matching.
 Pattern matching is a fundamental concept in Elm, but it's not a native concept
@@ -97,3 +101,27 @@ exercise. It's really almost that simple!
 
 ## Tests
 
+It would be nice to know that the transpiled code in `Dict.py` actually
+works, right?  Well, you can find tests in
+[testDict.py](https://github.com/showell/elm-py/blob/master/tests/testDict.py).
+We exercise every function from the core library.
+
+You can also find tests for other components of the core library
+[here](https://github.com/showell/elm-py/tree/master/tests).
+
+Finally, we have tests for the parser itself
+[here](https://github.com/showell/elm-py/tree/master/parser/tests).
+
+## Next steps
+
+I will be announcing this to the Elm Community via Slack and Discourse,
+so try to find me there if you have further questions.
+
+If you are generally interested in this kind of tooling, you may also
+want to check out [elm-in-elm](https://github.com/elm-in-elm/compiler#contributing).
+
+Thanks!
+
+-- Steve Howell
+
+(find me on Elm's Slack or Github: userid = "showell")
