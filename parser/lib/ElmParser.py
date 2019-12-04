@@ -445,7 +445,33 @@ captureLet = \
 
 # CASE/PATTERN STUFF
 
-# helpers
+# leaf nodes
+
+capturePatternVar = \
+    transform(
+        types.PatternVar,
+        captureTokenLower(reservedWords)
+        )
+
+captureWildCardPattern = \
+    transform(
+        types.WildCardPattern,
+        captureOperator(['_'])
+        )
+
+capturePatternType = \
+    transform(
+        types.PatternType,
+        captureTokenUpper(reservedWords)
+        )
+
+captureCustomTypeVal = \
+    transform(
+        types.CustomTypeVal,
+        captureElmType,
+        )
+
+# Tuples/nesting
 
 capturePatternTuple = \
     transform(
@@ -456,24 +482,6 @@ capturePatternTuple = \
             ')',
             capturePatternExpr,
             )
-        )
-
-capturePatternVar = \
-    transform(
-        types.PatternVar,
-        captureTokenLower(reservedWords)
-        )
-
-capturePatternType = \
-    transform(
-        types.PatternType,
-        captureTokenUpper(reservedWords)
-        )
-
-captureWildCardPattern = \
-    transform(
-        types.WildCardPattern,
-        captureOperator(['_'])
         )
 
 capturePatternAs = \
@@ -488,7 +496,7 @@ capturePatternAs = \
             )
         )
 
-## nested: SomeType _ (SomeOtherType x y) _
+## SomeType _ (SomeOtherType x y) _
 captureNestedPattern = \
     transform(
         types.PatternNested,
@@ -498,14 +506,6 @@ captureNestedPattern = \
         )
 
 ## custom type: SomeType _ x y _
-
-captureCustomTypeVal = \
-    transform(
-        types.CustomTypeVal,
-        captureOneOf(
-            captureElmType,
-        ),
-        )
 
 doCaptureCustomTypePattern = \
     transform(
