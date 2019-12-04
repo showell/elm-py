@@ -62,7 +62,8 @@ will have created `Dict.py`, although of course you can also just pull
 [Dict.py](https://github.com/showell/elm-py/blob/master/src/Dict.py) out of
 the repo.
 
-Right now it's all hand-written code.  It's basically a recursive descent
+Right now the transpiler itself is all hand-written code.
+It's basically a recursive descent
 parser (i.e. no fancy tooling like grammar generators).
 
 The actual parsing is done mostly with generic code from
