@@ -780,10 +780,16 @@ class PatternAs:
         stmt = "(AsVar, '" + getCode(self.var) + "', ("  + getCode(self.expr) + '))'
         return Simple(stmt)
 
-    def unpack(self):
+    def unpacks(self):
         name = str(self.var)
         stmt = name + " = res['" + name + "']"
-        return stmt
+        stmts = [ stmt ]
+        if hasattr(self.expr, 'unpack'):
+            stmts.append(self.expr.unpack())
+        if hasattr(self.expr, 'unpacks'):
+            stmts.extend(self.expr.unpacks())
+        return stmts
+
 
 class PatternNested:
     def __init__(self, ast):

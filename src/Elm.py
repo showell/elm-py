@@ -192,6 +192,8 @@ def patternMatchVals(vals, *args):
             if dct is None:
                 dct = dict()
             dct[varname] = vals[i]
+            if type(res) == dict:
+                dct.update(res)
 
         elif arg[0] is Nested:
             val = arg[1]

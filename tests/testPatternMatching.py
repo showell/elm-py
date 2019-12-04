@@ -169,13 +169,14 @@ def testCustomTypes():
         Any,
         (AsVar, 'rChild', (
             (Variant, Tree.Node),
-            Any,
+            (Var, 'rn'),
             Any,
             Any),
             )
         )
     assertEqual(res['n'], 1)
     assertEqual(res['rChild'], rNode)
+    assertEqual(res['rn'], 2)
 
 if __name__ == '__main__':
     testCustomTypes()

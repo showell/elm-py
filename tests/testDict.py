@@ -134,12 +134,7 @@ def benchmark(n):
     for i in lst:
         assert Dict.get(i, dct).val == i * 20
 
-    # There is a bug with update/remove() in the Elm code that I pulled from
-    # the PR.  (Hopefully I'll come back and tighten this assertion once
-    # the bug is fixed.)
-    #
-    # https://github.com/elm/core/pull/1033#issuecomment-561635412
-    #assert Dict.size(dct) == n
+    assert Dict.size(dct) == n
 
     print('remove')
     t = perf_counter()
@@ -148,8 +143,7 @@ def benchmark(n):
     elapsed = perf_counter() - t
     printRate(elapsed)
 
-    # remove() is buggy -- see comment above
-    # assert Dict.size(dct) == 0
+    assert Dict.size(dct) == 0
 
     print('fromList')
     tups = [(n, n * 2) for n in lst]
