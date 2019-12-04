@@ -25,10 +25,9 @@ But let's back up...
 
 I want to be able to translate Elm code into Python code
 for things like multi-player games, where the front end
-runs in Elm, but I can borrow Elm code to run on the server,
-but I will transpile it to Python to play nice with other
-Python code (and let Python do things like manage connections,
-log results, do imperative things, etc.).
+runs in Elm, but I can borrow Elm code to run on the server for
+things like move validation (using the same types and helper
+functions as the front end).
 
 I also am using Python as a target to explore general issues
 with transpiling Elm to other targets (like maybe Rust some
@@ -36,7 +35,7 @@ day).  Transpiling Elm line-for-line to any non-Elm language
 will always reveal some issues.
 
 Ideally you would literally just transpile every single line of
-Elm code into Python using some sort of logical mapping, but there
+Elm code into Python using some sort of 1:1 mapping, but there
 are concepts that don't directly translate, such as pattern
 matching in Python.  Also, Elm itself uses kernel code written
 in JS, so you have to port the kernel pieces.  Finally, there
@@ -75,13 +74,13 @@ explains the basic paradigm.
 `Dict.elm` is **not** a standalone piece of code, and neither is `Dict.py`.
 
 Both rely on other components to do some of their work.  In both languages
-we import from libraries like Basics, Maybe, and List.  Right now I don't actually
+we import from libraries like Basics, Maybe, and List.  (Right now I don't actually
 automatically transpile the imports for `Dict.py`--they are hard coded, but that
-may change soon.
+may change soon.)
 
 So where do List.py and Maybe.py and friend come from?  They can be found in
 the [src](https://github.com/showell/elm-py/tree/master/src) directory.  The
-modules in `src` were mostly hand coded line-for-line ports of the
+modules in `src` are mostly hand-coded line-for-line ports of the
 corresponding Elm libraries (with some tweaks to be more Pythonic in places).
 
 (The main subject of this conversation, `Dict.py`, was placed in that
