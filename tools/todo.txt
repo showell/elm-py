@@ -1,6 +1,5 @@
 emit:
     directory organization
-        fix ranks.py (map_ -> map)
         cp Dict.py into src, rm Dict.elm
         write readme in tools
 
