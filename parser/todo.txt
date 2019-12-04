@@ -1,17 +1,16 @@
 emit:
+    just revert Dict.elm (now that bug is reported)
+
     write parser readme
 
-    try to debug update/remove:
-        upgrade Python first?
+    keep trying to simplify pattern parsing
 
     ANNOUNCE:
-        possibly clean up dirs first?
+        discourse
 
     import cleanup:
         (need to get actual import working)
         move GT to Basics? or just do prelude to match Elm semantically?
-
-    keep trying to simplify pattern parsing
 
     cleanup:
         add annotations
