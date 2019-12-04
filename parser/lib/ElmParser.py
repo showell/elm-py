@@ -58,6 +58,9 @@ def captureExpr(state):
 def captureTypeSpec(state):
     return doCaptureTypeSpec(state)
 
+def captureNonConsPattern(state):
+    return doCaptureNonConsPattern(state)
+
 def capturePatternExpr(state):
     return doCapturePatternExpr(state)
 
@@ -541,12 +544,7 @@ capturePatternCons = \
     transform(
         types.PatternCons,
         captureStuff(
-            captureOneOf(
-                captureWildCardPattern,
-                capturePatternTuple,
-                capturePatternVar,
-                captureParen(capturePatternExpr),
-                ),
+            captureNonConsPattern,
             captureOperator(
                 ['::']
                 ),
@@ -556,17 +554,22 @@ capturePatternCons = \
 
 ## general pattern expression stuff
 
+doCaptureNonConsPattern = \
+    captureOneOf(
+        capturePatternAs,
+        captureWildCardPattern,
+        capturePatternListBrackets,
+        captureCustomTypePattern,
+        capturePatternTuple,
+        capturePatternVar,
+        )
+
 doCapturePatternExpr = \
     captureStuff(
         skipManyCaptures(captureComment),
         captureOneOf(
-            capturePatternAs,
-            captureWildCardPattern,
             capturePatternCons,
-            capturePatternListBrackets,
-            captureCustomTypePattern,
-            capturePatternTuple,
-            capturePatternVar,
+            captureNonConsPattern,
             )
         )
 
