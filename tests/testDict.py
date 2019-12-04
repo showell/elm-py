@@ -1,13 +1,24 @@
 import sys
 sys.path.append('../src')
 
+import math
+import random
+from time import perf_counter
+
 import Dict
 import List
 import Maybe
-import random
-from time import perf_counter
 from Kernel import toPy
 import  cProfile
+
+from Elm import (
+    patternMatch,
+    MatchParam,
+    )
+
+Variant = MatchParam.Variant
+Any = MatchParam.Any
+Var = MatchParam.Var
 
 random.seed(44)
 
@@ -16,6 +27,21 @@ Just = Maybe.Just
 add = lambda k, v: k + v
 add3 = lambda a, b, c: a + b + c
 double = lambda m: Just(m.val * 2)
+
+def maxDepth(dct):
+    res = patternMatch(dct,
+        (Variant, Dict.RBNode_elm_builtin),
+        Any,
+        Any,
+        Any,
+        (Var, 'left'),
+        (Var, 'right'),
+        )
+
+    if res is None:
+        return 0
+
+    return 1 + max(maxDepth(res['left']), maxDepth(res['right']))
 
 def testBasics():
     print('singleton')
@@ -58,6 +84,13 @@ def benchmark(n):
         dct = Dict.insert(i, i*10, dct)
     elapsed = perf_counter() - t
     printRate(elapsed)
+
+    depth = maxDepth(dct)
+    print('max depth', depth)
+    threshold = 2 * math.log2(n)
+    print('threshold', math.ceil(threshold))
+    assert depth < threshold
+    print()
 
     print('membership')
     t = perf_counter()
