@@ -1,5 +1,6 @@
 emit:
     directory organization
+        rename parse to parseLib or something
         cp Dict.py into src, rm Dict.elm
         write readme in tools
 

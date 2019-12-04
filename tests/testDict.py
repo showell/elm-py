@@ -1,3 +1,6 @@
+import sys
+sys.path.append('../src')
+
 import Dict
 import List
 import Maybe
@@ -217,8 +220,9 @@ def testSetStuff():
         List.empty)
     assert list(outList) == [ (500, 5), (400, 4), (3, 30, 300), (2, 20), (1, 10) ]
 
-testBasics()
-runBenchmarks()
-testSetStuff()
+if __name__ == '__main__':
+    testBasics()
+    runBenchmarks()
+    testSetStuff()
 
 # cProfile.run('benchmark(1000)', sort='time')

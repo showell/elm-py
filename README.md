@@ -309,27 +309,7 @@ There is still plenty of room for improvement here.
 
 ### Testing
 
-I have automated tests in [test.py](https://github.com/showell/elm-py/blob/master/tests/test.py).
-
-You should also check out [testMetaElm.py](https://github.com/showell/elm-py/blob/master/tests/testMetaElm.py),
-which tests Python code that was actually generated from Elm!
-
-(It actually came from [meta-elm](https://github.com/showell/meta-elm),
-not elm-in-elm, but it demonstrates a similar idea.)
-
-To run the tests, set `PYTHONPATH=../src`.
-
-### Prior art
-
-I am not aware of any other attempts at Elm/Python interoperability.  Let me
-know if I am missing anything!  Googling for "Python Elm" turns up many results
-on the "Extreme Learning Machine".
-
-Obviously, many Elm concepts are well understood in (parts of ) the Python community.
-
-For example, folks have written libraries like pyrsistent to implement immutable
-data structures.  Also, core Python has had modules like `functools` and `itertools`
-for well over a decade, and they support functional programming concepts.
+There are automated tests [here](https://github.com/showell/elm-py/blob/master/tests/).
 
 ### Conclusion
 

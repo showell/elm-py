@@ -1,3 +1,11 @@
+"""
+This tests the patternMatch function, which allows Python to emulate
+Elm pattern matching.
+"""
+
+import sys
+sys.path.append('../src')
+
 from testHelper import (
         assertEqual,
         assertTrue,
@@ -169,5 +177,6 @@ def testCustomTypes():
     assertEqual(res['n'], 1)
     assertEqual(res['rChild'], rNode)
 
-testCustomTypes()
-testLists()
+if __name__ == '__main__':
+    testCustomTypes()
+    testLists()

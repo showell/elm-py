@@ -1,3 +1,6 @@
+"""
+This is a helper for other test scripts.
+"""
 from Kernel import (
         toElm,
         toPy,
@@ -52,4 +55,3 @@ def assertList(elmList, expected):
         print('\n\nFAIL!\n', elmList, expected)
         print('\n')
         raise AssertionError
-
