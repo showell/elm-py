@@ -384,10 +384,7 @@ doCaptureTypeSpec = \
     captureOneOf(
         captureParen(
             captureOneOrMore(
-                captureOneOf(
-                    captureElmToken,
-                    captureElmType,
-                    )
+                captureTypeSpec,
                 )
             ),
         captureElmToken,

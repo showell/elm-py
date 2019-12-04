@@ -50,6 +50,7 @@ def emitCode(code):
     res = ElmParser.captureAll(state)
 
     if res is None:
+        ParseHelper.printState(ParseHelper.lastState)
         raise Exception('could not parse')
 
     state = res.state

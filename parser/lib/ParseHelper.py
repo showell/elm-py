@@ -14,6 +14,8 @@ a `Result` object with an updated parse `state` and an
 The best way to grok this is to just read `ElmParser.py`.
 """
 
+lastState = None
+
 class Result:
     def __init__(self, state, ast):
         if type(state) != State:
@@ -21,6 +23,9 @@ class Result:
 
         self.state = state
         self.ast = ast
+
+        global lastState
+        lastState = state
 
 
 class State:
