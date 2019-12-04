@@ -1,8 +1,10 @@
 emit:
-    merge:
-        emit vars:
-            get a PatternTuple type
-            use test.py to debug easily
+    directory organization
+        fix ranks.py (map_ -> map)
+        cp Dict.py into src, rm Dict.elm
+        double check readme links
+        add stuff to readme about running tests
+        write readme in tools
 
     add depth function
 

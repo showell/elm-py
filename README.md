@@ -83,7 +83,7 @@ The following modules have been 100% ported:
 You can now create arbitrary custom types in Python!
 
 Just follow the example of
-[Maybe.py](https://github.com/showell/elm-py/blob/master/Maybe.py).
+[Maybe.py](https://github.com/showell/elm-py/blob/master/src/Maybe.py).
 
 ### Data representation
 
@@ -117,8 +117,8 @@ There is a still a lot of work to do!  Contributions are welcome, but
 if you intend to contribute, please find me on the Elm slack for anything
 more involved than a simple bug fix.
 
-The most important remaining pieces are Array, Dict, and Set.  For them I
-intend to use [pyrsistent](https://pypi.org/project/pyrsistent/):
+The most important remaining pieces are Array, Dict, and Set.  (Updates
+coming soon on these!)
 
 - Array: wrap PVector
 - Dict: wrap PMap
@@ -184,7 +184,7 @@ TypeError: repeat() missing 1 required positional argument: 'x'
 ['hello', 'hello', 'hello', 'hello', 'hello']
 ~~~
 
-See [Elm.py](https://github.com/showell/elm-py/blob/master/Elm.py) for more
+See [Elm.py](https://github.com/showell/elm-py/blob/master/src/Elm.py) for more
 details on the `F` function.
 
 ### Type conversions
@@ -309,12 +309,15 @@ There is still plenty of room for improvement here.
 
 ### Testing
 
-I have automated tests in [test.py](https://github.com/showell/elm-py/blob/master/test.py).
+I have automated tests in [test.py](https://github.com/showell/elm-py/blob/master/tests/test.py).
 
-You should also check out [metaElm.py](https://github.com/showell/elm-py/blob/master/metaElm.py),
+You should also check out [testMetaElm.py](https://github.com/showell/elm-py/blob/master/tests/testMetaElm.py),
 which tests Python code that was actually generated from Elm!
+
 (It actually came from [meta-elm](https://github.com/showell/meta-elm),
 not elm-in-elm, but it demonstrates a similar idea.)
+
+To run the tests, set `PYTHONPATH=../src`.
 
 ### Prior art
 
