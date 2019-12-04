@@ -1,7 +1,17 @@
-
 """
-parser : state -> state
-capture : state -> (state, ast)
+This module contains generic helpers for parsing stuff.
+
+It's optimized for parsing languages like Elm, and it was
+written side-by-side with ElmParser.py in this directory.
+
+The basic paradigm is you create a State object that has
+your code and an index to the current character.  You
+pass this state to a `captureFoo` function that often
+wraps a `parseFoo` function.  The capture functions return
+a `Result` object with an updated parse `state` and an
+`ast`.
+
+The best way to grok this is to just read `ElmParser.py`.
 """
 
 class Result:

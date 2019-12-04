@@ -1,6 +1,20 @@
-import elmTypes as types
-import parseElm
-import parse
+"""
+This has a lot of ad-hoc tests for the Elm parser.
+
+If you are having trouble parsing an Elm file, a good strategy
+is to make a small test case for a particular section in the file
+that is tripping up the parser.
+
+This file definitely needs improvement!
+"""
+
+import sys
+sys.path.append('../lib')
+sys.path.append('../../src')
+
+import ElmTypes as types
+import ElmParser
+import ParseHelper as parse
 
 def succeed(fCapture, s):
     state = parse.State(s)
@@ -35,52 +49,52 @@ def testIndents():
     assertIndent(' \n  fred', 5, 2)
 
 def testParse():
-    succeed(parseElm.captureModule,
+    succeed(ElmParser.captureModule,
         """
         module foo exposing (
             foo, bar
             )
         """)
 
-    succeed(parseElm.captureDocs,
+    succeed(ElmParser.captureDocs,
         """
         {-|
            bla bla bla
         -}
         """)
 
-    succeed(parseElm.captureImport,
+    succeed(ElmParser.captureImport,
         """
     import foo exposing ,
         foo, bar
         )
         """)
 
-    succeed(parseElm.captureTypeDef,
+    succeed(ElmParser.captureTypeDef,
         """
         type Value
             = Int
             | String
         """)
 
-    succeed(parseElm.captureTypeDef,
+    succeed(ElmParser.captureTypeDef,
         """
         type Foo a b
             = Int a Bar (Baz c d)
             | String b
         """)
 
-    succeed(parseElm.captureBinding,
+    succeed(ElmParser.captureBinding,
         """
         x =
             bla""")
 
-    succeed(parseElm.captureExpr,
+    succeed(ElmParser.captureExpr,
         """
         foo bar
             """)
 
-    succeed(parseElm.captureLet,
+    succeed(ElmParser.captureLet,
         """
         let
             foo a b c =
@@ -91,7 +105,7 @@ def testParse():
         in
         foo bar""")
 
-    succeed(parseElm.captureOneCase,
+    succeed(ElmParser.captureOneCase,
         """
         foo ->
             let
@@ -102,12 +116,12 @@ def testParse():
 
             """)
 
-    succeed(parseElm.captureCaseOf,
+    succeed(ElmParser.captureCaseOf,
         """
         case fred of
             """)
 
-    succeed(parseElm.captureCase,
+    succeed(ElmParser.captureCase,
         """
         case fred of
             foo ->
@@ -119,7 +133,7 @@ def testParse():
                     bla
             """)
 
-    succeed(parseElm.captureIf,
+    succeed(ElmParser.captureIf,
         """
         if cond then
             if cond2 then
@@ -133,38 +147,38 @@ def testParse():
             """)
 
     # tuples are dumb now
-    succeed(parseElm.captureExprTuple,
+    succeed(ElmParser.captureExprTuple,
         """
             ( foo, bar )
             """)
 
-    succeed(parseElm.captureExpr,
+    succeed(ElmParser.captureExpr,
         """
             add a b
             """)
 
-    succeed(parseElm.captureAnnotation,
+    succeed(ElmParser.captureAnnotation,
         """
     foo : List String  ->
        String ->
        Int""")
 
-    succeed(parseElm.captureUnit, '()')
-    succeed(parseElm.captureUnit, '(  )')
+    succeed(ElmParser.captureUnit, '()')
+    succeed(ElmParser.captureUnit, '(  )')
 
-    succeed(parseElm.captureLambda,
+    succeed(ElmParser.captureLambda,
         """
         \\() -> a (b c)
         """)
 
 
-    succeed(parseElm.captureLambda,
+    succeed(ElmParser.captureLambda,
         """
         \\a b -> c
         """)
 
 
-    succeed(parseElm.captureLambda,
+    succeed(ElmParser.captureLambda,
         """
         \\x y ->
             if b then
@@ -174,111 +188,111 @@ def testParse():
         """)
 
     # tuples in lambda params
-    succeed(parseElm.captureExpr,
+    succeed(ElmParser.captureExpr,
         """
         \\(x,y) -> a
         """)
 
 
     # lambda in expressions
-    succeed(parseElm.captureExpr,
+    succeed(ElmParser.captureExpr,
         """
         map2 ( \\x y -> a ) lst
         """)
 
 
-    succeed(parseElm.capturePatternList,
+    succeed(ElmParser.capturePatternList,
         """
         [ a, b, c ]
         """)
 
 
-    succeed(parseElm.capturePatternDef,
+    succeed(ElmParser.capturePatternDef,
         """
         [x, y] ->
         """)
 
-    succeed(parseElm.capturePatternExpr,
+    succeed(ElmParser.capturePatternExpr,
         """
         []
         """)
 
-    succeed(parseElm.capturePatternList,
+    succeed(ElmParser.capturePatternList,
         """
         foo :: rest
             """)
 
-    succeed(parseElm.captureOneCase,
+    succeed(ElmParser.captureOneCase,
         """
         foo :: rest ->
             baz
             """)
 
-    succeed(parseElm.captureOneCase,
+    succeed(ElmParser.captureOneCase,
         """
         Foo bar ->
             baz
             """)
 
-    succeed(parseElm.captureOneCase,
+    succeed(ElmParser.captureOneCase,
         """
         Foo (x, y) ->
             a
             """)
 
-    succeed(parseElm.captureExpr,
+    succeed(ElmParser.captureExpr,
         """
         x < y
             """)
 
-    succeed(parseElm.captureOneCase,
+    succeed(ElmParser.captureOneCase,
         """
         head :: rest ->
             a
             """)
 
 
-    succeed(parseElm.capturePatternCons,
+    succeed(ElmParser.capturePatternCons,
         """
         (first, second) :: rest""")
 
-    succeed(parseElm.captureOneCase,
+    succeed(ElmParser.captureOneCase,
         """
         (first, second) :: rest ->
             a
             """)
 
-    succeed(parseElm.captureIf,
+    succeed(ElmParser.captureIf,
         """
         if foo then a else b
             """)
 
 
-    succeed(parseElm.captureExpr,
+    succeed(ElmParser.captureExpr,
         """
         n+m
             """)
 
 
-    succeed(parseElm.captureTupleVar,
+    succeed(ElmParser.captureTupleVar,
         """
         (x, y)
             """)
 
-    succeed(parseElm.captureBinding,
+    succeed(ElmParser.captureBinding,
         """
         (x, y) =
             foo
             """)
 
 
-    succeed(parseElm.captureCall,
+    succeed(ElmParser.captureCall,
         """
         foo (bar x) y
             """)
 
 
-    succeed(parseElm.captureBinding,
+    succeed(ElmParser.captureBinding,
         """
         x =
             foldr (\key value list -> a :: b) [] dict
@@ -349,7 +363,7 @@ def testEmit():
             \\x -> if x then a else b
         """
     state = parse.State(code)
-    res = parseElm.captureBinding(state)
+    res = ElmParser.captureBinding(state)
     print(types.getFinalCode(res.ast))
 
     code = """
@@ -357,21 +371,21 @@ def testEmit():
             foo (\\x -> if x then a else b) z
         """
     state = parse.State(code)
-    res = parseElm.captureBinding(state)
+    res = ElmParser.captureBinding(state)
     print(types.getFinalCode(res.ast))
 
     code = """
         (x, y) = foo bar
         """
     state = parse.State(code)
-    res = parseElm.captureBinding(state)
+    res = ElmParser.captureBinding(state)
     print(types.getFinalCode(res.ast))
 
     code = """
         foo a (b, c) d = yo a b c d
         """
     state = parse.State(code)
-    res = parseElm.captureBinding(state)
+    res = ElmParser.captureBinding(state)
     print(types.getFinalCode(res.ast))
 
     code = """
@@ -385,7 +399,7 @@ def testEmit():
 
         """
     state = parse.State(code)
-    res = parseElm.captureBinding(state)
+    res = ElmParser.captureBinding(state)
     print(types.getFinalCode(res.ast))
 
     code = """
@@ -399,7 +413,7 @@ def testEmit():
 
         """
     state = parse.State(code)
-    res = parseElm.captureBinding(state)
+    res = ElmParser.captureBinding(state)
     print(types.getFinalCode(res.ast))
 
     code = """
@@ -410,7 +424,7 @@ def testEmit():
 
         """
     state = parse.State(code)
-    res = parseElm.captureBinding(state)
+    res = ElmParser.captureBinding(state)
     print(types.getFinalCode(res.ast))
 
 
@@ -418,3 +432,4 @@ testIndents()
 testParse()
 testBlocks()
 testEmit()
+print('\n\ncompleted tests')

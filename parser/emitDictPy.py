@@ -1,11 +1,22 @@
+"""
+This script specifically transpiles Dict.elm to Dict.py.
+(Actually, it just writes to standard out, and you can
+redirect the output to your desired location.)
+
+Right now we hard code the imports to work for Dict.elm.
+
+The goal is to eventually generalize this script, obviously.
+"""
+
 import os
 import sys
 
 sys.path.append('../src')
+sys.path.append('./lib')
 
-import parse
-import parseElm
-import elmTypes as types
+import ParseHelper
+import ElmParser
+import ElmTypes as types
 
 def normalPrelude():
     return """# Dict.py (code generated via elm-py)
@@ -35,8 +46,8 @@ PCons = MatchParam.PCons
 """.lstrip()
 
 def emitCode(code):
-    state = parse.State(code)
-    res = parseElm.captureAll(state)
+    state = ParseHelper.State(code)
+    res = ElmParser.captureAll(state)
 
     if res is None:
         raise Exception('could not parse')
@@ -44,7 +55,7 @@ def emitCode(code):
     state = res.state
 
     if state.incomplete():
-        parse.printState(state)
+        ParseHelper.printState(state)
         raise Exception('incomplete!')
 
     topAst, mainAst = res.ast

@@ -1,18 +1,36 @@
+"""
+This has classes that form an AST for parsed Elm code.
+
+Most classes have a way to stringify themselves, and
+objects will stringify any of their children (and so on
+down the tree.
+
+Some classes also support an emit() method to emit
+Python code.
+"""
+
 from Custom import (
     CustomType
     )
 
 """
+One of the main goals for this module is to facilitate
+transpiling Elm to Python.  Some transpilations are quite
+straightforward, but there are some impedence mismatches
+due to Python not being expression-centric.
+
 We have to desugar some stuff:
 
     You can't say:
 
-        (a, (b, c))
+        def foo(a, (b, c)):
+            pass
 
     We say instead:
-        (a, _foo1)
 
-        (b, c) = _foo1
+        def foo(*args):
+            a, (b, c) = *args
+            pass
 
     You can't say:
         x =
@@ -55,7 +73,7 @@ We have to desugar some stuff:
         else:
             return 4
 
-    We want to try to combine those:
+    We instead try to inline those:
         if x:
             if a:
                 return 2
@@ -70,10 +88,12 @@ We have to desugar some stuff:
 
         foo(2, 3)
 
-    Some statements are final:
+    Some statements are final assignments:
 
         def a(x):
             return 5
+
+        empty = None
 
     Other statements are ready-to-return, but not final nor
     easily wrapped:
@@ -83,6 +103,14 @@ We have to desugar some stuff:
             return 2
         else:
             return 3
+
+    Most of the above transformations are managed by having
+    emit() functions return an instance of the custom type
+    `PythonCode`, and then parent objects know how to wrap/inline
+    the child's Python code.
+
+    NOTE: We are not rigorous about every possible combination yet!
+    We only handle combinations that came up in transpiling Dict.elm.
 """
 
 

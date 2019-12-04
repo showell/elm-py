@@ -1,6 +1,29 @@
-import elmTypes as types
+"""
+This is an incomplete parser for Elm code.
 
-from parse import (
+It currently can parser Dict.elm from the core library,
+including the following constructs:
+
+    custom type definitions
+    if/else
+    let/in
+    case/of (with basic pattern matching for lists and
+        custom types)
+    basic operators
+    ints
+    lambdas
+
+It parses just enough to skip over certain things:
+
+    annotations
+    module statement
+    imports
+    docs/comments
+"""
+
+import ElmTypes as types
+
+from ParseHelper import (
         captureBlock,
         captureInt,
         captureKeywordBlock,
@@ -27,7 +50,6 @@ from parse import (
         transform,
         twoPass,
         )
-import parse
 
 # We declare a few things at the top to avoid circular dependencies
 def captureExpr(state):
@@ -666,34 +688,3 @@ captureAll = \
         captureTopOfFile,
         captureMainCode,
         )
-
-def parseCode(code):
-    state = parse.State(code)
-    res = captureAll(state)
-
-    if res is None:
-        raise Exception('could not parse')
-
-    state = res.state
-
-    if state.incomplete():
-        printState(state)
-        raise Exception('incomplete!')
-
-    topAst, mainAst = res.ast
-
-    print('TOP\n\n')
-    for ast in topAst:
-        print('==')
-        print(ast)
-
-    print('\n\n\nMAIN\n\n\n')
-    for ast in mainAst:
-        print('==')
-        print(ast)
-
-if __name__ == '__main__':
-    fn = 'Dict.elm'
-    with open(fn) as f:
-        code = f.read()
-    parseCode(code)
