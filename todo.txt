@@ -3,16 +3,10 @@ emit:
 
     write parser readme
 
-    keep trying to simplify pattern parsing
-
     ANNOUNCE:
         discourse
 
     import cleanup:
         (need to get actual import working)
         move GT to Basics? or just do prelude to match Elm semantically?
-
-    cleanup:
-        add annotations
-        yapf
 
