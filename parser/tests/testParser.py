@@ -201,7 +201,7 @@ def testParse():
         """)
 
 
-    succeed(ElmParser.capturePatternList,
+    succeed(ElmParser.capturePatternListBrackets,
         """
         [ a, b, c ]
         """)
@@ -217,7 +217,7 @@ def testParse():
         []
         """)
 
-    succeed(ElmParser.capturePatternList,
+    succeed(ElmParser.capturePatternCons,
         """
         foo :: rest
             """)

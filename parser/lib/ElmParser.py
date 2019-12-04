@@ -554,13 +554,6 @@ capturePatternCons = \
             ),
         )
 
-capturePatternList = \
-    captureOneOf(
-        capturePatternCons,
-        capturePatternListBrackets,
-        )
-
-
 ## general pattern expression stuff
 
 doCapturePatternExpr = \
@@ -569,7 +562,8 @@ doCapturePatternExpr = \
         captureOneOf(
             capturePatternAs,
             captureWildCardPattern,
-            capturePatternList,
+            capturePatternCons,
+            capturePatternListBrackets,
             captureCustomTypePattern,
             capturePatternTuple,
             capturePatternVar,
