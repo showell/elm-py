@@ -1,7 +1,12 @@
 emit:
     directory organization
-        rename parse to parseLib or something
-        cp Dict.py into src, rm Dict.elm
+        parser
+            lib/tests
+            verify:
+                emitDict.py
+                testElmParser.py
+                testParseDict.py
+
         write readme in tools
 
     add depth function
