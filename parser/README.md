@@ -112,6 +112,25 @@ You can also find tests for other components of the core library
 Finally, we have tests for the parser itself
 [here](https://github.com/showell/elm-py/tree/master/parser/tests).
 
+## Limitations
+
+The most limited piece of code that currently lives in this repo
+is the Elm-to-Python transpiler.  It literally does just enough
+parsing to handle the constructs in `Dict.elm`.  It can only
+parse similar looking Elm code, and even then there are no guarantees.
+Hopefully the code should be easy to extend in the future, and
+contributions are welcome.
+
+I'll make bolder claims about `Dict.py` itself.  As far as I know,
+it's as bug-free as the original Elm code, and I didn't find any
+parts of its API that I had to omit/limit/deprecate.  If you find
+bugs, please report them.
+
+I am about 95% confident that the pattern matching code is robust
+for the cases it handles, but I only wrote enough code there to
+handle the patterns used by `Dict.elm`.  Again, I hope to flesh out
+that code.
+
 ## Next steps
 
 I will be announcing this to the Elm Community via Slack and Discourse,
