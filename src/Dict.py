@@ -33,6 +33,7 @@ RBNode_elm_builtin = Dict.RBNode_elm_builtin
 
 empty = \
     RBEmpty_elm_builtin
+
 def get(targetKey, dict):
     _cv = dict
 

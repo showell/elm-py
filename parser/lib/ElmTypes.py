@@ -606,7 +606,7 @@ class ValueAssign:
             stmt = j(
                 vname + ' = \\',
                 indent(item)
-                )
+                ) + '\n'
 
         return AssignBlock(stmt)
 
