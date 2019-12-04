@@ -1,7 +1,7 @@
 """
 This is an incomplete parser for Elm code.
 
-It currently can parser Dict.elm from the core library,
+It currently can parse Dict.elm from the core library,
 including the following constructs:
 
     custom type definitions
