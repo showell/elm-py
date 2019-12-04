@@ -1,3 +1,8 @@
+import os
+import sys
+
+sys.path.append('../src')
+
 import parse
 import parseElm
 import elmTypes as types
@@ -49,7 +54,8 @@ def emitCode(code):
             print(types.getFinalCode(ast))
 
 if __name__ == '__main__':
-    fn = 'Dict.elm'
+    path = os.path.dirname(os.path.realpath(__file__))
+    fn = path + '/elm/Dict.elm'
     with open(fn) as f:
         code = f.read()
 
