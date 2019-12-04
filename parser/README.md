@@ -83,8 +83,11 @@ So where do List.py and Maybe.py and friend come from?  They can be found in
 the [src](https://github.com/showell/elm-py/tree/master/src) directory.  The
 modules in `src` were mostly hand coded line-for-line ports of the
 corresponding Elm libraries (with some tweaks to be more Pythonic in places).
-The exception to that rule is of course, `Dict.py`, which was automatically
-transpiled from the original Elm source code.
+
+(The main subject of this conversation, `Dict.py`, was placed in that
+directory after being automatically created with the transpiler.)
+
+## Pattern matching
 
 Another crucial fact about `Dict.py` is that is heavily uses pattern matching.
 Pattern matching is a fundamental concept in Elm, but it's not a native concept
