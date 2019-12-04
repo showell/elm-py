@@ -1,13 +1,5 @@
 emit:
-    directory organization
-        parser
-            lib/tests
-            verify:
-                emitDict.py
-                testElmParser.py
-                testParseDict.py
-
-        write readme in tools
+    write parser readme
 
     add depth function
 
