@@ -96,7 +96,7 @@ Python equivalents:
 - tuples
 
 For Elm custom types, we use a Python module called
-[Custom.py](https://github.com/showell/elm-py/blob/master/Custom.py).
+[Custom.py](https://github.com/showell/elm-py/blob/master/src/Custom.py).
 It has a class called `CustomType` to build new types, and then instances
 of the types are instances of `Custom`.
 
