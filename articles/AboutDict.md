@@ -49,8 +49,38 @@ The entire `Dict` data structure is build on top of this
 data structure! No, wait, not "on top of".  Dict **is**
 this custom type.
 
-Dict is 100% pure Elm, which only one small caveat that
-I cover in the "Dict Equality" section of the "Footnotes."
+Dict.elm is 100% pure Elm, and it **never** calls kernel code.
+
+(There are some small kernel dependencies that I cover in
+the "Dict Equality" section of the "Footnotes.")
+
+When you reference the `Dict.empty` value in your Elm projects,
+you are literally referencing the one and only Elm value of
+the custom type variant named `RBEmpty_elm_builtin`:
+
+~~~ elm
+empty : Dict k v
+empty =
+  RBEmpty_elm_builtin
+~~~
+
+And when you call `Dict.isEmpty`, it's just the simplest of
+pattern matches:
+
+~~~ elm
+isEmpty dict =
+  case dict of
+    RBEmpty_elm_builtin ->
+      True
+
+    RBNode_elm_builtin _ _ _ _ _ ->
+      False
+~~~
+
+Fair enough.  But what about lists that actually have elements?
+
+## Dict is a binary tree
+
 
 # Footnotes
 
