@@ -2,9 +2,8 @@
 
 ## Dict
 
-For those of you who have never looked at
 [Dict.elm](https://github.com/elm/core/blob/1.0.2/src/Dict.elm).
-It is a really interesting piece of code.  In this article
+is a really interesting piece of code.  In this article
 I do a deep dive on its implementation and discuss some other
 explorations related to Dict.
 
