@@ -1,43 +1,12 @@
 2019-12-05
 
-This article is mostly about `Dict`.  Skip the first section
-if you like, but it provides a little color to the story.
+## Dict
 
-## Some history
-
-I first heard about Elm some time around 2016, dabbled a bit in
-it during 2018, but only finally took the deep dive this year
-(2019).  Starting in October, I decided I would just immerse
-myself as much as possible in the language, going down as many
-rabbit holes as I needed to scratch my itches, to mix a couple
-metaphors.  As long as the project was fun, and as long as I
-was learning, all was good.
-
-A great way to learn Elm (or most programming languages, actually)
-is to write a simple game.  Elm is particularly good for writing
-games.  I wrote a game called FastTrack, which you can see
-in action [here](https://showell.github.io/ft.html).  I ended
-up writing about 4k lines of
-[Elm code](https://github.com/showell/elm-fasttrack/tree/master/src)
-for the board game.  Despite being on the steepest part of
-Elm's learning curve, I made steady progress throughout the
-exercise and learned a lot about Elm itself.
-
-There was only one major irritation along the way.  It turns
-out Dict only works on comparable data types for keys.
-And that excludes using custom types for keys.  At the time
-I found it majorly annoying.  I now only found it minorly
-annoying (and I am optimistic about "equalable" eventually
-coming to the Elm compiler).
-
-My annoyance isn't the point of this conversation, though.
-What's more important is that I got interested in Dict.
-
-## Enter Dict
-
-For those of you who have never looked at the innards of
+For those of you who have never looked at
 [Dict.elm](https://github.com/elm/core/blob/1.0.2/src/Dict.elm).
-It is a really interesting piece of code.
+It is a really interesting piece of code.  In this article
+I do a deep dive on its implementation and discuss some other
+explorations related to Dict.
 
 ### quick aside to List
 
@@ -197,4 +166,33 @@ the code inside `Dict.elm` is pure Elm; it's only indirectly coupled
 to the kernel code.
 
 
+## Some history
+
+I first heard about Elm some time around 2016, dabbled a bit in
+it during 2018, but only finally took the deep dive this year
+(2019).  Starting in October, I decided I would just immerse
+myself as much as possible in the language, going down as many
+rabbit holes as I needed to scratch my itches, to mix a couple
+metaphors.  As long as the project was fun, and as long as I
+was learning, all was good.
+
+A great way to learn Elm (or most programming languages, actually)
+is to write a simple game.  Elm is particularly good for writing
+games.  I wrote a game called FastTrack, which you can see
+in action [here](https://showell.github.io/ft.html).  I ended
+up writing about 4k lines of
+[Elm code](https://github.com/showell/elm-fasttrack/tree/master/src)
+for the board game.  Despite being on the steepest part of
+Elm's learning curve, I made steady progress throughout the
+exercise and learned a lot about Elm itself.
+
+There was only one major irritation along the way.  It turns
+out Dict only works on comparable data types for keys.
+And that excludes using custom types for keys.  At the time
+I found it majorly annoying.  I now only found it minorly
+annoying (and I am optimistic about "equalable" eventually
+coming to the Elm compiler).
+
+My annoyance isn't the point of this conversation, though.
+What's more important is that I got interested in Dict.
 
