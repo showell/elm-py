@@ -87,18 +87,13 @@ Let's re-visit the meatier variant of type Dict:
 ~~~
 
 Every non-empty Dict instance is just a top-level node of a binary
-tree, and it has a color (??!), key, value, and two subtrees.  Each
-of the subtrees is either empty or itself a top-level node of a
-smaller binary tree.
+tree, and it has a color (more about this later), a key, a value,
+and two subtrees.  Each of the subtrees is either empty or
+itself a top-level node of a smaller binary tree.
 
 Here is a pictorial representation of a non-empty Dict:
 
 ![tree](https://showell.github.io/redblack.PNG)
-
-Dict is implemented as a red-black tree, which you can learn
-more about here:
-
-https://en.wikipedia.org/wiki/Red%E2%80%93black_tree
 
 The key properities of a binary tree are that you can insert,
 remove, and find elements with O(logN) operations.  As a consequence,
@@ -112,13 +107,20 @@ Dict:
 You may have a couple questions:
 
 - Why don't we have O(1) complexity for insert/get/remove?
-- What's the deal with "red" and "black"?
+- What's the deal with the "red" and "black" colors?
 
-Let's cover algorithmic complexity first...
+Let's cover algorithmic complexity first, and in the process
+we'll learn why Dict is a binary tree in the first place.
 
 ## Dict is a persistent data structure
 
 
+## Dict is a red-black tree
+
+Dict is implemented as a red-black tree, which you can learn
+more about here:
+
+https://en.wikipedia.org/wiki/Red%E2%80%93black_tree
 
 
 # Footnotes
