@@ -29,9 +29,9 @@ explicitly surfacing a custom type.  See the [List](#List) section
 in the [Footnotes](#Footnotes) for more discussion on `List`.
 
 Dict.elm, on the other hand, is 100% pure Elm, and it
-**never** directly calls kernel code.
+**never** calls kernel code.
 
-(There are, however, some small indirect kernel dependencies that I cover in
+(There are some small, indirect kernel dependencies that I cover in
 the [Dict Equality](#Dict-Equality) section of the footnotes.)
 
 When you reference the `Dict.empty` value in your Elm projects,
@@ -184,10 +184,11 @@ data structures shine.
 
 ### Shared data structures
 
-Elm's contract with you, the developer, is that it will never
-mutate your data structures.  When you create a Dict `d1` with
+Elm will never mutate your data structures.
+
+When you create a Dict `d1` with
 100 items, and then create a new Dict `d2` with the 100 elements
-from `d1` plus some 101st item, Elm won't mutate `d1`.  But Elm
+from `d1` plus some 101st item, Dict won't mutate `d1`.  But Dict
 also won't make an entire copy of those 100 items for `d2`.
 
 Instead, `Dict.elm` uses a shared data structure that preserves
@@ -237,6 +238,38 @@ tree to search for any given key.  And then you can keep
 dividing the problem in half, generally making only about
 log-base-2-of-N comparisons to find elements.
 
+Let's look again at our image of a binary tree:
+
+![tree](https://showell.github.io/redblack.PNG)
+
+In order to get to any elements, you only have to traverse
+3 or 4 edges.  Beautiful!
+
+But what happens when we create a new dictionary just
+like the previous?  Can we just add a node to the tree?
+Well, no it's not quite that simple.  But we also don't
+need to copy the whole tree.  We just need to copy the
+3 or 4 nodes between the root of the tree and the new
+leaf.
+
+It looks something like this:
+
+![shared tree](https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Purely_functional_tree_after.svg/438px-Purely_functional_tree_after.svg.png)
+
+The copying process takes a little while to understand, but the
+main point here should not be lost:
+
+**Dict uses binary trees to efficiently implement a persistent
+collection.**
+
+The tradoff here is that instead of O(1) lookups, we get O(logN) lookups.
+Unless you have a really large N, performance will almost always
+be acceptable.  Even a tree with a billion nodes is only about 30
+levels deep.
+
+There is, however, one technical problem that I have so far glossed over.
+We need to keep the tree balanced.  And this gets us back to why
+Dict.elm's RBNode_elm_builtin variant has a slot for "color."
 
 ## Dict is a red-black tree
 
