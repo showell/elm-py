@@ -95,6 +95,32 @@ Here is a pictorial representation of a non-empty Dict:
 
 ![tree](https://showell.github.io/redblack.PNG)
 
+Dict is implemented as a red-black tree, which you can learn
+more about here:
+
+https://en.wikipedia.org/wiki/Red%E2%80%93black_tree
+
+The key properities of a binary tree are that you can insert,
+remove, and find elements with O(logN) operations.  As a consequence,
+here are the algorithmic complexities of the main operations of
+Dict:
+
+- insert: O(logN)
+- get: O(logN)
+- remove: O(logN)
+
+You may have a couple questions:
+
+- Why don't we have O(1) complexity for insert/get/remove?
+- What's the deal with "red" and "black"?
+
+Let's cover algorithmic complexity first...
+
+## Dict is a persistent data structure
+
+
+
+
 # Footnotes
 
 ## List
