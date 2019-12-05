@@ -89,7 +89,8 @@ I cover in the "Dict Equality" section of the "Footnotes."
 ## List
 
 You can learn a lot about `List` by looking at
-[core/src/Elm/Kernel/List.js](https://github.com/elm/core/blob/1.0.2/src/Elm/Kernel/List.js):
+[core/src/Elm/Kernel/List.js](https://github.com/elm/core/blob/1.0.2/src/Elm/Kernel/List.js).
+Here is an excerpt:
 
 ~~~ js
 function _List_Cons__PROD(hd, tl) { return { $: 1, a: hd, b: tl }; }
@@ -149,7 +150,7 @@ performance.
 ## Dict Equality
 
 You will hear people (including me) say that Dict.elm is 100% pure
-Elm, and that's true, but there is one compiler back door that it
+Elm, and that's true, but there are a couple compiler back doors that it
 relies on.  When you compare two instances of Dict for equality
 (using either `Basics.eq` or `==`), you are actually invoking some
 custom-written JS code that the compiler emits:
@@ -191,7 +192,9 @@ Again, it would be nice if the compiler allowed pure Elm objects to
 do the work here.
 
 But it's really not that big a deal.  Your key takeaway from `Dict`
-should be that 99% of the key pieces are pure Elm.
+should be that 99% of the key pieces are pure Elm.  Also, 100% of
+the code inside `Dict.elm` is pure Elm; it's only indirectly coupled
+to the kernel code.
 
 
 
