@@ -76,7 +76,8 @@ isEmpty dict =
       False
 ~~~
 
-Fair enough.  But what about lists that actually have elements?
+Fair enough.  But let's cover the much more interesting case
+of non-empty dicts.
 
 ## Dict is a binary tree
 
@@ -106,7 +107,7 @@ Dict:
 
 You may have a couple questions:
 
-- Why don't we have O(1) complexity for insert/get/remove?
+- Why don't we use a data structure that has O(1) complexity for insert/get/remove?
 - What's the deal with the "red" and "black" colors?
 
 Let's cover algorithmic complexity first, and in the process
