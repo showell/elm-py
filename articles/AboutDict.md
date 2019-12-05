@@ -8,7 +8,7 @@ In this article
 I do a deep dive on its implementation and discuss some other
 explorations related to Dict.
 
-The current version of Dict was primarily authored by Robin Hansen.
+The current version of Dict was primarily authored by Robin H Hansen.
 You may find his talk about [persistent collections](https://www.youtube.com/watch?v=mmiNobpx7eI&app=desktop)
 interesting.
 
@@ -184,8 +184,58 @@ data structures shine.
 
 ### Shared data structures
 
+Elm's contract with you, the developer, is that it will never
+mutate your data structures.  When you create a Dict `d1` with
+100 items, and then create a new Dict `d2` with the 100 elements
+from `d1` plus some 101st item, Elm won't mutate `d1`.  But Elm
+also won't make an entire copy of those 100 items for `d2`.
 
+Instead, `Dict.elm` uses a shared data structure that preserves
+the items from `d1` inside of `d2`.  Computer folks call these
+type of data structures **persistent collections**, because
+the collections persist/preserve the previous versions of
+themselves.
 
+For reasons that are a bit difficult to explain, it is hard
+to build a persistent dictionary using
+a traditional hash table implementation.  Let's say you
+create a series of dictionaries with 1, 2, 3, 4, 5, ..., 97,
+98, 99, and 100 items, where each dictionary in that sequence adds
+one more key/value pair to the previous.  If you want to share
+the same hash table entry for the 100th key/value pair, you would
+need to indicate all 100 of its owners, and then likewise for
+the 99 owners of the 99th item, and then likewise for the 98
+owners of the 98th item, and so on.  This can be something
+like 50,000 pieces of data, or a data size complexity of
+O(n-squared).
+
+At the other extreme, you could use an extremely compact list
+representation:
+
+    d1 = (k, v)
+    d2 = (k, v) -> copy of d1
+    d3 = (k, v) -> copy of d2 (which is just the above)
+    d4 = (k, v) -> copy of d3 (which is just the above)
+    d5 = (k, v) -> copy of d4 (which is just the above)
+    ...
+
+    d99 = (k, v) -> copy of 
+    d100 = (k, v) -> copy of d99
+
+And at the end you only have O(N) elements:
+
+    (k100, v100) -> (k99, v99) -> ... -> (k2, v2) -> (k1, v1)
+
+But then your problem is speed.  If you want to get the 50th
+element, you have to traverse through 50 key/value pairs
+before getting to your data.
+
+The way to solve this is using an indexed data structure.
+That is why Dict uses a binary search tree.  A binary tree allows
+you to inspect its top node to decide which half of the
+tree to search for any given key.  And then you can keep
+dividing the problem in half, generally making only about
+log-base-2-of-N comparisons to find elements.
 
 
 ## Dict is a red-black tree
@@ -281,9 +331,10 @@ performance.
 
 ## Dict Equality
 
-You will hear people (including me) say that Dict.elm is 100% pure
-Elm, and that's true, but there are a couple compiler back doors that it
-relies on.  When you compare two instances of Dict for equality
+Dict.elm is truly 100% pure Elm, and it doesn't call kernel code.
+
+There are, however, a couple compiler features that work in support
+of Dict.  When you compare two instances of Dict for equality
 (using either `Basics.eq` or `==`), you are actually invoking some
 custom-written JS code that the compiler emits:
 
@@ -329,7 +380,9 @@ the code inside `Dict.elm` is pure Elm; it's only indirectly coupled
 to the kernel code.
 
 
-## Some history
+## Back story
+
+How did I get so interested in Dict?
 
 I first heard about Elm some time around 2016, dabbled a bit in
 it during 2018, but only finally took the deep dive this year
