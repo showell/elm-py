@@ -115,7 +115,7 @@ You may have a couple questions:
 Let's cover algorithmic complexity first, and in the process
 we'll learn why Dict is a binary tree in the first place.
 
-## Dict is a persistent data structure
+## Dict is a persistent (i.e. shared) data structure
 
 If you come to Elm from other programming languages with mutable
 data structures, you may be wondering why Dict does not use an
@@ -193,8 +193,12 @@ Note that in Python it's completely possible to decouple `d2` from
 ~~~
 
 In order to make d2 **not** mutate d, we need to make a **copy**
-of d when working in Python.  It turns out that under the hood,
-that's what Elm is doing, too.  But isn't that expensive?
+of d when working in Python.  And that's an O(N) operation.
+
+If Elm code is effectively achieving the same thing as the latter Python
+example, wouldn't it also be making O(N) copies under the hood?
+The answer, fortunately, is "no", and that is where persistent
+data structures shine.
 
 ### Shared data structures
 
