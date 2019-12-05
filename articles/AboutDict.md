@@ -15,7 +15,7 @@ interesting.
 
 ## Dict is a custom type
 
-The `Dict` type is **literally** a custom type:
+The `Dict` type is literally just a custom type:
 
 ~~~ elm
 type Dict k v
@@ -343,6 +343,12 @@ type NColor
 
 A bit underwhelming, huh, after all that explanation?
 
+`NColor` is just an implementation detail used to keep the
+underlying binary tree balanced using the red-black algorithm.
+It only affects operations like insert/remove/update that
+create new versions of the binary tree.  For most operations
+you can mostly ignore it.
+
 ## Searching
 
 Let's look at Dict's get method:
@@ -374,6 +380,17 @@ simple `Order` type.
 ~~~
 type Order = LT | EQ | GT
 ~~~
+
+Look closer at the first pattern match:
+
+~~~ elm
+    RBNode_elm_builtin _ key value left right ->
+~~~
+
+Note how we just pick out all the key fields in the
+pattern match expression.  The only field we ignore
+is the `NColor` piece, which is what the `_` placeholder
+is for.  Beautiful!
 
 But beneath this beauty lies a tiny bit of ugliness.
 
