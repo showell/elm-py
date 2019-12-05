@@ -311,6 +311,19 @@ perfectly balanced tree is an expensive operation, and you
 don't want to do it on every insert.  Instead, you want to
 keep the tree "sorta balanced".
 
+The red-black tree algorithm is a clever solution to this
+problem.  Under a red-black regime, you only balance your
+tree enough to satisfy this condition:
+
+**Red nodes are bad.  You can only have so many of them before
+you must do something about it.**
+
+I am only slightly exaggerating! You can read the
+[Properties](https://en.wikipedia.org/wiki/Red%E2%80%93black_tree#Properties)
+section of the wikipedia article for more detail.
+
+Let's get back to Elm code!
+
 # Footnotes
 
 ## List
