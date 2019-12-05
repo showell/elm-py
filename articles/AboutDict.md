@@ -51,7 +51,7 @@ Dict.elm is 100% pure Elm, and it **never** directly
 calls kernel code.
 
 (There are, however, some small **indirect** kernel dependencies that I cover in
-the "Dict Equality" section of the "Footnotes".))
+the "Dict Equality" section of the "Footnotes".)
 
 When you reference the `Dict.empty` value in your Elm projects,
 you are literally referencing the one and only Elm value of
@@ -80,6 +80,20 @@ Fair enough.  But what about lists that actually have elements?
 
 ## Dict is a binary tree
 
+Let's re-visit the meatier variant of type Dict:
+
+~~~ elm
+    RBNode_elm_builtin NColor k v (Dict k v) (Dict k v)
+~~~
+
+Every non-empty Dict instance is just a top-level node of a binary
+tree, and it has a color (??!), key, value, and two subtrees.  Each
+of the subtrees is either empty or itself a top-level node of a
+smaller binary tree.
+
+Here is a pictorial representation of a non-empty Dict:
+
+https://showell.github.io/redblack.PNG
 
 # Footnotes
 
