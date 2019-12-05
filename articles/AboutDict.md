@@ -93,7 +93,7 @@ smaller binary tree.
 
 Here is a pictorial representation of a non-empty Dict:
 
-https://showell.github.io/redblack.PNG
+![tree](https://showell.github.io/redblack.PNG)
 
 # Footnotes
 
