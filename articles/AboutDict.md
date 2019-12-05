@@ -1,43 +1,21 @@
 2019-12-05
 
-## Dict
-
 [Dict.elm](https://github.com/elm/core/blob/1.0.2/src/Dict.elm)
-is an interesting, important piece of code.
+is an interesting, important piece of code in Elm's core
+library.
 
 In this article
 I do a deep dive on its implementation and discuss some other
 explorations related to Dict.
 
-### quick aside to List
+The current version of Dict was primarily authored by Robin Hansen.
+You may find his talk about [persistent collections](https://www.youtube.com/watch?v=mmiNobpx7eI&app=desktop)
+interesting.
 
-Before we learn about `Dict`, though, did you know that
-`List` is really just a glorified custom type?:
 
-~~~ elm
-type List a
-    = Empty
-    | Cons a (List a)
-~~~
+## Dict is a custom type
 
-Conceptually, Elm 
-does implement `List` as a union type of `Cons` and `Empty` if you
-squint hard enough, but there are two important caveats:
-
-- Elm provides lots of sweet, sweet sugar to make List instances
-look like either `head :: rest` (ok, not too far from `Cons`) or
-`[1, 2, 3]` (as opposed to `Cons 1 (Cons 2 (Cons 3 Empty))`).
-- Elm cheats big time on the implementation, in a good way, for things
-like sorting and mapping, as it transforms back and forth between
-the Cons/Empty-like internal data structure (for immutability)
-and raw JS lists (for speed).
-
-If you're curious about List, see the "Footnotes" section.
-
-### back to Dict
-
-So here's the thing about Dict.  It's not just figuratively a
-custom type.  It's **literally** a custom type:
+The `Dict` type is **literally** a custom type:
 
 ~~~ elm
 type Dict k v
@@ -45,14 +23,15 @@ type Dict k v
     | RBEmpty_elm_builtin
 ~~~
 
-The entire `Dict` data structure is build on top of this 
-data structure! No, wait, not "on top of".  Dict **is**
-this custom type.
+Contrast `Dict` to `List`.  The `List` class in Elm is
+much more of a builtin, using lots of JS code and not
+explicitly surfacing a custom type.  See the "Footnotes"
+for more discussion on `List`.
 
-Dict.elm is 100% pure Elm, and it **never** directly
-calls kernel code.
+Dict.elm, on the other hand, is 100% pure Elm, and it
+**never** directly calls kernel code.
 
-(There are, however, some small **indirect** kernel dependencies that I cover in
+(There are, however, some small indirect kernel dependencies that I cover in
 the "Dict Equality" section of the "Footnotes".)
 
 When you reference the `Dict.empty` value in your Elm projects,
@@ -65,8 +44,8 @@ empty =
   RBEmpty_elm_builtin
 ~~~
 
-And when you call `Dict.isEmpty`, it's just the simplest of
-pattern matches:
+And when you call `Dict.isEmpty`, it's just a simple
+pattern match:
 
 ~~~ elm
 isEmpty dict =
@@ -78,7 +57,7 @@ isEmpty dict =
       False
 ~~~
 
-Fair enough.  But let's cover the much more interesting case
+Fair enough.  Let's cover the much more interesting case
 of non-empty dicts.
 
 ## Dict is a binary tree
@@ -161,7 +140,7 @@ Python:
 
 Note that changing `d2` also changes `d`!  This is a key feature
 of Python, which is that you can assign multiple bindings to
-data structures and mutate them in place.
+the **same** dictionary and mutate it in place.
 
 Elm:
 
@@ -173,9 +152,9 @@ Dict.fromList [(1,"one"),(2,"two"),(3,"three")]
 Dict.fromList [(1,"one"),(2,"two")]
 ~~~
 
-Note that Elm does not mutate the original list!  This is a key
+Note that Elm does not mutate the original dict!  This is a key
 feature of Elm, which promises that once you assign a value to
-the name, that value will never change.
+the name, that value will **never** change.
 
 Neither language is wrong here; they just make different choices.
 
@@ -217,6 +196,26 @@ https://en.wikipedia.org/wiki/Red%E2%80%93black_tree
 # Footnotes
 
 ## List
+
+Elm's `List` could be modeled as a custom type, like so:
+
+~~~ elm
+type List a
+    = Empty
+    | Cons a (List a)
+~~~
+
+Conceptually, Elm does implement `List` as a union type
+of `Cons` and `Empty` if you squint hard enough, but
+there are two important caveats:
+
+- Elm provides lots of sugar to make List instances
+look like either `head :: rest` (ok, not too far from `Cons`) or
+`[1, 2, 3]` (as opposed to `Cons 1 (Cons 2 (Cons 3 Empty))`).
+- Elm cheats big time on the implementation, in a good way, for things
+like sorting and mapping, as it transforms back and forth between
+the Cons/Empty-like internal data structure (for immutability)
+and raw JS lists (for speed).
 
 You can learn a lot about `List` by looking at
 [core/src/Elm/Kernel/List.js](https://github.com/elm/core/blob/1.0.2/src/Elm/Kernel/List.js).
