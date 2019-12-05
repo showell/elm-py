@@ -2,8 +2,10 @@
 
 ## Dict
 
-[Dict.elm](https://github.com/elm/core/blob/1.0.2/src/Dict.elm).
-is a really interesting piece of code.  In this article
+[Dict.elm](https://github.com/elm/core/blob/1.0.2/src/Dict.elm)
+is an interesting, important piece of code.
+
+In this article
 I do a deep dive on its implementation and discuss some other
 explorations related to Dict.
 
@@ -114,6 +116,90 @@ Let's cover algorithmic complexity first, and in the process
 we'll learn why Dict is a binary tree in the first place.
 
 ## Dict is a persistent data structure
+
+If you come to Elm from other programming languages with mutable
+data structures, you may be wondering why Dict does not use an
+O(1) hash implementation.
+
+Let's talk about immutability first (and you can skim the next
+section if you kinda know where this is going):
+
+### Immutability
+
+The following page lists the complexities for
+Python's `dict` class (toward the bottom):
+
+https://wiki.python.org/moin/TimeComplexity
+
+The key points to know are that Python's dict has these properties:
+
+- Get item: O(1)
+- Set item: O(1)
+- Delete item: O(1)
+
+Python is O(1), whereas Elm is O(logN) for the same operations.
+
+Are the Python folks just lying? No.
+
+Are they some kind of mad geniuses who have discovered
+a cutting edge algorithm? No.
+
+The key difference between Python `dict` and Elm `Dict` is that
+the former is mutable.  Let's illustrate:
+
+Python:
+
+~~~py
+>>> d = { 1: "one", 2: "two" }
+>>> d2 = d
+>>> d2[3] = 'three'
+>>> d
+{1: 'one', 2: 'two', 3: 'three'}
+>>> d2
+{1: 'one', 2: 'two', 3: 'three'}
+~~~
+
+Note that changing `d2` also changes `d`!  This is a key feature
+of Python, which is that you can assign multiple bindings to
+data structures and mutate them in place.
+
+Elm:
+
+~~~elm
+> d = Dict.fromList([ (1, "one"), (2, "two") ])
+> d2 = Dict.insert 3 "three" d
+Dict.fromList [(1,"one"),(2,"two"),(3,"three")]
+> d
+Dict.fromList [(1,"one"),(2,"two")]
+~~~
+
+Note that Elm does not mutate the original list!  This is a key
+feature of Elm, which promises that once you assign a value to
+the name, that value will never change.
+
+Neither language is wrong here; they just make different choices.
+
+Note that in Python it's completely possible to decouple `d2` from
+`d` while still borrowing some of its values:
+
+~~~py
+>>> d = { 1: "one", 2: "two" }
+>>> d2 = d.copy()
+>>> d2[3] = 'three'
+>>> d2
+{1: 'one', 2: 'two', 3: 'three'}
+>>> d
+{1: 'one', 2: 'two'}
+~~~
+
+In order to make d2 **not** mutate d, we need to make a **copy**
+of d when working in Python.  It turns out that under the hood,
+that's what Elm is doing, too.  But isn't that expensive?
+
+### Shared data structures
+
+
+
 
 
 ## Dict is a red-black tree
