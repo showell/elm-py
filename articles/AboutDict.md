@@ -252,7 +252,7 @@ need to copy the whole tree.  We just need to copy the
 3 or 4 nodes between the root of the tree and the new
 leaf.
 
-It looks something like this:
+It looks something like below (image from wikipedia):
 
 ![shared tree](https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Purely_functional_tree_after.svg/438px-Purely_functional_tree_after.svg.png)
 
@@ -323,6 +323,63 @@ I am only slightly exaggerating! You can read the
 section of the wikipedia article for more detail.
 
 Let's get back to Elm code!
+
+## NColor
+
+Let's get back to the definition of a Dict node:
+
+~~~ elm
+    RBNode_elm_builtin NColor k v (Dict k v) (Dict k v)
+~~~
+
+I kept you in suspense for a long time about what `NColor`
+represented.  Here it is:
+
+~~~ elm
+type NColor
+    = Red
+    | Black
+~~~
+
+A bit underwhelming, huh, after all that explanation?
+
+## Searching
+
+Let's look at Dict's get method:
+
+~~~ elm
+get targetKey dict =
+  case dict of
+    RBEmpty_elm_builtin ->
+      Nothing
+
+    RBNode_elm_builtin _ key value left right ->
+      case compare targetKey key of
+        LT ->
+          get targetKey left
+
+        EQ ->
+          Just value
+
+        GT ->
+          get targetKey right
+~~~
+
+The above piece of code encapsulates Dict's elegance to
+me.  At its heart Dict.elm is just a bunch of functions
+doing pattern matches on a simple custom type.  And the
+data structure is entirely centered around the equally
+simple `Order` type.
+
+~~~
+type Order = LT | EQ | GT
+~~~
+
+But beneath this beauty lies a tiny bit of ugliness.
+
+Dict's greatest strength is also its greatest weakness.
+
+## Dict only works on comparable keys
 
 # Footnotes
 
