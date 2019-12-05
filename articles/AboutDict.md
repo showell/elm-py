@@ -269,7 +269,7 @@ levels deep.
 
 There is, however, one technical problem that I have so far glossed over.
 We need to keep the tree balanced.  And this gets us back to why
-Dict.elm's RBNode_elm_builtin variant has a slot for "color."
+Dict.elm's `RBNode_elm_builtin` variant has a slot for "color."
 
 ## Dict is a red-black tree
 
@@ -278,6 +278,38 @@ more about here:
 
 https://en.wikipedia.org/wiki/Red%E2%80%93black_tree
 
+A perfectly balanced tree looks like this:
+
+        4
+     2    6
+    1 3  5 7
+
+Unfortunately, your inserts often lead to something more
+like this:
+
+    
+        3
+     2    6
+    1    5 7
+        4
+
+Or, worst case:
+
+    1
+     2
+      3
+       4
+        5
+         6
+          7
+
+For the N=7 case, the last tree isn't gonna be a performance
+disaster, but for large N, it will be.
+
+It turns out that transforming an unbalanced tree into a
+perfectly balanced tree is an expensive operation, and you
+don't want to do it on every insert.  Instead, you want to
+keep the tree "sorta balanced".
 
 # Footnotes
 
