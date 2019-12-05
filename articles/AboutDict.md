@@ -18,9 +18,7 @@ type List a
     | Cons a (List a)
 ~~~
 
-Some of your are saying "duh, of course it is".  And on the other
-hand, some of you are saying "no, it's not really exposed that way
-in Elm".  And you're both kinda right.  Conceptually, Elm really
+Conceptually, Elm 
 does implement `List` as a union type of `Cons` and `Empty` if you
 squint hard enough, but there are two important caveats:
 
@@ -49,10 +47,11 @@ The entire `Dict` data structure is build on top of this
 data structure! No, wait, not "on top of".  Dict **is**
 this custom type.
 
-Dict.elm is 100% pure Elm, and it **never** calls kernel code.
+Dict.elm is 100% pure Elm, and it **never** directly
+calls kernel code.
 
-(There are some small kernel dependencies that I cover in
-the "Dict Equality" section of the "Footnotes.")
+(There are, however, some small **indirect** kernel dependencies that I cover in
+the "Dict Equality" section of the "Footnotes".))
 
 When you reference the `Dict.empty` value in your Elm projects,
 you are literally referencing the one and only Elm value of
