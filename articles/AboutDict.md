@@ -21,9 +21,7 @@ up writing about 4k lines of
 [Elm code](https://github.com/showell/elm-fasttrack/tree/master/src)
 for the board game.  Despite being on the steepest part of
 Elm's learning curve, I made steady progress throughout the
-exercise and learned a lot about Elm itself, plus played around
-with SVG for the first time (having mostly worked with Canvas
-before that, and not even much of that).
+exercise and learned a lot about Elm itself.
 
 There was only one major irritation along the way.  It turns
 out Dict only works on comparable data types for keys.
@@ -46,7 +44,7 @@ It is a really interesting piece of code.
 Before we learn about `Dict`, though, did you know that
 `List` is really just a glorified custom type?:
 
-~~ elm
+~~~ elm
 type List a
     = Empty
     | Cons a (List a)
