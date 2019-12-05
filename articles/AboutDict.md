@@ -25,14 +25,14 @@ type Dict k v
 
 Contrast `Dict` to `List`.  The `List` class in Elm is
 much more of a builtin, using lots of JS code and not
-explicitly surfacing a custom type.  See the "Footnotes"
-for more discussion on `List`.
+explicitly surfacing a custom type.  See the [List](#List) section
+in the [Footnotes](#Footnotes) for more discussion on `List`.
 
 Dict.elm, on the other hand, is 100% pure Elm, and it
 **never** directly calls kernel code.
 
 (There are, however, some small indirect kernel dependencies that I cover in
-the "Dict Equality" section of the "Footnotes".)
+the [Dict Equality](#Dict-Equality) section of the footnotes.)
 
 When you reference the `Dict.empty` value in your Elm projects,
 you are literally referencing the one and only Elm value of
@@ -73,7 +73,8 @@ tree, and it has a color (more about this later), a key, a value,
 and two subtrees.  Each of the subtrees is either empty or
 itself a top-level node of a smaller binary tree.
 
-Here is a pictorial representation of a non-empty Dict:
+Here is a pictorial representation of a non-empty Dict (showing
+integer keys):
 
 ![tree](https://showell.github.io/redblack.PNG)
 
@@ -158,7 +159,9 @@ the name, that value will **never** change.
 
 Neither language is wrong here; they just make different choices.
 
-Note that in Python it's completely possible to decouple `d2` from
+### The copying problem
+
+In Python it's completely possible to decouple `d2` from
 `d` while still borrowing some of its values:
 
 ~~~py
