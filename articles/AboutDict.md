@@ -66,6 +66,24 @@ and raw JS lists (for speed).
 
 If you're curious about List, see the "Footnotes" section.
 
+### back to Dict
+
+So here's the thing about Dict.  It's not just figuratively a
+custom type.  It's **literally** a custom type:
+
+~~~ elm
+type Dict k v
+    = RBNode_elm_builtin NColor k v (Dict k v) (Dict k v)
+    | RBEmpty_elm_builtin
+~~~
+
+The entire `Dict` data structure is build on top of this 
+data structure! No, wait, not "on top of".  Dict **is**
+this custom type.
+
+Dict is 100% pure Elm, which only one small caveat that
+I cover in the "Dict Equality" section of the "Footnotes."
+
 # Footnotes
 
 ## List
@@ -123,6 +141,57 @@ var _List_sortBy = F2(function(f, xs)
 });
 ~~~
 
+You can learn a lot from looking at the JS inside of your `index.html`.
+Evan's compiler does a nice job of being faithful to the traditional
+notion of `List` being a custom type without actually sacrificing
+performance.
+
+## Dict Equality
+
+You will hear people (including me) say that Dict.elm is 100% pure
+Elm, and that's true, but there is one compiler back door that it
+relies on.  When you compare two instances of Dict for equality
+(using either `Basics.eq` or `==`), you are actually invoking some
+custom-written JS code that the compiler emits:
+
+~~~ js
+	if (x === y)
+	{
+		return true;
+	}
+
+    // ...
+
+	if (x.$ === 'RBNode_elm_builtin' || x.$ === 'RBEmpty_elm_builtin')
+	{
+		x = $elm$core$Dict$toList(x);
+		y = $elm$core$Dict$toList(y);
+	}
+~~~
+
+It would be nice to remove the need for that compiler hook in the
+compiler.  If the compiler had a mechanism to let pure Elm objects
+provide custom `eq` hooks, we would not only get true 100% Elm
+purity in core `Dict`, but we could also support equality in
+Dict alternatives such as `AssocList`.
+
+I should also point out that `_Debug_toAnsiString` also knows
+about `RBNode_elm_builtin` and `RBEmpty_elm_builtin`:
+
+~~~ js
+    if (tag === 'RBNode_elm_builtin' || tag === 'RBEmpty_elm_builtin')
+    {
+        return _Debug_ctorColor(ansi, 'Dict')
+            + _Debug_fadeColor(ansi, '.fromList') + ' '
+            + _Debug_toAnsiString(ansi, $elm$core$Dict$toList(value));
+    }
+~~~
+
+Again, it would be nice if the compiler allowed pure Elm objects to
+do the work here.
+
+But it's really not that big a deal.  Your key takeaway from `Dict`
+should be that 99% of the key pieces are pure Elm.
 
 
 
