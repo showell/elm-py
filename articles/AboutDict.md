@@ -4,10 +4,6 @@
 is an interesting, important piece of code in Elm's core
 library.
 
-In this article
-I do a deep dive on its implementation and discuss some other
-explorations related to Dict.
-
 The current version of Dict was primarily authored by Robin H Hansen.
 You may find his talk about [persistent collections](https://www.youtube.com/watch?v=mmiNobpx7eI&app=desktop)
 interesting.
@@ -23,9 +19,9 @@ type Dict k v
     | RBEmpty_elm_builtin
 ~~~
 
-Contrast `Dict` to `List`.  The `List` class in Elm is
-much more of a builtin, using lots of JS code and not
-explicitly surfacing a custom type.  See the [List](#List) section
+Contrast `Dict` to `List`.  The `List` class in Elm relies on
+significant chunks of JS code and does not
+explicitly use a custom type.  See the [List](#List) section
 in the [Footnotes](#Footnotes) for more discussion on `List`.
 
 Dict.elm, on the other hand, is 100% pure Elm, and it
@@ -101,8 +97,7 @@ If you come to Elm from other programming languages with mutable
 data structures, you may be wondering why Dict does not use an
 O(1) hash implementation.
 
-Let's talk about immutability first (and you can skim the next
-section if you kinda know where this is going):
+Let's talk about immutability first.
 
 ### Immutability
 
@@ -206,12 +201,15 @@ one more key/value pair to the previous.  If you want to share
 the same hash table entry for the 100th key/value pair, you would
 need to indicate all 100 of its owners, and then likewise for
 the 99 owners of the 99th item, and then likewise for the 98
-owners of the 98th item, and so on.  This can be something
-like 50,000 pieces of data, or a data size complexity of
-O(n-squared).
+owners of the 98th item, and so on.  And so you're right back
+to having O(N) operations for any kind of search.  Also, in
+order to even get random access to hash table entries, you
+probably have to build the hash directly in JS or build on top
+of some other pure Elm data structure that is more intrinsically
+complex than the Dict itself!
 
-At the other extreme, you could use an extremely compact list
-representation:
+Instead of using a hash table, you could instead go simple and use an
+extremely compact list representation for your 100 dicts:
 
     d1 = (k, v)
     d2 = (k, v) -> copy of d1
@@ -223,16 +221,16 @@ representation:
     d99 = (k, v) -> copy of 
     d100 = (k, v) -> copy of d99
 
-And at the end you only have O(N) elements:
+And at the end you would only have O(N) elements:
 
     (k100, v100) -> (k99, v99) -> ... -> (k2, v2) -> (k1, v1)
 
-But then your problem is speed.  If you want to get the 50th
+But then your problem is still speed.  If you want to get the 50th
 element, you have to traverse through 50 key/value pairs
 before getting to your data.
 
 The way to solve this is using an indexed data structure.
-That is why Dict uses a binary search tree.  A binary tree allows
+And, indeed, Dict uses a binary search tree.  A binary tree allows
 you to inspect its top node to decide which half of the
 tree to search for any given key.  And then you can keep
 dividing the problem in half, generally making only about
