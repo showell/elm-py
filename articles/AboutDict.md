@@ -276,20 +276,20 @@ more about here:
 
 https://en.wikipedia.org/wiki/Red%E2%80%93black_tree
 
-A perfectly balanced tree looks like this:
+A perfectly balanced binary search tree looks like this:
 
         4
      2    6
     1 3  5 7
 
-Unfortunately, your inserts often lead to something more
-like this:
+Unfortunately, your inserts would often lead to something more
+like this if you don't balance them:
 
     
-        3
-     2    6
-    1    5 7
-        4
+       2
+     1   6
+        5 7
+       3
 
 Or, worst case:
 
@@ -390,11 +390,46 @@ pattern match expression.  The only field we ignore
 is the `NColor` piece, which is what the `_` placeholder
 is for.  Beautiful!
 
-But beneath this beauty lies a tiny bit of ugliness.
+# More simple functions
 
-Dict's greatest strength is also its greatest weakness.
+Dict's inherent simplicity also shines in `map` and `foldl`.
+If you understand the basic recursive structure of Dict, the
+implementations fall out quite naturally:
 
-## Dict only works on comparable keys
+~~~ elm
+map func dict =
+  case dict of
+    RBEmpty_elm_builtin ->
+      RBEmpty_elm_builtin
+
+    RBNode_elm_builtin color key value left right ->
+      RBNode_elm_builtin color key (func key value) (map func left) (map func right)
+
+foldl func acc dict =
+  case dict of
+    RBEmpty_elm_builtin ->
+      acc
+
+    RBNode_elm_builtin _ key value left right ->
+      foldl func (func key value (foldl func acc left)) right
+~~~
+
+Unlike `foldl`, the implementation of `foldr` is quite complicated.
+
+Just kidding!
+
+The only way `foldr` differs from `foldl` is that `right` and `left` swapped in
+the recursive step:
+
+~~~ elm
+foldr func acc t =
+  case t of
+    RBEmpty_elm_builtin ->
+      acc
+
+    RBNode_elm_builtin _ key value left right ->
+      foldr func (func key value (foldr func acc right)) left
+~~~
 
 # Footnotes
 
