@@ -431,6 +431,26 @@ foldr func acc t =
       foldr func (func key value (foldr func acc right)) left
 ~~~
 
+If you are having trouble parsing this...
+
+~~~ elm
+  foldr func (func key value (foldr func acc right)) left
+~~~
+
+...it may help to think of it like this:
+
+~~~elm
+    let
+        acc1 = foldr func acc right -- fold the right subtree
+        acc2 = func key value acc2 -- apply func to value/acc2
+    in
+    foldr func acc2 left -- fold the left subtree with acc2
+~~~
+
+The key thing to note is that the structure of the code nearly
+perfectly reflects the data structure.  And it's all pattern
+matching and function application!
+
 # Footnotes
 
 ## List
