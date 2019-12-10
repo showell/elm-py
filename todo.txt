@@ -1,10 +1,11 @@
 emit:
-    just revert Dict.elm (now that bug is reported)
 
-    write parser readme
+    pratt:
+        start with simple test case
+        don't worry about embedding
 
-    ANNOUNCE:
-        discourse
+        every function:
+            return led, nud, state
 
     import cleanup:
         (need to get actual import working)

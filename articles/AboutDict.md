@@ -74,14 +74,8 @@ integer keys):
 
 ![tree](https://showell.github.io/redblack.PNG)
 
-The key properities of a binary tree are that you can insert,
-remove, and find elements with O(logN) operations.  As a consequence,
-here are the algorithmic complexities of the main operations of
-Dict:
-
-- insert: O(logN)
-- get: O(logN)
-- remove: O(logN)
+The key properities of a binary tree (and thus Dict) are that you can insert,
+remove, and find elements with O(logN) operations.
 
 You may have a couple questions:
 
@@ -101,23 +95,17 @@ Let's talk about immutability first.
 
 ### Immutability
 
-The following page lists the complexities for
-Python's `dict` class (toward the bottom):
-
-https://wiki.python.org/moin/TimeComplexity
-
-The key points to know are that Python's dict has these properties:
+Python's `dict` class has the following properties:
 
 - Get item: O(1)
 - Set item: O(1)
 - Delete item: O(1)
 
+(source: https://wiki.python.org/moin/TimeComplexity, *scroll to bottom*)
+
 Python is O(1), whereas Elm is O(logN) for the same operations.
 
-Are the Python folks just lying? No.
-
-Are they some kind of mad geniuses who have discovered
-a cutting edge algorithm? No.
+Are the Python folks just using a more clever algorithm?  No. 
 
 The key difference between Python `dict` and Elm `Dict` is that
 the former is mutable.  Let's illustrate:
@@ -313,10 +301,12 @@ The red-black tree algorithm is a clever solution to this
 problem.  Under a red-black regime, you only balance your
 tree enough to satisfy this condition:
 
-**Red nodes are bad.  You can only have so many of them before
-you must do something about it.**
+**Red nodes indicated long branches and are suboptimal.  You can
+only have so many of them before you must do something about it.**
 
-I am only slightly exaggerating! You can read the
+I am only slightly oversimplifying the algorithm!
+
+You can read the
 [Properties](https://en.wikipedia.org/wiki/Red%E2%80%93black_tree#Properties)
 section of the wikipedia article for more detail.
 
@@ -450,6 +440,65 @@ If you are having trouble parsing this...
 The key thing to note is that the structure of the code nearly
 perfectly reflects the data structure.  And it's all pattern
 matching and function application!
+
+# Building on top of foldl/foldr
+
+One hallmark of a good data structure is that you can mostly
+encapsulate it for higher level operations.  In Dict you get
+a lot of power from these two functions:
+
+- foldl
+- foldr
+
+Because the above two functions are performant, you can
+rewrite other helpers in terms of them.  Note how none
+of the methods below expose any details about the custom
+type variants (e.g. `RBNode_elm_builtin`) or shape of
+the binary tree.
+
+We generally use `foldr` to produce lists (since we
+have the keys ordered in the dict left to right and
+lists are created from right to left):
+
+~~~ elm
+keys dict =
+  foldr (\key value keyList -> key :: keyList) [] dict
+
+values dict =
+  foldr (\key value valueList -> value :: valueList) [] dict
+
+toList dict =
+  foldr (\key value list -> (key,value) :: list) [] dict
+~~~
+
+We generally use `foldl` to produce new dicts:
+
+~~~ elm
+union t1 t2 =
+  foldl insert t2 t1
+
+diff t1 t2 =
+  foldl (\k v t -> remove k t) t1 t2
+
+filter isGood dict =
+  foldl (\k v d -> if isGood k v then insert k v d else d) empty dict
+
+partition isGood dict =
+  let
+    add key value (t1, t2) =
+      if isGood key value then
+        (insert key value t1, t2)
+
+      else
+        (t1, insert key value t2)
+  in
+    foldl add (empty, empty) dict
+~~~
+
+The decision between `foldl` and `foldr` for the above methods
+is somewhat arbitrary, as swapping in `foldr` would only affect
+performance and not correctness.  I doubt that there would be
+clear performance wins in either direction.
 
 # Footnotes
 
