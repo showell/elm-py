@@ -377,6 +377,19 @@ class Unit:
     def __str__(self):
         return 'UNIT'
 
+# Parentheses
+
+class Paren:
+    def __init__(self, ast):
+        self.ast = ast
+
+    def __str__(self):
+        return 'PAREN:\n' + str(self.ast)
+
+    def emit(self):
+        expr = '(' + getCode(self.ast) + ')'
+        return Simple(expr)
+
 # Function calls
 
 class Call:
