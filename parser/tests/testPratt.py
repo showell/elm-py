@@ -20,7 +20,7 @@ class Var:
         return self.token
 
 class VarToken:
-    lbp = 0
+    lbp = 100
 
     def __init__(self, token):
         self.token = token
@@ -29,6 +29,8 @@ class VarToken:
         return self.token
 
     def nud(self, token, state):
+        if token and token.lbp == 100:
+            (right, token, state) = expression(token, state, self.lbp-1)
         self.ast = Var(self.token)
         return (self, token, state)
 
@@ -50,7 +52,9 @@ class OpToken:
             self.lbp = 70
 
     def __str__(self):
-        return str(self.ast)
+        if hasattr(self, 'ast'):
+            return str(self.ast)
+        return 'unhandled: ' + self.token
 
     def led(self, left, token, state):
         (right, token, state) = expression(token, state, self.lbp)
@@ -64,13 +68,13 @@ def expression(token, state, rbp=0):
     t = token
     res = tokenize(state)
     if res is None:
-        return t.nud(token, state)
+        return t.nud(None, state)
 
     token = res.ast
     state = res.state
     (left, token, state) = t.nud(token, state)
 
-    while rbp < token.lbp:
+    while token and rbp < token.lbp:
         t = token
         res = tokenize(state)
         if res is None:
@@ -102,7 +106,7 @@ tokenize = \
         )
 
 def testTokens():
-    s = "a * b + c * d + e"
+    s = "f x y * b + c * d + e"
     state = State(s)
 
     res = tokenize(state)
