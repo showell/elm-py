@@ -6,6 +6,8 @@ from ParseHelper import (
     captureOneOf,
     captureOperator,
     captureTokenLower,
+    grab,
+    pChar,
     State,
     transform,
 )
@@ -29,9 +31,36 @@ class VarToken:
         return self.token
 
     def nud(self, token, state):
-        if token and token.lbp == 100:
+        if token and hasattr(token, 'nud'):
             (right, token, state) = expression(token, state, self.lbp-1)
         self.ast = Var(self.token)
+        return (self, token, state)
+
+class ParenToken:
+    lbp = 200
+
+    def __init__(self, token):
+        pass
+
+    def __str__(self):
+        return str(self.ast)
+
+    def nud(self, token, state):
+        right, token, state = expression(token, state, 0)
+        self.ast = right
+
+        state = pChar(')')(state)
+        if state is None:
+            raise 'foo'
+
+        res = tokenize(state)
+        if res is None:
+            token = None
+            state = None
+        else:
+            token = res.ast
+            state = res.state
+
         return (self, token, state)
 
 class Op:
@@ -86,7 +115,6 @@ def expression(token, state, rbp=0):
 
     return (left, token, state)
 
-
 var = \
     transform(
         VarToken,
@@ -99,14 +127,21 @@ op = \
         captureOperator(['<', '+', '*']),
     )
 
+paren = \
+    transform(
+        ParenToken,
+        grab(pChar('('))
+        )
+
 tokenize = \
     captureOneOf(
         var,
         op,
+        paren,
         )
 
 def testTokens():
-    s = "f x y * b + c * d + e"
+    s = "a x y * (b + c) * d + (e * f)"
     state = State(s)
 
     res = tokenize(state)
