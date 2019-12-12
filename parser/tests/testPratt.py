@@ -20,25 +20,26 @@ import ElmParser
 import ElmTypes
 
 class Pratt:
-    def __init__(self, token, state):
+    def __init__(self, token, state, tokenizer):
         self.token = token
         self.state = state
+        self.tokenizer = tokenizer
 
     def tokenize(self):
-        res = tokenize(self.state)
+        res = self.tokenizer(self.state)
         if res is None:
             token = None
             state = self.state
         else:
             token = res.ast
             state = res.state
-        return Pratt(token, state)
+        return Pratt(token, state, self.tokenizer)
 
     def advance(self, parse):
         state = parse(self.state)
         if state is None:
             raise 'foo'
-        return Pratt(None, state).tokenize()
+        return Pratt(None, state, self.tokenizer).tokenize()
 
 class VarToken:
     lbp = 100
@@ -125,7 +126,7 @@ paren = \
         grab(pChar('('))
         )
 
-tokenize = \
+tokenizer = \
     captureOneOf(
         var,
         op,
@@ -133,7 +134,7 @@ tokenize = \
         )
 
 def parse(state):
-    pratt = Pratt(None, state).tokenize()
+    pratt = Pratt(None, state, tokenizer).tokenize()
     (left, pratt) = expression(pratt)
 
     # Since Pratt parsing always looks ahead one token, we
