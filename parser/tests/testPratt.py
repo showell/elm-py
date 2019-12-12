@@ -2,44 +2,23 @@ import sys
 sys.path.append('../lib')
 sys.path.append('../../src')
 
-import ParseHelper
 from ParseHelper import (
     captureOneOf,
     captureOperator,
     captureTokenLower,
     grab,
-    lastState,
     printState,
     pChar,
-    Result,
     State,
     transform,
+)
+from PrattHelper import (
+    expression,
+    parse,
 )
 
 import ElmParser
 import ElmTypes
-
-class Pratt:
-    def __init__(self, token, state, tokenizer):
-        self.token = token
-        self.state = state
-        self.tokenizer = tokenizer
-
-    def tokenize(self):
-        res = self.tokenizer(self.state)
-        if res is None:
-            token = None
-            state = self.state
-        else:
-            token = res.ast
-            state = res.state
-        return Pratt(token, state, self.tokenizer)
-
-    def advance(self, parse):
-        state = parse(self.state)
-        if state is None:
-            raise 'foo'
-        return Pratt(None, state, self.tokenizer).tokenize()
 
 class VarToken:
     lbp = 100
@@ -51,12 +30,6 @@ class VarToken:
         return self.token
 
     def nud(self, pratt):
-        """
-        # This is sorta broken--we parse over any arguments, but otherwise
-        # ignore them
-        if token and hasattr(token, 'nud'):
-            (right, token, state) = expression(token, state, self.lbp-1)
-        """
         self.ast = ElmTypes.ExprVar(self.token)
         return (self, pratt)
 
@@ -93,21 +66,6 @@ class OpToken:
         self.ast = ElmTypes.BinOp([left.ast, self.token, right.ast])
         return (self, pratt)
 
-def expression(pratt, rbp=0):
-    t = pratt.token
-    pratt = pratt.tokenize()
-    if pratt.token is None:
-        return t.nud(pratt)
-
-    (left, pratt) = t.nud(pratt)
-
-    while pratt.token and rbp < pratt.token.lbp:
-        t = pratt.token
-        pratt = pratt.tokenize()
-        (left, pratt) = t.led(left, pratt)
-
-    return (left, pratt)
-
 var = \
     transform(
         VarToken,
@@ -133,22 +91,10 @@ tokenizer = \
         paren,
         )
 
-def parse(state):
-    pratt = Pratt(None, state, tokenizer).tokenize()
-    (left, pratt) = expression(pratt)
-
-    # Since Pratt parsing always looks ahead one token, we
-    # cheat here to reset the state for any integration with
-    # "outer" parsers.  The ParseHelper module remembers the
-    # last valid state.  This is still skipping one too many
-    # tokens, though, so I need a better way to keep prior
-    # states.
-    return Result(ParseHelper.lastState, left.ast)
-
 def testTokens():
     s = " a * (b + c) * d + (e * f) then x + 2"
     state = State(s)
-    res = parse(state)
+    res = parse(state, tokenizer)
     print('final ast', res.ast.emit())
     printState(res.state)
 
