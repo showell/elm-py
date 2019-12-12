@@ -19,6 +19,27 @@ from ParseHelper import (
 import ElmParser
 import ElmTypes
 
+class Pratt:
+    def __init__(self, token, state):
+        self.token = token
+        self.state = state
+
+    def tokenize(self):
+        res = tokenize(self.state)
+        if res is None:
+            token = None
+            state = self.state
+        else:
+            token = res.ast
+            state = res.state
+        return Pratt(token, state)
+
+    def advance(self, parse):
+        state = parse(self.state)
+        if state is None:
+            raise 'foo'
+        return Pratt(None, state).tokenize()
+
 class VarToken:
     lbp = 100
 
@@ -28,7 +49,7 @@ class VarToken:
     def __str__(self):
         return self.token
 
-    def nud(self, token, state):
+    def nud(self, pratt):
         """
         # This is sorta broken--we parse over any arguments, but otherwise
         # ignore them
@@ -36,7 +57,7 @@ class VarToken:
             (right, token, state) = expression(token, state, self.lbp-1)
         """
         self.ast = ElmTypes.ExprVar(self.token)
-        return (self, token, state)
+        return (self, pratt)
 
 class ParenToken:
     lbp = 200
@@ -47,23 +68,11 @@ class ParenToken:
     def __str__(self):
         return str(self.ast)
 
-    def nud(self, token, state):
-        right, token, state = expression(token, state, 0)
+    def nud(self, pratt):
+        right, pratt = expression(pratt, 0)
         self.ast = ElmTypes.Paren(right.ast)
-
-        state = pChar(')')(state)
-        if state is None:
-            raise 'foo'
-
-        res = tokenize(state)
-        if res is None:
-            token = None
-            state = None
-        else:
-            token = res.ast
-            state = res.state
-
-        return (self, token, state)
+        pratt = pratt.advance(pChar(')'))
+        return (self, pratt)
 
 class OpToken:
     def __init__(self, token):
@@ -78,35 +87,25 @@ class OpToken:
             return str(self.ast)
         return 'unhandled: ' + self.token
 
-    def led(self, left, token, state):
-        (right, token, state) = expression(token, state, self.lbp)
+    def led(self, left, pratt):
+        (right, pratt) = expression(pratt, self.lbp)
         self.ast = ElmTypes.BinOp([left.ast, self.token, right.ast])
-        return (self, token, state)
+        return (self, pratt)
 
-def expression(token, state, rbp=0):
-    # This code is adapted from this article:
-    #
-    # http://effbot.org/zone/simple-top-down-parsing.htm
-    t = token
-    res = tokenize(state)
-    if res is None:
-        return t.nud(None, state)
+def expression(pratt, rbp=0):
+    t = pratt.token
+    pratt = pratt.tokenize()
+    if pratt.token is None:
+        return t.nud(pratt)
 
-    token = res.ast
-    state = res.state
-    (left, token, state) = t.nud(token, state)
+    (left, pratt) = t.nud(pratt)
 
-    while token and rbp < token.lbp:
-        t = token
-        res = tokenize(state)
-        if res is None:
-            print('break')
-            break
-        token = res.ast
-        state = res.state
-        (left, token, state) = t.led(left, token, state)
+    while pratt.token and rbp < pratt.token.lbp:
+        t = pratt.token
+        pratt = pratt.tokenize()
+        (left, pratt) = t.led(left, pratt)
 
-    return (left, token, state)
+    return (left, pratt)
 
 var = \
     transform(
@@ -134,8 +133,8 @@ tokenize = \
         )
 
 def parse(state):
-    res = tokenize(state)
-    (left, token, state) = expression(res.ast, res.state)
+    pratt = Pratt(None, state).tokenize()
+    (left, pratt) = expression(pratt)
 
     # Since Pratt parsing always looks ahead one token, we
     # cheat here to reset the state for any integration with
