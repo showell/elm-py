@@ -91,11 +91,31 @@ tokenizer = \
         paren,
         )
 
+"""
+reverseNodeList
+len <= 0
+fromIndex < 0
+posIndex > len
+newTailLen == branchFactor
+shift == 5
+end == len
+
+index >= tailIndex len
+pos >= JsArray.length tree
+JsArray.length jsArray < branchFactor
+
+index < 0 || index >= len
+oldShift <= newShift || JsArray.length tree == 0
+
+isGood x
+bLen <= (branchFactor * 4)
+"""
+
 def testTokens():
     s = " a * (b + c) * d + (e * f) then x + 2"
     state = State(s)
     res = parse(state, tokenizer)
-    print('final ast', res.ast.emit())
+    print('final ast', res.ast.emit().val)
     printState(res.state)
 
 testTokens()
