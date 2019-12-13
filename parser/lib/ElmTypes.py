@@ -473,6 +473,14 @@ class TupleVar:
 
 # Binary operator
 
+opDict = {
+    '||': 'or',
+    '&&': 'and',
+    '/=': '!=',
+    '++': '+',
+    '^': '**',
+    }
+
 class BinOp:
     def __init__(self, ast):
         self.expr1, self.op, self.expr2 = ast
@@ -488,7 +496,10 @@ class BinOp:
         expr1 = getCode(self.expr1)
         expr2 = getCode(self.expr2)
 
-        stmt = expr1 + ' ' + self.op + ' ' + expr2
+        op = self.op
+        op = opDict.get(op, op)
+
+        stmt = expr1 + ' ' + op + ' ' + expr2
 
         return Simple(stmt)
 

@@ -141,7 +141,6 @@ JsArray.length jsArray < branchFactor
 oldShift <= newShift || JsArray.length tree == 0
 
 isGood x
-bLen <= (branchFactor * 4)
 """
 
 def test1(sElm, sPython=None):
@@ -159,6 +158,7 @@ def testTokens():
         'a * (b+c) * d + (e*f)',
         'a * (b + c) * d + (e * f)'
         )
+    test1('bLen <= (branchFactor * 4)')
 
     test1('reverseNodeList')
     test1('len <= foo')
@@ -166,6 +166,10 @@ def testTokens():
     test1('posIndex > len')
     test1('newTailLen == branchFactor')
     test1('shift == 5')
-    # test1('index < 0 || index >= len')
+
+    test1(
+        'index < 0 || index >= len',
+        'index < 0 or index >= len'
+        )
 
 testTokens()
