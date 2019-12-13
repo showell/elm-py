@@ -44,7 +44,9 @@ def assertEqual(actual, expected):
     if actual == expected:
         print('pass')
     else:
-        print('\n\nFAIL!\n', actual, expected)
+        print('\n\nFAIL!\n')
+        print(actual)
+        print(expected)
         print('\n')
         raise AssertionError
 

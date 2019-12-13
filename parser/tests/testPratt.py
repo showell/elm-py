@@ -1,8 +1,10 @@
 import sys
 sys.path.append('../lib')
 sys.path.append('../../src')
+sys.path.append('../../tests')
 
 from ParseHelper import (
+    captureInt,
     captureOneOf,
     captureOperator,
     captureTokenLower,
@@ -17,8 +19,23 @@ from PrattHelper import (
     parse,
 )
 
+from testHelper import assertEqual
+
 import ElmParser
 import ElmTypes
+
+class IntToken:
+    lbp = 100
+
+    def __init__(self, token):
+        self.token = token
+
+    def __str__(self):
+        return self.token
+
+    def nud(self, pratt):
+        self.ast = ElmTypes.Int(self.token)
+        return (self, pratt)
 
 class VarToken:
     lbp = 100
@@ -48,13 +65,31 @@ class ParenToken:
         pratt = pratt.advance(pChar(')'))
         return (self, pratt)
 
+bindingPowers = {
+    '||': 20,
+    '&&': 30,
+    '==': 40,
+    '/=': 40,
+    '<': 40,
+    '>': 40,
+    '<=': 40,
+    '>=': 40,
+    '++': 50,
+    '+': 60,
+    '-': 60,
+    '*': 70,
+    '/': 70,
+    '//': 70,
+    '^': 80,
+    }
+
+ops = list(bindingPowers.keys())
+ops.sort(key = len, reverse=True)
+
 class OpToken:
     def __init__(self, token):
         self.token = token
-        if token == '+':
-            self.lbp = 60
-        elif token == '*':
-            self.lbp = 70
+        self.lbp = bindingPowers[token]
 
     def __str__(self):
         if hasattr(self, 'ast'):
@@ -72,11 +107,17 @@ var = \
         captureTokenLower(ElmParser.reservedWords)
         )
 
+integer = \
+    transform(
+        IntToken,
+        captureInt
+        )
+
 op = \
     transform(
         OpToken,
-        captureOperator(['<', '+', '*']),
-    )
+        captureOperator(ops),
+        )
 
 paren = \
     transform(
@@ -89,33 +130,42 @@ tokenizer = \
         var,
         op,
         paren,
+        integer,
         )
 
 """
-reverseNodeList
-len <= 0
-fromIndex < 0
-posIndex > len
-newTailLen == branchFactor
-shift == 5
-end == len
-
 index >= tailIndex len
 pos >= JsArray.length tree
 JsArray.length jsArray < branchFactor
 
-index < 0 || index >= len
 oldShift <= newShift || JsArray.length tree == 0
 
 isGood x
 bLen <= (branchFactor * 4)
 """
 
-def testTokens():
-    s = " a * (b + c) * d + (e * f) then x + 2"
-    state = State(s)
+def test1(sElm, sPython=None):
+    if sPython is None:
+        sPython = sElm
+
+    state = State(sElm + ' then foo')
     res = parse(state, tokenizer)
-    print('final ast', res.ast.emit().val)
-    printState(res.state)
+    assertEqual(sPython, res.ast.emit().val)
+    # printState(res.state)
+
+
+def testTokens():
+    test1(
+        'a * (b+c) * d + (e*f)',
+        'a * (b + c) * d + (e * f)'
+        )
+
+    test1('reverseNodeList')
+    test1('len <= foo')
+    test1('fromIndex < 0')
+    test1('posIndex > len')
+    test1('newTailLen == branchFactor')
+    test1('shift == 5')
+    # test1('index < 0 || index >= len')
 
 testTokens()
