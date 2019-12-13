@@ -6,12 +6,14 @@ into the actual Elm parser yet.
 """
 
 class Pratt:
-    def __init__(self, token, state, tokenizer):
+    def __init__(self, token, state, priorState, tokenizer):
         self.token = token
         self.state = state
+        self.priorState = priorState
         self.tokenizer = tokenizer
 
     def tokenize(self):
+        priorState = self.state
         res = self.tokenizer(self.state)
         if res is None:
             token = None
@@ -19,13 +21,13 @@ class Pratt:
         else:
             token = res.ast
             state = res.state
-        return Pratt(token, state, self.tokenizer)
+        return Pratt(token, state, priorState, self.tokenizer)
 
     def advance(self, parse):
         state = parse(self.state)
         if state is None:
             raise 'foo'
-        return Pratt(None, state, self.tokenizer).tokenize()
+        return Pratt(None, state, None, self.tokenizer).tokenize()
 
 def expression(pratt, rbp=0):
     t = pratt.token
@@ -43,14 +45,8 @@ def expression(pratt, rbp=0):
     return (left, pratt)
 
 def parse(state, tokenizer):
-    pratt = Pratt(None, state, tokenizer).tokenize()
+    pratt = Pratt(None, state, None, tokenizer).tokenize()
     (left, pratt) = expression(pratt)
 
-    # Since Pratt parsing always looks ahead one token, we
-    # cheat here to reset the state for any integration with
-    # "outer" parsers.  The ParseHelper module remembers the
-    # last valid state.  This is still skipping one too many
-    # tokens, though, so I need a better way to keep prior
-    # states.
-    return ParseHelper.Result(ParseHelper.lastState, left.ast)
+    return ParseHelper.Result(pratt.priorState, left.ast)
 

@@ -3,21 +3,23 @@ sys.path.append('../lib')
 sys.path.append('../../src')
 sys.path.append('../../tests')
 
-from ParseHelper import (
-    State,
+import ParseHelper
+from testHelper import (
+    assertEqual,
+    assertTrue,
 )
-from testHelper import assertEqual
 import ElmPratt
 
 def test(sElm, sPython=None):
     if sPython is None:
         sPython = sElm
 
-    state = State(sElm + ' then foo')
+    state = ParseHelper.State(sElm + ' then foo')
     res = ElmPratt.parse(state)
     assertEqual(sPython, res.ast.emit().val)
-    # printState(res.state)
-
+    state = res.state
+    state = ParseHelper.spaceOptional(state)
+    assertTrue(ParseHelper.peek(state, 'then'))
 
 def testTokens():
     test('foo.bar == 5')
