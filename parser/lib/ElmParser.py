@@ -23,6 +23,14 @@ It parses just enough to skip over certain things:
 
 import ElmTypes as types
 
+from ElmCommon import (
+        reservedWords
+        )
+
+from ElmPratt import (
+        captureConditional
+        )
+
 from ParseHelper import (
         captureBlock,
         captureInt,
@@ -77,8 +85,6 @@ def captureParen(fCapture):
         fCapture,
         skip(pChar(')')),
         )
-
-reservedWords = [ 'case', 'of', 'let', 'if', 'then', 'else', '->']
 
 # Docs/comments
 
@@ -617,7 +623,7 @@ captureIf = \
         types.If,
         captureStuff(
             skip(pKeyword('if')),
-            captureExpr,
+            captureConditional,
             skip(pKeyword('then')),
             captureExpr,
             skip(pKeyword('else')),

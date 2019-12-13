@@ -72,5 +72,10 @@ def testTokens():
         'oldShift <= newShift or JsArray.length(tree) == 0'
         )
 
+    test(
+        'f x y',
+        'f(x, y)'
+        )
+
 
 testTokens()

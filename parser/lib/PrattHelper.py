@@ -6,11 +6,12 @@ into the actual Elm parser yet.
 """
 
 class Pratt:
-    def __init__(self, token, state, priorState, tokenizer):
+    def __init__(self, token, state, priorState, tokenizer, minimal=False):
         self.token = token
         self.state = state
         self.priorState = priorState
         self.tokenizer = tokenizer
+        self.minimal = minimal
 
     def tokenize(self):
         priorState = self.state
@@ -21,13 +22,31 @@ class Pratt:
         else:
             token = res.ast
             state = res.state
-        return Pratt(token, state, priorState, self.tokenizer)
+        return Pratt(token, state, priorState, self.tokenizer, self.minimal)
 
     def advance(self, parse):
         state = parse(self.state)
         if state is None:
             raise 'foo'
-        return Pratt(None, state, None, self.tokenizer).tokenize()
+        return Pratt(None, state, None, self.tokenizer, self.minimal).tokenize()
+
+    def setMinimal(self):
+        return Pratt(
+            self.token,
+            self.state,
+            self.priorState,
+            self.tokenizer,
+            minimal=True
+            )
+
+    def reset(self):
+        return Pratt(
+            self.token,
+            self.state,
+            self.priorState,
+            self.tokenizer,
+            minimal=False
+            )
 
 def expression(pratt, rbp=0):
     t = pratt.token

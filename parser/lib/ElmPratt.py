@@ -19,7 +19,7 @@ from PrattHelper import (
     expression,
 )
 
-import ElmParser
+import ElmCommon
 import ElmTypes
 
 class IntToken:
@@ -46,10 +46,21 @@ class VarToken:
 
     def nud(self, pratt):
         self.ast = ElmTypes.ExprVar(self.token)
-        if pratt.token is not None:
-            if pratt.token.lbp >= self.lbp:
-                right, pratt = expression(pratt, self.lbp-1)
-                self.ast = ElmTypes.Call([self.ast, right.ast])
+        if pratt.token is None or pratt.token.lbp < self.lbp:
+            return (self, pratt)
+
+        if pratt.minimal:
+            return (self, pratt)
+
+        # We have a call like f a b c
+        pratt = pratt.setMinimal()
+        items = [self.ast]
+        while pratt.token and pratt.token.lbp >= self.lbp:
+            right, pratt = expression(pratt, self.lbp+1)
+            items.append(right.ast)
+
+        pratt = pratt.reset()
+        self.ast = ElmTypes.Call(items)
         return (self, pratt)
 
 class ParenToken:
@@ -107,8 +118,8 @@ var = \
     transform(
         VarToken,
         captureOneOf(
-            captureTokenLower(ElmParser.reservedWords),
-            captureTokenUpper(ElmParser.reservedWords),
+            captureTokenLower(ElmCommon.reservedWords),
+            captureTokenUpper(ElmCommon.reservedWords),
             )
         )
 
