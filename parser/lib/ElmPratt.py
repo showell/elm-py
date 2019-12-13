@@ -138,5 +138,5 @@ tokenizer = \
         integer,
         )
 
-def parse(state):
+def captureConditional(state):
     return PrattHelper.parse(state, tokenizer)

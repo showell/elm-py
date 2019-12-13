@@ -15,7 +15,7 @@ def test(sElm, sPython=None):
         sPython = sElm
 
     state = ParseHelper.State(sElm + ' then foo')
-    res = ElmPratt.parse(state)
+    res = ElmPratt.captureConditional(state)
     assertEqual(sPython, res.ast.emit().val)
     state = res.state
     state = ParseHelper.spaceOptional(state)
