@@ -8,6 +8,7 @@ from ParseHelper import (
     captureOneOf,
     captureOperator,
     captureTokenLower,
+    captureTokenUpper,
     grab,
     printState,
     pChar,
@@ -48,6 +49,10 @@ class VarToken:
 
     def nud(self, pratt):
         self.ast = ElmTypes.ExprVar(self.token)
+        if pratt.token is not None:
+            if pratt.token.lbp >= self.lbp:
+                right, pratt = expression(pratt, self.lbp-1)
+                self.ast = ElmTypes.Call([self.ast, right.ast])
         return (self, pratt)
 
 class ParenToken:
@@ -104,7 +109,10 @@ class OpToken:
 var = \
     transform(
         VarToken,
-        captureTokenLower(ElmParser.reservedWords)
+        captureOneOf(
+            captureTokenLower(ElmParser.reservedWords),
+            captureTokenUpper(ElmParser.reservedWords),
+            )
         )
 
 integer = \
@@ -133,17 +141,7 @@ tokenizer = \
         integer,
         )
 
-"""
-index >= tailIndex len
-pos >= JsArray.length tree
-JsArray.length jsArray < branchFactor
-
-oldShift <= newShift || JsArray.length tree == 0
-
-isGood x
-"""
-
-def test1(sElm, sPython=None):
+def test(sElm, sPython=None):
     if sPython is None:
         sPython = sElm
 
@@ -154,22 +152,55 @@ def test1(sElm, sPython=None):
 
 
 def testTokens():
-    test1(
+    test('foo.bar == 5')
+    test(
         'a * (b+c) * d + (e*f)',
         'a * (b + c) * d + (e * f)'
         )
-    test1('bLen <= (branchFactor * 4)')
+    test('bLen <= (branchFactor * 4)')
 
-    test1('reverseNodeList')
-    test1('len <= foo')
-    test1('fromIndex < 0')
-    test1('posIndex > len')
-    test1('newTailLen == branchFactor')
-    test1('shift == 5')
+    test(
+        'isGood x',
+        'isGood(x)',
+        )
 
-    test1(
+    test('reverseNodeList')
+    test('len <= foo')
+    test('fromIndex < 0')
+    test('posIndex > len')
+    test('newTailLen == branchFactor')
+    test('shift == 5')
+
+    test(
         'index < 0 || index >= len',
         'index < 0 or index >= len'
         )
+
+    test(
+        'f a > 2',
+        'f(a) > 2'
+        )
+
+    test(
+        'index >= tailIndex len',
+        'index >= tailIndex(len)'
+        )
+
+    test(
+        'pos >= JsArray.length tree',
+        'pos >= JsArray.length(tree)'
+        )
+
+
+    test(
+        'JsArray.length jsArray < branchFactor',
+        'JsArray.length(jsArray) < branchFactor'
+        )
+
+    test(
+        'oldShift <= newShift || JsArray.length tree == 0',
+        'oldShift <= newShift or JsArray.length(tree) == 0'
+        )
+
 
 testTokens()
