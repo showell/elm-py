@@ -56,7 +56,7 @@ class VarToken:
         pratt = pratt.setMinimal()
         items = [self.ast]
         while pratt.token and pratt.token.lbp >= self.lbp:
-            right, pratt = expression(pratt, self.lbp+1)
+            right, pratt = expression(pratt, self.lbp)
             items.append(right.ast)
 
         pratt = pratt.reset()
