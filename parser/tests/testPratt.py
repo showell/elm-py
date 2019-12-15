@@ -77,5 +77,15 @@ def testTokens():
         'f(x, y)'
         )
 
+    test(
+        '(a + b)',
+        '(a + b)'
+        )
+
+    test(
+        'f (a + b) c',
+        'f((a + b), c)'
+        )
+
 
 testTokens()

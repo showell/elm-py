@@ -53,9 +53,9 @@ class VarToken:
             return (self, pratt)
 
         # We have a call like f a b c
-        pratt = pratt.setMinimal()
         items = [self.ast]
         while pratt.token and pratt.token.lbp >= self.lbp:
+            pratt = pratt.setMinimal()
             right, pratt = expression(pratt, self.lbp)
             items.append(right.ast)
 
@@ -70,9 +70,12 @@ class ParenToken:
         pass
 
     def __str__(self):
-        return str(self.ast)
+        if hasattr(self, 'ast'):
+            return str(self.ast)
+        return 'paren'
 
     def nud(self, pratt):
+        pratt = pratt.reset()
         right, pratt = expression(pratt, 0)
         self.ast = ElmTypes.Paren(right.ast)
         pratt = pratt.advance(pChar(')'))
